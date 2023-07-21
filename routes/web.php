@@ -43,20 +43,21 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 
 
-//Employee Router
-Route::post('/employees', [EmployeeController::class, 'insert'])->name('employees.insert');
-Route::get('/employees', [EmployeeController::class, 'getEmployee'])->name('employees');
-Route::get('/employee/view/{idnik}', [EmployeeController::class, 'viewProfile'])->name('employee.view');
-Route::get('/employee/update/{idnik}', [EmployeeController::class, 'getUpdateEmployee'])->name('employee.getId');
-Route::post('/employee/update/{idnik}', [EmployeeController::class, 'insertUpdateEmployee'])->name('employee.update');
-Route::post('/employee/update/change-password/{idnik}', [EmployeeController::class, 'changePassword'])->name('changePassword');
-Route::post('/employee/update/photo-profile/{idnik}', [EmployeeController::class, 'photoProfile'])->name('employee.photoProfile');
+
 
 //Company Regulation Router
 Route::get('/company-regulation', [CompanyRegulationController::class, 'index'])->name('company-regulation');
 Route::get('/download',  [CompanyRegulationController::class, 'downloadFile'])->name('file.download');
 
-//it helpdesk
+
+
+
+
+// Rute-rute yang perlu dilindungi oleh middleware auth
+Route::group(['middleware' => 'auth'], function () {
+
+
+    //it helpdesk
 Route::get('/it-helpdesk', [ITHelpdeskController::class, 'index'])->name('it-helpdesk');
 Route::post('/it-helpdesk', [ITHelpdeskController::class, 'insert'])->name('it-helpdesk.insert');
 Route::get('/it-helpdesk/detail/{id_tiket}', [ITHelpdeskController::class, 'detailTicket'])->name('it-helpdesk.detail');
@@ -64,16 +65,15 @@ Route::post('/it-helpdesk/update/{id_tiket}', [ITHelpdeskController::class, 'upd
 Route::delete('/it-helpdesk/delete/{id_tiket}', [ITHelpdeskController::class, 'delete'])->name('it-helpdesk.delete');
 Route::post('/it-helpdesk/komentar', [ITHelpdeskController::class, 'komentar']);
 
+
 //project
 Route::get('/project', [ProjectController::class, 'index'])->name('projects.index');
 Route::post('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
 Route::get('/project-list', [ProjectController::class, 'show'])->name('projects.show');
-// Route::post('/project-list', [ProjectController::class, 'show'])->name('projects.show');
 Route::get('/projects/{id}', [ProjectController::class, 'view'])->name('projects.view');
 Route::get('/projects/{id}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
 Route::post('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
 Route::delete('/projects/{id}', [ProjectController::class, 'delete'])->name('projects.delete');
-
 
 //Task Route
 Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
@@ -83,6 +83,21 @@ Route::get('/tasks/view/{id_task}', [TaskController::class, 'view'])->name('task
 Route::get('/tasks/edit/{id_task}', [TaskController::class, 'edit'])->name('tasks.edit');
 Route::post('/tasks/{id_task}', [TaskController::class, 'update'])->name('tasks.update');
 Route::delete('/tasks/delete/{id_task}', [TaskController::class, 'delete'])->name('tasks.delete');
+
+//Employee Router
+Route::post('/employees', [EmployeeController::class, 'insert'])->name('employees.insert');
+Route::get('/employees', [EmployeeController::class, 'getEmployee'])->name('employees');
+Route::get('/employee/view/{idnik}', [EmployeeController::class, 'viewProfile'])->name('employee.view');
+Route::get('/employee/update/{idnik}', [EmployeeController::class, 'getUpdateEmployee'])->name('employee.getId');
+Route::post('/employee/update/{idnik}', [EmployeeController::class, 'insertUpdateEmployee'])->name('employee.update');
+Route::post('/employee/update/change-password/{idnik}', [EmployeeController::class, 'changePassword'])->name('changePassword');
+Route::post('/employee/update/photo-profile/{idnik}', [EmployeeController::class, 'photoProfile'])->name('employee.photoProfile');
+});
+
+
+
+
+
 
 
 Route::fallback(function () {

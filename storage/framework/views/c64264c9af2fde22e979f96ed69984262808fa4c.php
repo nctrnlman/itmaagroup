@@ -1,53 +1,53 @@
-@extends('layouts.master')
 
-@section('title')
+
+<?php $__env->startSection('title'); ?>
     Helpdesk
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('css')
-    <link href="{{ URL::asset('assets/libs/jsvectormap/jsvectormap.min.css') }}" rel="stylesheet">
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css"> --}}
+<?php $__env->startSection('css'); ?>
+    <link href="<?php echo e(URL::asset('assets/libs/jsvectormap/jsvectormap.min.css')); ?>" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
     <link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/ckeditor.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet">
-@endsection
+    <link href="<?php echo e(asset('css/ckeditor.css')); ?>" rel="stylesheet">
+    <link href="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.css')); ?>" rel="stylesheet">
+<?php $__env->stopSection(); ?>
 
-@section('content')
-    @component('components.breadcrumb')
-        @slot('li_1')
+<?php $__env->startSection('content'); ?>
+    <?php $__env->startComponent('components.breadcrumb'); ?>
+        <?php $__env->slot('li_1'); ?>
             Dashboard
-        @endslot
-        @slot('title')
+        <?php $__env->endSlot(); ?>
+        <?php $__env->slot('title'); ?>
             IT Helpdesk
-        @endslot
-    @endcomponent
+        <?php $__env->endSlot(); ?>
+    <?php echo $__env->renderComponent(); ?>
 
-    @if (Session::has('success'))
+    <?php if(Session::has('success')): ?>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 Swal.fire({
-                    title: '{{ Session::get('success') }}',
+                    title: '<?php echo e(Session::get('success')); ?>',
                     icon: 'success',
                     showCloseButton: false
                 });
             });
         </script>
-    @endif
+    <?php endif; ?>
 
-    @if (Session::has('error'))
+    <?php if(Session::has('error')): ?>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 Swal.fire({
-                    title: '{{ Session::get('error') }}',
+                    title: '<?php echo e(Session::get('error')); ?>',
                     icon: 'error',
                     showCloseButton: false
                 });
             });
         </script>
-    @endif
+    <?php endif; ?>
 
     <div class="row">
         <div class="col-xxl-3 col-sm-6">
@@ -58,9 +58,10 @@
                             <p class="fw-medium text-muted mb-0">Total Tickets</p>
                             <h2 class="mt-4 ff-secondary fw-semibold">
                                 <span class="counter-value"
-                                    data-target="@if (strpos(session('user')->position, 'IT') !== false) {{ $totalTickets }}
-                            @else
-                                {{ $totalTickets }} @endif">
+                                    data-target="<?php if(strpos(session('user')->position, 'IT') !== false): ?> <?php echo e($totalTickets); ?>
+
+                            <?php else: ?>
+                                <?php echo e($totalTickets); ?> <?php endif; ?>">
                                 </span>
                             </h2>
                         </div>
@@ -84,9 +85,10 @@
                             <p class="fw-medium text-muted mb-0">Pending Tickets</p>
                             <h2 class="mt-4 ff-secondary fw-semibold">
                                 <span class="counter-value"
-                                    data-target='@if (strpos(session('user')->position, 'IT') !== false) {{ $pendingTickets }}
-                            @else
-                                {{ $pendingTickets }} @endif'>
+                                    data-target='<?php if(strpos(session('user')->position, 'IT') !== false): ?> <?php echo e($pendingTickets); ?>
+
+                            <?php else: ?>
+                                <?php echo e($pendingTickets); ?> <?php endif; ?>'>
 
                                 </span>
                             </h2>
@@ -111,9 +113,10 @@
                             <p class="fw-medium text-muted mb-0">Process Tickets</p>
                             <h2 class="mt-4 ff-secondary fw-semibold">
                                 <span class="counter-value"
-                                    data-target='@if (strpos(session('user')->position, 'IT') !== false) {{ $processTickets }}
-                            @else
-                                {{ $processTickets }} @endif'>
+                                    data-target='<?php if(strpos(session('user')->position, 'IT') !== false): ?> <?php echo e($processTickets); ?>
+
+                            <?php else: ?>
+                                <?php echo e($processTickets); ?> <?php endif; ?>'>
 
                                 </span>
                             </h2>
@@ -138,9 +141,10 @@
                             <p class="fw-medium text-muted mb-0">Closed Tickets</p>
                             <h2 class="mt-4 ff-secondary fw-semibold">
                                 <span class="counter-value"
-                                    data-target=' @if (strpos(session('user')->position, 'IT') !== false) {{ $closedTickets }}
-                            @else
-                                {{ $closedTickets }} @endif'>
+                                    data-target=' <?php if(strpos(session('user')->position, 'IT') !== false): ?> <?php echo e($closedTickets); ?>
+
+                            <?php else: ?>
+                                <?php echo e($closedTickets); ?> <?php endif; ?>'>
 
                                 </span>
                             </h2>
@@ -213,25 +217,25 @@
                     }
                     ?>
                     <tbody>
-                        @foreach ($tickets as $ticket)
+                        <?php $__currentLoopData = $tickets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ticket): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $ticket->id_tiket }}</td>
-                                <td>{{ date('d F Y', strtotime($ticket->start_date)) }}</td>
-                                @if (strpos(session('user')->position, 'IT') !== false)
-                                    <td>{{ $ticket->nama }}</td>
-                                @endif
-                                <td>{!! str_replace(
+                                <td><?php echo e($loop->iteration); ?></td>
+                                <td><?php echo e($ticket->id_tiket); ?></td>
+                                <td><?php echo e(date('d F Y', strtotime($ticket->start_date))); ?></td>
+                                <?php if(strpos(session('user')->position, 'IT') !== false): ?>
+                                    <td><?php echo e($ticket->nama); ?></td>
+                                <?php endif; ?>
+                                <td><?php echo str_replace(
                                     ["\r\n", "\r", "\n"],
                                     ', ',
                                     Illuminate\Support\Str::limit(strip_tags($ticket->disc_keluhan), 60),
-                                ) !!}</td>
-                                <td>{{ $ticket->status_tiket }}</td>
-                                <td>{{ $ticket->kategori_tiket }}</td>
-                                @php
+                                ); ?></td>
+                                <td><?php echo e($ticket->status_tiket); ?></td>
+                                <td><?php echo e($ticket->kategori_tiket); ?></td>
+                                <?php
                                     $userIT = $usersIT->firstWhere('idnik', $ticket->nik_pic);
-                                @endphp
-                                <td>{{ $userIT ? $userIT->nama : '-' }}</td>
+                                ?>
+                                <td><?php echo e($userIT ? $userIT->nama : '-'); ?></td>
                                 <td>
                                     <div class="dropdown d-inline-block">
                                         <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
@@ -239,54 +243,54 @@
                                             <i class="ri-more-fill align-middle"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            @if (strpos(session('user')->position, 'IT') !== false)
+                                            <?php if(strpos(session('user')->position, 'IT') !== false): ?>
                                                 <li>
-                                                    <a href="{{ route('it-helpdesk.detail', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                    <a href="<?php echo e(route('it-helpdesk.detail', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                         class="dropdown-item edit-item-btn">
                                                         <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{ route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                    <a href="<?php echo e(route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                         class="dropdown-item edit-item-btn"
-                                                        onclick="event.preventDefault(); document.getElementById('delete-form-{{ $ticket->id_tiket }}').submit();">
+                                                        onclick="event.preventDefault(); document.getElementById('delete-form-<?php echo e($ticket->id_tiket); ?>').submit();">
                                                         <i class="fa fa-trash align-bottom me-2 text-muted"></i> Delete
                                                     </a>
-                                                    <form id="delete-form-{{ $ticket->id_tiket }}"
-                                                        action="{{ route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                    <form id="delete-form-<?php echo e($ticket->id_tiket); ?>"
+                                                        action="<?php echo e(route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                         method="POST" style="display: none;">
-                                                        @csrf
-                                                        @method('DELETE')
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
                                                     </form>
                                                 </li>
-                                            @else
+                                            <?php else: ?>
                                                 <li>
-                                                    <a href="{{ route('it-helpdesk.detail', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                    <a href="<?php echo e(route('it-helpdesk.detail', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                         class="dropdown-item view-item-btn">
                                                         <i class="ri-eye-fill align-bottom me-2 text-muted"></i> View
                                                     </a>
                                                 </li>
-                                                @if ($ticket->status_tiket == 'Pending')
+                                                <?php if($ticket->status_tiket == 'Pending'): ?>
                                                     <li>
-                                                        <a href="{{ route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                        <a href="<?php echo e(route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                             class="dropdown-item edit-item-btn"
-                                                            onclick="event.preventDefault(); document.getElementById('delete-form-{{ $ticket->id_tiket }}').submit();">
+                                                            onclick="event.preventDefault(); document.getElementById('delete-form-<?php echo e($ticket->id_tiket); ?>').submit();">
                                                             <i class="fa fa-trash align-bottom me-2 text-muted"></i> Delete
                                                         </a>
-                                                        <form id="delete-form-{{ $ticket->id_tiket }}"
-                                                            action="{{ route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                        <form id="delete-form-<?php echo e($ticket->id_tiket); ?>"
+                                                            action="<?php echo e(route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                             method="POST" style="display: none;">
-                                                            @csrf
-                                                            @method('DELETE')
+                                                            <?php echo csrf_field(); ?>
+                                                            <?php echo method_field('DELETE'); ?>
                                                         </form>
                                                     </li>
-                                                @endif
-                                            @endif
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         </ul>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
@@ -303,9 +307,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                         id="close-modal"></button>
                 </div>
-                <form action="{{ route('it-helpdesk.insert') }}" method="POST" id="myForm"
+                <form action="<?php echo e(route('it-helpdesk.insert')); ?>" method="POST" id="myForm"
                     enctype="multipart/form-data">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-lg-6">
@@ -330,18 +334,18 @@
                                     <input type="text" id="wa" class="form-control"
                                         placeholder="Insert your active number" name="wa" />
                                 </div>
-                                @if (strpos(session('user')->position, 'IT') !== false)
+                                <?php if(strpos(session('user')->position, 'IT') !== false): ?>
                                     <div class="mb-3 mt-2">
                                         <label for="choices-status-input" class="form-label">Request User</label>
                                         <select class="form-select" data-choices id="choices-status-input"
                                             name="request">
                                             <option value="all">All Users</option>
-                                            @foreach ($allUsers as $user)
-                                                <option value="{{ $user->idnik }}">{{ $user->nama }}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $allUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($user->idnik); ?>"><?php echo e($user->nama); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -355,9 +359,9 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
@@ -366,14 +370,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
-    <script src="{{ URL::asset('assets/libs/@ckeditor/@ckeditor.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/@ckeditor/@ckeditor.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets/libs/flatpickr/flatpickr.min.js')); ?>"></script>
     <script src="assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
-    <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    <script src="{{ URL::asset('/assets/js/pages/sweetalerts.init.js') }}"></script>
+    <script src="<?php echo e(URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('/assets/js/pages/sweetalerts.init.js')); ?>"></script>
     <script src="assets/js/app.min.js"></script>
-    <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
     <script>
         $(document).ready(function() {
             $('#exampleee').DataTable({
@@ -404,4 +408,6 @@
             document.getElementById('myForm').submit();
         }
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/it-helpdesk.blade.php ENDPATH**/ ?>

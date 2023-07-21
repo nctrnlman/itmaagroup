@@ -1,14 +1,12 @@
-@extends('layouts.master-without-nav')
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get('translation.404'); ?>
+<?php $__env->stopSection(); ?>
 
-@section('title')
-    @lang('translation.404')
-@endsection
-
-@section('body')
+<?php $__env->startSection('body'); ?>
 
     <body>
-    @endsection
-    @section('content')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('content'); ?>
         <div class="auth-page-wrapper pt-5">
             <!-- auth page bg -->
             <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
@@ -29,14 +27,14 @@
                         <div class="col-lg-12">
                             <div class="text-center pt-4">
                                 <div class="">
-                                    <img src="{{ URL::asset('assets/images/error.svg') }}" alt=""
+                                    <img src="<?php echo e(URL::asset('assets/images/error.svg')); ?>" alt=""
                                         class="error-basic-img move-animation">
                                 </div>
                                 <div class="mt-n4">
                                     <h1 class="display-1 fw-medium">404</h1>
                                     <h3 class="text-uppercase">Sorry, Page not Found 😭</h3>
                                     <p class="text-muted mb-4">The page you are looking for not available!</p>
-                                    <a href="{{ route('root') }}" class="btn btn-success"><i
+                                    <a href="<?php echo e(route('root')); ?>" class="btn btn-success"><i
                                             class="mdi mdi-home me-1"></i>Back to home</a>
                                 </div>
                             </div>
@@ -70,10 +68,12 @@
 
         </div>
         <!-- end auth-page-wrapper -->
-    @endsection
-    @section('script')
+    <?php $__env->stopSection(); ?>
+    <?php $__env->startSection('script'); ?>
         <!-- particles js -->
-        <script src="{{ URL::asset('assets/libs/particles.js/particles.js.min.js') }}"></script>
+        <script src="<?php echo e(URL::asset('assets/libs/particles.js/particles.js.min.js')); ?>"></script>
         <!-- particles app js -->
-        <script src="{{ URL::asset('assets/js/pages/particles.app.js') }}"></script>
-    @endsection
+        <script src="<?php echo e(URL::asset('assets/js/pages/particles.app.js')); ?>"></script>
+    <?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/auth-404-basic.blade.php ENDPATH**/ ?>

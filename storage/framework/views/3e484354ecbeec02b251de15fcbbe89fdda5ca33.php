@@ -533,3 +533,4 @@
         </div>
     </div>
 </div>
+<?php /**PATH C:\eip-it\resources\views/layouts/customizer.blade.php ENDPATH**/ ?>

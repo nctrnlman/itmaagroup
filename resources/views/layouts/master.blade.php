@@ -1,5 +1,6 @@
-<!doctype html >
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg">
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-layout="vertical" data-topbar="light" data-sidebar="dark"
+    data-sidebar-size="lg">
 
 <head>
     <meta charset="utf-8" />
@@ -8,38 +9,36 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo.svg')}}">
+    <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo.svg') }}">
     @include('layouts.head-css')
 </head>
 
 @section('body')
     @include('layouts.body')
 @show
-    <!-- Begin page -->
-    <div id="layout-wrapper">
-        @include('layouts.topbar')
-        @include('layouts.sidebar')
-        <!-- ============================================================== -->
-        <!-- Start right Content here -->
-        <!-- ============================================================== -->
-        <div class="main-content">
-            <div class="page-content">
-                <div class="container-fluid">
-                    @yield('content')
-                </div>
-                <!-- container-fluid -->
+<!-- Begin page -->
+<div id="layout-wrapper">
+    @include('layouts.topbar')
+    @include('layouts.sidebar')
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                @yield('content')
             </div>
-            <!-- End Page-content -->
-            @include('layouts.footer')
+            <!-- container-fluid -->
         </div>
-        <!-- end main content-->
+        <!-- End Page-content -->
+        @include('layouts.footer')
     </div>
-    <!-- END layout-wrapper -->
+    <!-- end main content-->
+</div>
+<!-- END layout-wrapper -->
 
-    @include('layouts.customizer')
-
-    <!-- JAVASCRIPT -->
-    @include('layouts.vendor-scripts')
+<!-- JAVASCRIPT -->
+@include('layouts.vendor-scripts')
 </body>
 
 </html>

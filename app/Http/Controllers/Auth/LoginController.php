@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
@@ -81,8 +82,18 @@ class LoginController extends Controller
                 ->first();
             // dd($userWithJoin);
             $request->session()->put('user', $userWithJoin);
-            // dd($request);
-            return redirect('/');
+              // Check if there is a URL that the user tried to access before login
+        if ($request->session()->has('url.intended')) {
+            // Get the intended URL
+            $intendedUrl = $request->session()->get('url.intended');
+            // Forget the intended URL so that it won't be used in the next redirect
+            $request->session()->forget('url.intended');
+            // Redirect to the intended URL
+            return Redirect::to($intendedUrl);
+        }
+
+        // If there is no intended URL, redirect to a default route, e.g., the home page
+        return redirect('/');
         } else {
             return redirect()->route('loginForm')->with('error', 'Username atau password salah.');
         }

@@ -121,6 +121,19 @@ class ITHelpdeskController extends Controller
             SendWhatsAppMessageJob::dispatch($target, $message)->onQueue('whatsapp');
             
             return redirect()->back()->with('success', 'Ticket created successfully.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errors = $e->validator->getMessageBag();
+    
+            // Periksa untuk setiap pesan kesalahan yang relevan dan kirimkan respons yang sesuai
+            if ($errors->has('desc')) {
+                return redirect()->back()->with('error', 'Please insert description.');
+            } elseif ($errors->has('lampiran1')) {
+                return redirect()->back()->with('error', 'Please attach a file');
+            } elseif ($errors->has('wa')) {
+                return redirect()->back()->with('error', 'Please insert whatsapp number');
+            } else {
+                return redirect()->back()->with('error', 'Failed to create Ticket. Please try again.');
+            }
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to create Ticket. Please try again.');
         }
@@ -133,6 +146,9 @@ class ITHelpdeskController extends Controller
             ->select('ticketing.*', 'login.*', 'user.*')
             ->where('ticketing.id_tiket', $id_tiket)
             ->first();
+          
+
+
 
             $usersIT = Employee::where(function ($query) {
                 $query->where('position', 'like', '% IT%')
