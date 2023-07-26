@@ -38,9 +38,9 @@ class HomeController extends Controller
     public function root()
     {
         $totalEmployee = Employee::count();
-    $employeeHO = Employee::where('company', 'like', '%HO%')->count();
-    $employeeBCPM = Employee::where('company', 'like', '%BCPM%')->count();
-    $employeeOBI = Employee::where('company', 'like', '%OBI%')->count();
+    $employeeHO = Employee::where('lokasi', '=', 'HO')->count();
+    $employeeBCPM = Employee::where('lokasi', '=', 'BCPM')->count();
+    $employeeOBI = Employee::where('lokasi', '=', 'OBI')->count();
 
     return view('index', compact('totalEmployee', 'employeeHO', 'employeeBCPM', 'employeeOBI'));
     }

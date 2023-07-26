@@ -46,44 +46,46 @@
                             class="ri-add-line align-bottom me-1"></i> Add New</a>
                 </div>
             </div>
-            {{-- <form action="{{ route('projects.show') }}" method="POST"> --}}
-            @csrf
             <div class="col-sm">
-                <div class="d-flex justify-content-sm-end gap-2">
-                    <div class="search-box ms-2">
-                        <input type="text" class="form-control" placeholder="Search..." name="search">
-                        <i class="ri-search-line search-icon"></i>
+                <form action="{{ route('projects.show') }}" method="GET">
+                    <div class="d-flex justify-content-sm-end gap-2">
+                        <div class="search-box ms-2">
+                            <input type="text" class="form-control" placeholder="Search..." name="search"
+                                value="{{ request('search') }}">
+                            <i class="ri-search-line search-icon"></i>
+                        </div>
+                        <button type="submit" class="btn btn-primary mr-4">Search</button>
+                        <select class="form-control w-md" data-choices data-choices-search-false name="status_filter">
+                            <option value="All">All</option>
+                            <option value="Open">Open</option>
+                            <option value="On Progress">On Progress</option>
+                            <option value="Closed">Closed</option>
+                            <option value="Canceled">Canceled</option>
+                        </select>
                     </div>
-                    <select class="form-control w-md" data-choices data-choices-search-false>
-                        <option value="All">All</option>
-                        <option value="Today">Today</option>
-                        <option value="Yesterday" selected>Yesterday</option>
-                        <option value="Last 7 Days">Last 7 Days</option>
-                        <option value="Last 30 Days">Last 30 Days</option>
-                        <option value="This Month">This Month</option>
-                        <option value="Last Year">Last Year</option>
-                    </select>
-                    {{-- <button type="submit" class="btn btn-primary">Search</button> --}}
-                </div>
+                </form>
             </div>
-            {{-- </form> --}}
         </div>
 
         <div class="row w-1000px">
             @php
                 $projectExists = false;
+                
             @endphp
             @foreach ($projects as $project)
                 @php
                     $projectMembers = $members->where('id_project', $project->id_project)->where('idnik', session('user')->idnik);
                     $count = $projectMembers->count();
+                    $isClosedOrCanceled = $project->status === 'Closed' || $project->status === 'Canceled';
                 @endphp
 
                 @if ($count > 0)
                     @php
                         $projectExists = true;
                     @endphp
-                    <div class="col-xxl-3 col-sm-6 project-card">
+                    <div class="col-xxl-3 col-sm-6 project-card"
+                        style="opacity: {{ $isClosedOrCanceled ? '0.7' : '1' }};
+           filter: {{ $isClosedOrCanceled ? 'grayscale(100%)' : 'none' }};">
                         <div class="card card-height-100">
                             <div class="card-body">
                                 <div class="d-flex flex-column h-100">
@@ -106,31 +108,37 @@
                                                     </button>
 
                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('projects.view', ['id' => $project->id_project]) }}">
-                                                            <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
-                                                        </a>
-                                                        @if ($project->idnik == session('user')->idnik)
+                                                        @if ($project->status === 'Closed')
                                                             <a class="dropdown-item"
-                                                                href="{{ route('projects.edit', ['id' => $project->id_project]) }}">
-                                                                <i
-                                                                    class="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit
+                                                                href="{{ route('projects.view', ['id' => $project->id_project]) }}">
+                                                                <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
                                                             </a>
+                                                        @else
+                                                            @if ($project->idnik == session('user')->idnik)
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('projects.edit', ['id' => $project->id_project]) }}">
+                                                                    <i
+                                                                        class="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit
+                                                                </a>
+                                                            @endif
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('projects.view', ['id' => $project->id_project]) }}">
+                                                                <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
+                                                            </a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#"
+                                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{ $project->id_project }}').submit();">
+                                                                <i
+                                                                    class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>Delete
+                                                            </a>
+
+                                                            <form id="delete-form-{{ $project->id_project }}"
+                                                                action="{{ route('projects.delete', ['id' => $project->id_project]) }}"
+                                                                method="POST" style="display: none;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                            </form>
                                                         @endif
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item" href="#"
-                                                            onclick="event.preventDefault(); document.getElementById('delete-form-{{ $project->id_project }}').submit();">
-                                                            <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
-                                                            Delete
-                                                        </a>
-
-                                                        <form id="delete-form-{{ $project->id_project }}"
-                                                            action="{{ route('projects.delete', ['id' => $project->id_project]) }}"
-                                                            method="POST" style="display: none;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                        </form>
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,13 +154,10 @@
                                             </div>
                                         </div>
                                         <div class="flex-grow-1">
-                                            <h5 class="mb-1 fs-15"><a href="apps-projects-overview"
+                                            <h5 class="mb-1 fs-15"><a
+                                                    href="{{ route('projects.view', ['id' => $project->id_project]) }}"
                                                     class="text-dark">{{ $project->title }}</a></h5>
-                                            <div class="text-muted text-truncate-two-lines mb-3">{!! str_replace(
-                                                ["\r\n", "\r", "\n"],
-                                                ', ',
-                                                Illuminate\Support\Str::limit(strip_tags($project->description), 35),
-                                            ) !!}
+                                            <div class="text-muted text-truncate-two-lines mb-3">{{ $project->status }}
                                             </div>
                                         </div>
                                     </div>

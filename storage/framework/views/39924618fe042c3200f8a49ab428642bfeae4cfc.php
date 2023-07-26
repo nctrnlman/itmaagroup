@@ -1,11 +1,11 @@
-@extends('layouts.master')
-@section('title')
-    @lang('translation.task-details')
-@endsection
 
-@section('css')
-    <link href="{{ URL::asset('assets/libs/jsvectormap/jsvectormap.min.css') }}" rel="stylesheet">
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css"> --}}
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get('translation.task-details'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('css'); ?>
+    <link href="<?php echo e(URL::asset('assets/libs/jsvectormap/jsvectormap.min.css')); ?>" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0@/css/remixicon.css" rel="stylesheet">
@@ -13,11 +13,11 @@
     <!-- ... -->
 
 
-    @php
+    <?php
         use App\Helpers\Helper;
-    @endphp
-@endsection
-@section('content')
+    ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
     <div class="row">
 
         <!---end col-->
@@ -26,7 +26,7 @@
                 <div class="card-body">
                     <div class="text-muted">
                         <h6 class="mb-3 fw-semibold text-uppercase" style="font-size: 16px;">Summary</h6>
-                        <p>{!! $task->description !!}</p>
+                        <p><?php echo $task->description; ?></p>
                     </div>
                 </div>
             </div>
@@ -46,27 +46,27 @@
                             <tbody>
                                 <tr>
                                     <td class="fw-medium">Tasks ID</td>
-                                    <td>{{ $task->id_task }}</td>
+                                    <td><?php echo e($task->id_task); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="fw-medium">Tasks Title</td>
-                                    <td>{{ $task->title }}</td>
+                                    <td><?php echo e($task->title); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="fw-medium">Project Name</td>
-                                    <td>{{ $task->project->title }} </td>
+                                    <td><?php echo e($task->project->title); ?> </td>
                                 </tr>
                                 <tr>
                                     <td class="fw-medium">Status</td>
-                                    <td>{{ $task->status }}</td>
+                                    <td><?php echo e($task->status); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="fw-medium">Start Date</td>
-                                    <td>{{ date('d F Y', strtotime($task->start_date)) }}</td>
+                                    <td><?php echo e(date('d F Y', strtotime($task->start_date))); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="fw-medium">Due Date</td>
-                                    <td>{{ date('d F Y', strtotime($task->due_date)) }}</td>
+                                    <td><?php echo e(date('d F Y', strtotime($task->due_date))); ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -84,11 +84,11 @@
                         <li>
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
-                                    <img src="@if (session('user')->file_foto) {{ asset('uploads/uploads/' . session('user')->file_foto) }}@else{{ asset('uploads/uploads/default.jpg') }} @endif"
+                                    <img src="<?php if(session('user')->file_foto): ?> <?php echo e(asset('uploads/uploads/' . session('user')->file_foto)); ?><?php else: ?><?php echo e(asset('uploads/uploads/default.jpg')); ?> <?php endif; ?>"
                                         alt="" class="avatar-xs rounded-circle">
                                 </div>
                                 <div class="flex-grow-1 ms-2">
-                                    <h6 class="mb-1"><a href="pages-profile">{{ session('user')->nama }}</a></h6>
+                                    <h6 class="mb-1"><a href="pages-profile"><?php echo e(session('user')->nama); ?></a></h6>
                                 </div>
                                 <div class="flex-shrink-0">
                                     <div class="dropdown">
@@ -98,7 +98,7 @@
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item"
-                                                    href="{{ route('employee.view', ['idnik' => session('user.idnik')]) }}"><i
+                                                    href="<?php echo e(route('employee.view', ['idnik' => session('user.idnik')])); ?>"><i
                                                         class="ri-eye-fill text-muted me-2 align-bottom"></i>View</a></li>
                                         </ul>
                                     </div>
@@ -143,33 +143,34 @@
                                                     break;
                                             }
                                             ?>
-                                            <i class="{{ $iconClass }}"></i>
+                                            <i class="<?php echo e($iconClass); ?>"></i>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 overflow-hidden">
-                                    @if ($task->file)
+                                    <?php if($task->file): ?>
                                         <h5 class="fs-13 mb-1"><a
-                                                href="{{ asset('storage/uploads/tasks/' . $task->file) }}"
+                                                href="<?php echo e(asset('storage/uploads/tasks/' . $task->file)); ?>"
                                                 download>File</a></h5>
                                         <div>
-                                            {{ Helper::formatSizeUnits(filesize(storage_path('app/public/tasks/' . $task->file))) }}
+                                            <?php echo e(Helper::formatSizeUnits(filesize(storage_path('app/public/tasks/' . $task->file)))); ?>
+
                                         </div>
-                                    @else
+                                    <?php else: ?>
                                         <h5 class="fs-13 mb-1">No file attached</h5>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                                 <div class="flex-shrink-0 ms-2">
-                                    @if ($task->file)
+                                    <?php if($task->file): ?>
                                         <div class="d-flex gap-1">
-                                            <a href="{{ route('download', ['folder' => 'tasks', 'filename' => $task->file]) }}"
+                                            <a href="<?php echo e(route('download', ['folder' => 'tasks', 'filename' => $task->file])); ?>"
                                                 download>
                                                 <button type="button" class="btn btn-icon text-muted btn-sm fs-18">
                                                     <i class="ri-download-2-line"></i>
                                                 </button>
                                             </a>
                                         </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -187,9 +188,9 @@
     </div>
     <!--end row-->
     <!-- end modal -->
-@endsection
-@section('script')
-    <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
+    <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
     <script>
         function formatSizeUnits($bytes) {
             $sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -201,4 +202,6 @@
             ' '.$sizes[$i];
         }
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/task/task-view.blade.php ENDPATH**/ ?>

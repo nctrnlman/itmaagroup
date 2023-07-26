@@ -103,7 +103,7 @@
                         <div>
                             <div class="avatar-sm flex-shrink-0">
                                 <span class="avatar-title bg-soft-info text-info rounded-circle fs-4">
-                                    <i class="mdi mdi-timer-sand"></i>
+                                    <i class="ri-shopping-bag-line"></i>
                                 </span>
                             </div>
                         </div>
@@ -140,7 +140,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card" id="tasksList">
-                <div class="card-header border-0">
+                <div class="card-header">
                     <div class="d-flex align-items-center">
                         <h5 class="card-title mb-0 flex-grow-1">All Tasks</h5>
                         <div class="flex-shrink-0">
@@ -150,7 +150,6 @@
                         </div>
                     </div>
                 </div>
-                <!--end card-header-->
                 <div class="card-body">
                     <table id="exampleee" class="display table table-bordered dt-responsive" style="width:100%">
                         <thead>
@@ -209,11 +208,16 @@
                         </tbody>
                     </table>
                 </div>
-                <!--end card-body-->
             </div>
-            <!--end card-->
+            <!--end card-header-->
+
+
+
+            <!--end card-body-->
         </div>
-        <!--end col-->
+        <!--end card-->
+    </div>
+    <!--end col-->
     </div>
     <!--end row-->
 <?php $__env->stopSection(); ?>
@@ -235,8 +239,42 @@
     <script src="<?php echo e(URL::asset('/assets/js/pages/sweetalerts.init.js')); ?>"></script>
     <script src="assets/js/app.min.js"></script>
     <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
+    <script>
+        $(document).ready(function() {
+            $('#exampleee').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]
+            });
 
-    
+            // Menggunakan event delegation untuk tombol hapus
+            $('#tasksList').on('click', '.delete-button', function(event) {
+                event.preventDefault();
+
+                var deleteButton = $(this);
+                var taskId = deleteButton.data('task-id');
+
+                // Tampilkan dialog konfirmasi SweetAlert
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonClass: 'btn btn-primary w-xs me-2 mt-2',
+                    cancelButtonClass: 'btn btn-danger w-xs mt-2',
+                    confirmButtonText: 'Yes, delete it!',
+                    buttonsStyling: false,
+                    showCloseButton: true
+                }).then(function(result) {
+                    if (result.value) {
+                        // Lanjutkan dengan pengiriman formulir hapus
+                        deleteButton.closest('form').submit();
+                    }
+                });
+            });
+        });
+    </script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/task/task-list.blade.php ENDPATH**/ ?>

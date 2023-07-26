@@ -1,24 +1,24 @@
-@extends('layouts.master')
-@section('title')
-    Project
-@endsection
-@section('css')
-    <link href="{{ URL::asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/ckeditor.css') }}" rel="stylesheet">
-@endsection
-@section('content')
-    @component('components.breadcrumb')
-        @slot('li_1')
-            Project
-        @endslot
-        @slot('title')
-            Edit Project
-        @endslot
-    @endcomponent
 
-    <form action="{{ route('projects.update', ['id' => $project->id_project]) }}" method="POST" id="createForm"
+<?php $__env->startSection('title'); ?>
+    Project
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('css'); ?>
+    <link href="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.css')); ?>" rel="stylesheet">
+    <link href="<?php echo e(asset('css/ckeditor.css')); ?>" rel="stylesheet">
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
+    <?php $__env->startComponent('components.breadcrumb'); ?>
+        <?php $__env->slot('li_1'); ?>
+            Project
+        <?php $__env->endSlot(); ?>
+        <?php $__env->slot('title'); ?>
+            Edit Project
+        <?php $__env->endSlot(); ?>
+    <?php echo $__env->renderComponent(); ?>
+
+    <form action="<?php echo e(route('projects.update', ['id' => $project->id_project])); ?>" method="POST" id="createForm"
         enctype="multipart/form-data">
-        @csrf
+        <?php echo csrf_field(); ?>
         <div class="row">
             <div class="col-lg-8">
                 <div class="card">
@@ -26,11 +26,11 @@
                         <div class="mb-3">
                             <label class="form-label" for="project-title-input">Project Title</label>
                             <input type="text" class="form-control" id="project-title-input" name="title"
-                                placeholder="Enter project title" value="{{ $project->title ?? '' }}">
+                                placeholder="Enter project title" value="<?php echo e($project->title ?? ''); ?>">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Project Description</label>
-                            <textarea class="form-control" name="description" id="ckeditor-classic" rows="5">{{ $project->description ?? '' }}</textarea>
+                            <textarea class="form-control" name="description" id="ckeditor-classic" rows="5"><?php echo e($project->description ?? ''); ?></textarea>
                         </div>
                         <div class="row">
                             <div class="col-lg-4">
@@ -49,7 +49,7 @@
                                     <label for="datepicker-deadline-input" class="form-label">Start Date</label>
                                     <input type="text" class="form-control" id="datepicker-deadline-input"
                                         name="start_date" placeholder="Enter due date" data-provider="flatpickr"
-                                        value="{{ $project->start_date ?? '' }}">
+                                        value="<?php echo e($project->start_date ?? ''); ?>">
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -57,7 +57,7 @@
                                     <label for="datepicker-deadline-input" class="form-label">Due Date</label>
                                     <input type="text" class="form-control" id="datepicker-deadline-input"
                                         name="due_date" placeholder="Enter due date" data-provider="flatpickr"
-                                        value="{{ $project->due_date ?? '' }}">
+                                        value="<?php echo e($project->due_date ?? ''); ?>">
                                 </div>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                         <div class="mb-3">
                             <label for="choices-categories-input" class="form-label">Categories</label>
                             <input type="text" class="form-control" id="project-title-input" name="categories"
-                                placeholder="Enter project categories" value="{{ $project->categories ?? '' }}">
+                                placeholder="Enter project categories" value="<?php echo e($project->categories ?? ''); ?>">
                         </div>
                     </div>
                 </div>
@@ -90,17 +90,17 @@
                     <div class="card-body">
                         <div>
                             <div class="avatar-group" id="teamMembers">
-                                @foreach ($selectedUsers as $user)
+                                <?php $__currentLoopData = $selectedUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <a href="javascript:void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
-                                        data-bs-trigger="hover" data-bs-placement="top" data-name="{{ $user->nama }}">
+                                        data-bs-trigger="hover" data-bs-placement="top" data-name="<?php echo e($user->nama); ?>">
                                         <div class="avatar-xxs">
-                                            <img src="{{ $user->file_foto ? asset('uploads/uploads/' . $user->file_foto) : asset('uploads/uploads/default.jpg') }}"
+                                            <img src="<?php echo e($user->file_foto ? asset('uploads/uploads/' . $user->file_foto) : asset('uploads/uploads/default.jpg')); ?>"
                                                 alt="" class="rounded-circle img-fluid">
                                         </div>
-                                        <input type="hidden" name="selectedMembers[]" value="{{ $user->idnik }}">
+                                        <input type="hidden" name="selectedMembers[]" value="<?php echo e($user->idnik); ?>">
                                         <button type="button" class="btn btn-light btn-sm remove-button">Remove</button>
                                     </a>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                             <input type="hidden" name="memberIds[]" id="memberIds" value="">
                             <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal"
@@ -119,15 +119,15 @@
                             <input name="file" type="file">
                             <button id="deleteFileButton" class="btn btn-sm btn-danger" style="display: none;">Delete
                                 File</button>
-                            @if ($project->file)
-                                <p class="mt-2">File saat ini: {{ $project->file }}</p>
-                            @endif
+                            <?php if($project->file): ?>
+                                <p class="mt-2">File saat ini: <?php echo e($project->file); ?></p>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="text-end mb-4" form="createForm">
-                <a href="{{ route('projects.show') }}" class="btn btn-danger w-sm">Cancel</a>
+                <a href="<?php echo e(route('projects.show')); ?>" class="btn btn-danger w-sm">Cancel</a>
                 <button type="submit" class="btn btn-success w-sm" id="createFormButton">Update</button>
 
             </div>
@@ -156,28 +156,28 @@
                     <div class="mx-n4 px-4" data-simplebar style="max-height: 225px;">
                         <div class="vstack gap-3" data-choices id="choices-member-input">
                             <!-- List of all members -->
-                            @foreach ($users as $user)
-                                <div class="d-flex align-items-center member-item" data-name="{{ $user->nama }}">
+                            <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <div class="d-flex align-items-center member-item" data-name="<?php echo e($user->nama); ?>">
                                     <div class="avatar-xs flex-shrink-0 me-3">
-                                        @if ($user->file_foto)
-                                            <img src="{{ asset('uploads/uploads/' . $user->file_foto) }}" alt=""
+                                        <?php if($user->file_foto): ?>
+                                            <img src="<?php echo e(asset('uploads/uploads/' . $user->file_foto)); ?>" alt=""
                                                 class="img-fluid rounded-circle">
-                                        @else
-                                            <img src="{{ asset('uploads/uploads/default.jpg') }}" alt=""
+                                        <?php else: ?>
+                                            <img src="<?php echo e(asset('uploads/uploads/default.jpg')); ?>" alt=""
                                                 class="img-fluid rounded-circle">
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                     <div class="flex-grow-1">
                                         <h5 class="fs-13 mb-0"><a href="#" class="text-body d-block"
-                                                data-idnik="{{ $user->idnik }}">{{ $user->nama }}</a></h5>
+                                                data-idnik="<?php echo e($user->idnik); ?>"><?php echo e($user->nama); ?></a></h5>
                                     </div>
                                     <div class="flex-shrink-0">
                                         <button type="button" class="btn btn-light btn-sm add-button">Add</button>
                                     </div>
                                 </div>
-                                <input type="hidden" name="idnik[]" value="{{ $user->idnik }}">
+                                <input type="hidden" name="idnik[]" value="<?php echo e($user->idnik); ?>">
                                 <!-- end member item -->
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                         <!-- end list -->
                     </div>
@@ -188,14 +188,14 @@
         </div>
         <!-- modal-dialog -->
     </div>
-@endsection
-@section('script')
-    <script src="{{ URL::asset('assets/libs/@ckeditor/@ckeditor.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/choices.js/choices.js.min.js') }}"></script>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
+    <script src="<?php echo e(URL::asset('assets/libs/@ckeditor/@ckeditor.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets/libs/choices.js/choices.js.min.js')); ?>"></script>
     <script src="assets/js/pages/project-create.init.js"></script>
-    <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets/libs/flatpickr/flatpickr.min.js')); ?>"></script>
     <script>
         // Initialize Flatpickr
         flatpickr('#datepicker-deadline-input', {
@@ -301,7 +301,7 @@
                         var avatarImage = document.createElement('div');
                         avatarImage.classList.add('avatar-xxs');
                         var avatarImgElement = document.createElement('img');
-                        avatarImgElement.setAttribute('src', '{{ asset('uploads/uploads/default.jpg') }}');
+                        avatarImgElement.setAttribute('src', '<?php echo e(asset('uploads/uploads/default.jpg')); ?>');
                         avatarImgElement.setAttribute('alt', '');
                         avatarImgElement.classList.add('rounded-circle', 'img-fluid');
                         avatarImage.appendChild(avatarImgElement);
@@ -426,4 +426,6 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/project/project-edit.blade.php ENDPATH**/ ?>

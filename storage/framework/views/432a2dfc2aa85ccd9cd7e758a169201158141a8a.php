@@ -1,38 +1,38 @@
-@extends('layouts.master')
-@section('title')
-    Task
-@endsection
-@section('css')
-    <link href="{{ URL::asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet">
-    <link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('css/ckeditor.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/flatpickr.css') }}">
-@endsection
-@section('content')
-    @component('components.breadcrumb')
-        @slot('li_1')
-            Task
-        @endslot
-        @slot('title')
-            Create Task
-        @endslot
-    @endcomponent
 
-    @if (Session::has('error'))
+<?php $__env->startSection('title'); ?>
+    Task
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('css'); ?>
+    <link href="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.css')); ?>" rel="stylesheet">
+    <link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link href="<?php echo e(asset('css/ckeditor.css')); ?>" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo e(asset('css/flatpickr.css')); ?>">
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
+    <?php $__env->startComponent('components.breadcrumb'); ?>
+        <?php $__env->slot('li_1'); ?>
+            Task
+        <?php $__env->endSlot(); ?>
+        <?php $__env->slot('title'); ?>
+            Create Task
+        <?php $__env->endSlot(); ?>
+    <?php echo $__env->renderComponent(); ?>
+
+    <?php if(Session::has('error')): ?>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 Swal.fire({
                     title: 'error',
-                    text: '{{ Session::get('error') }}',
+                    text: '<?php echo e(Session::get('error')); ?>',
                     icon: 'error',
                     showCloseButton: true
                 });
             });
         </script>
-    @endif
+    <?php endif; ?>
 
-    <form action="{{ route('tasks.create') }}" method="POST" id="createForm" enctype="multipart/form-data">
-        @csrf
+    <form action="<?php echo e(route('tasks.create')); ?>" method="POST" id="createForm" enctype="multipart/form-data">
+        <?php echo csrf_field(); ?>
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -47,9 +47,9 @@
                             <label for="choices-project-input" class="form-label">Project</label>
                             <select class="form-select" data-choices id="choices-project-input" name="id_project">
                                 <option value="">Project...</option>
-                                @foreach ($projects as $project)
-                                    <option value="{{ $project->id_project }}">{{ $project->title }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($project->id_project); ?>"><?php echo e($project->title); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
 
@@ -92,7 +92,7 @@
 
                 <!-- Isi form input lainnya -->
                 <div class="text-end mb-4" form="createForm">
-                    <button type="button" class="btn btn-danger w-sm"><a href="{{ route('tasks.index') }}"
+                    <button type="button" class="btn btn-danger w-sm"><a href="<?php echo e(route('tasks.index')); ?>"
                             class="text-white">Cancel</a></button>
                     <button type="button" class="btn btn-success w-sm" id="createButton" id="sa-success">Create</button>
                 </div>
@@ -102,16 +102,16 @@
 
         <!-- end row -->
     </form>
-@endsection
-@section('script')
-    <script src="{{ URL::asset('assets/libs/@ckeditor/@ckeditor.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/choices.js/choices.js.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
-    <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    <script src="{{ URL::asset('/assets/js/pages/sweetalerts.init.js') }}"></script>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
+    <script src="<?php echo e(URL::asset('assets/libs/@ckeditor/@ckeditor.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets/libs/choices.js/choices.js.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets/libs/flatpickr/flatpickr.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('/assets/js/pages/sweetalerts.init.js')); ?>"></script>
     <script src="assets/js/app.min.js"></script>
-    <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
     <script>
         // Initialize Flatpickr
         flatpickr('#datepicker-deadline-input', {
@@ -133,4 +133,6 @@
             document.getElementById('createForm').submit();
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/task/task-create.blade.php ENDPATH**/ ?>

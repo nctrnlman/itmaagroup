@@ -41,10 +41,21 @@ class ProjectController extends Controller
         $perPage = 8;
         $query = Project::query();
 
+        // Ambil data dari input pencarian dan filter tanggal
         $search = $request->input('search');
+
+        // Proses pencarian berdasarkan judul proyek
         if ($search) {
             $query->where('title', 'like', '%' . $search . '%');
         }
+
+        $statusFilter = $request->input('status_filter');
+        if ($statusFilter && $statusFilter != 'All') {
+            $query->where('status', $statusFilter);
+        }
+
+       // Pengurutan berdasarkan status (open, on progress, closed, canceled)
+    $query->orderByRaw("FIELD(status, 'Open', 'On Progress', 'Closed', 'Canceled')");
 
         $query->whereIn('id_project', function ($subquery) {
             $subquery->select('id_project')
@@ -106,6 +117,8 @@ class ProjectController extends Controller
                 ->select('project_member.*', 'user.*')
                 ->get();
 
+                // dd($taskFiles);
+
             return view('project.project-view', ['project' => $project, 'projectFiles' => $projectFiles, 'taskFiles' => $taskFiles, 'members' => $members, 'taskList' => $taskList]);
         } catch (\Exception $e) {
             Session::flash('error', $e->getMessage());
@@ -125,6 +138,7 @@ class ProjectController extends Controller
             $description = $request->input('description');
             $status = $request->input('status');
             $dueDate = $request->input('due_date');
+            $startDate = $request->input('start_date');
             $categories = $request->input('categories');
             $file = $request->file('file');
             $idniks = $request->input('memberIds');
@@ -154,7 +168,7 @@ class ProjectController extends Controller
             if ($file) {
                 $fileExtension = $file->getClientOriginalExtension();
                 $fileName = $idProject . '.' . $fileExtension;
-                $filePath = $file->storeAs('public/uploads/projects', $fileName);
+                $filePath = $file->storeAs('public/projects', $fileName);
                 $fileUrl = Storage::url($filePath);
                 $project->file = $fileName;
             } else {
@@ -167,8 +181,10 @@ class ProjectController extends Controller
             $project->status = $status;
             $project->categories = $categories;
             $project->idnik = session('user')->idnik;
-            $project->create_date = date('Y-m-d H:i:s');
+            $project->start_date = $startDate;
             $project->due_date = $dueDate;
+
+            // dd($project);
             $project->save();
 
             $memberIdsArray = explode(',', $idniks[0]);
@@ -189,10 +205,30 @@ class ProjectController extends Controller
             Session::flash('success', 'Project created successfully.');
 
             return redirect()->route('projects.show')->with('success', 'Project created successfully.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errors = $e->validator->getMessageBag();
+            
+            // Periksa untuk setiap pesan kesalahan yang relevan dan kirimkan respons yang sesuai
+            if ($errors->has('title')) {
+                return redirect()->route('projects.show')->with('error', 'Please insert title.');
+            } elseif ($errors->has('description')) {
+                return redirect()->route('projects.show')->with('error', 'Please insert description.');
+            } elseif ($errors->has('status')) {
+                return redirect()->back()->with('error', 'Please select status.');
+            } elseif ($errors->has('start_date')) {
+                return redirect()->back()->with('error', 'Please insert valid start date.');
+            } elseif ($errors->has('due_date')) {
+                return redirect()->back()->with('error', 'Please insert valid due date.');
+            } elseif ($errors->has('categories')) {
+                return redirect()->back()->with('error', 'Please select categories.');
+            } elseif ($errors->has('memberIds')) {
+                return redirect()->back()->with('error', 'Please select project members.');
+            } else {
+                // Jika ada kesalahan validasi lainnya yang tidak terperinci di atas
+                return redirect()->back()->with('error', 'Failed to create project. Please try again.');
+            }
         } catch (\Exception $e) {
-            $errorMessage = 'Failed to create project. Please try again.';
-            Session::flash('error',  $errorMessage);
-            return redirect()->route('projects.show');
+            return redirect()->back()->with('error', 'Failed to create project. Please try again.');
         }
     }
 
@@ -203,7 +239,7 @@ class ProjectController extends Controller
             $project = Project::findOrFail($id);
 
             $users = Employee::where('divisi', $divisi)->get();
-            return view('project.index', ['users' => $users]);;
+
 
             $selectedUsers = DB::table('project_member')
                 ->join('user', 'project_member.idnik', '=', 'user.idnik')
@@ -226,6 +262,7 @@ class ProjectController extends Controller
                 'description' => 'required',
                 'status' => 'required',
                 'due_date' => 'required|date',
+                'start_date' => 'required|date',
                 'categories' => 'nullable',
                 'selectedMembers' => 'nullable|array',
                 'file' => 'nullable|file',
@@ -237,6 +274,7 @@ class ProjectController extends Controller
             $project->description = $request->input('description');
             $project->status = $request->input('status');
             $project->due_date = $request->input('due_date');
+            $project->start_date = $request->input('start_date');
             $project->categories = $request->input('categories');
 
             $fileUrl = null;
@@ -244,14 +282,11 @@ class ProjectController extends Controller
                 $file = $request->file('file');
                 $fileExtension = $file->getClientOriginalExtension();
                 $fileName = $id . '.' . $fileExtension;
-                $filePath = $file->storeAs('public/uploads/projects', $fileName);
+                $filePath = $file->storeAs('public/projects', $fileName);
                 $fileUrl = Storage::url($filePath);
 
                 if ($project->file) {
-                    $oldFilePath = public_path('uploads/projects') . '/' . $project->file;
-                    if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath);
-                    }
+                    Storage::delete('public/projects/' . $project->file);
                 }
 
                 $project->file = $fileName;

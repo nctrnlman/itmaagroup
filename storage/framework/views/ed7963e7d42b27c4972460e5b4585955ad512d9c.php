@@ -1,22 +1,22 @@
-@extends('layouts.master')
-@section('title')
-    Project
-@endsection
-@section('css')
-    <link href="{{ URL::asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet">
-@endsection
-@section('content')
-    @component('components.breadcrumb')
-        @slot('li_1')
-            Project
-        @endslot
-        @slot('title')
-            Create Project
-        @endslot
-    @endcomponent
 
-    <form action="{{ route('projects.create') }}" method="POST" id="createForm" enctype="multipart/form-data">
-        @csrf
+<?php $__env->startSection('title'); ?>
+    Project
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('css'); ?>
+    <link href="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.css')); ?>" rel="stylesheet">
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
+    <?php $__env->startComponent('components.breadcrumb'); ?>
+        <?php $__env->slot('li_1'); ?>
+            Project
+        <?php $__env->endSlot(); ?>
+        <?php $__env->slot('title'); ?>
+            Create Project
+        <?php $__env->endSlot(); ?>
+    <?php echo $__env->renderComponent(); ?>
+
+    <form action="<?php echo e(route('projects.create')); ?>" method="POST" id="createForm" enctype="multipart/form-data">
+        <?php echo csrf_field(); ?>
         <div class="row">
             <div class="col-lg-8">
                 <div class="card">
@@ -96,7 +96,7 @@
                         <div>
                             <div class="avatar-group" id="teamMembers">
                                 <!-- Existing members -->
-                                {{-- MEMBER YG DI INVITE --}}
+                                
                             </div>
                             <input type="hidden" name="memberIds[]" id="memberIds" value="">
                             <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal"
@@ -119,7 +119,7 @@
                     </div>
                 </div>
                 <div class="text-end mb-4" form="createForm">
-                    <a href="{{ route('projects.show') }}" class="btn btn-danger w-sm">Cancel</a>
+                    <a href="<?php echo e(route('projects.show')); ?>" class="btn btn-danger w-sm">Cancel</a>
                     <button type="submit" class="btn btn-success w-sm" id="createButton">Create</button>
                 </div>
                 <!-- end card -->
@@ -151,28 +151,28 @@
                     <div class="mx-n4 px-4" data-simplebar style="max-height: 225px;">
                         <div class="vstack gap-3" data-choices id="choices-member-input">
                             <!-- List of all members -->
-                            @foreach ($users as $user)
-                                <div class="d-flex align-items-center member-item" data-name="{{ $user->nama }}">
+                            <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <div class="d-flex align-items-center member-item" data-name="<?php echo e($user->nama); ?>">
                                     <div class="avatar-xs flex-shrink-0 me-3">
-                                        @if ($user->file_foto)
-                                            <img src="{{ asset('uploads/uploads/' . $user->file_foto) }}" alt=""
+                                        <?php if($user->file_foto): ?>
+                                            <img src="<?php echo e(asset('uploads/uploads/' . $user->file_foto)); ?>" alt=""
                                                 class="img-fluid rounded-circle">
-                                        @else
-                                            <img src="{{ asset('uploads/uploads/default.jpg') }}" alt=""
+                                        <?php else: ?>
+                                            <img src="<?php echo e(asset('uploads/uploads/default.jpg')); ?>" alt=""
                                                 class="img-fluid rounded-circle">
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                     <div class="flex-grow-1">
                                         <h5 class="fs-13 mb-0"><a href="#" class="text-body d-block"
-                                                data-idnik="{{ $user->idnik }}">{{ $user->nama }}</a></h5>
+                                                data-idnik="<?php echo e($user->idnik); ?>"><?php echo e($user->nama); ?></a></h5>
                                     </div>
                                     <div class="flex-shrink-0">
                                         <button type="button" class="btn btn-light btn-sm add-button">Add</button>
                                     </div>
                                 </div>
-                                <input type="hidden" name="idnik[]" value="{{ $user->idnik }}">
+                                <input type="hidden" name="idnik[]" value="<?php echo e($user->idnik); ?>">
                                 <!-- end member item -->
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                         <!-- end list -->
                     </div>
@@ -182,12 +182,12 @@
         </div>
         <!-- modal-dialog -->
     </div>
-@endsection
-@section('script')
-    <script src="{{ URL::asset('assets/libs/@ckeditor/@ckeditor.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
+    <script src="<?php echo e(URL::asset('assets/libs/@ckeditor/@ckeditor.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.js')); ?>"></script>
     <script src="assets/js/pages/project-create.init.js"></script>
-    <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -331,11 +331,13 @@
             });
         });
     </script>
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="<?php echo e(asset('assets/libs/flatpickr/flatpickr.min.js')); ?>"></script>
     <script>
         // Initialize Flatpickr
         flatpickr('#datepicker-deadline-input', {
             // Add any Flatpickr options if needed
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/project/index.blade.php ENDPATH**/ ?>

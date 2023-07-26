@@ -46,44 +46,46 @@
                             class="ri-add-line align-bottom me-1"></i> Add New</a>
                 </div>
             </div>
-            
-            <?php echo csrf_field(); ?>
             <div class="col-sm">
-                <div class="d-flex justify-content-sm-end gap-2">
-                    <div class="search-box ms-2">
-                        <input type="text" class="form-control" placeholder="Search..." name="search">
-                        <i class="ri-search-line search-icon"></i>
+                <form action="<?php echo e(route('projects.show')); ?>" method="GET">
+                    <div class="d-flex justify-content-sm-end gap-2">
+                        <div class="search-box ms-2">
+                            <input type="text" class="form-control" placeholder="Search..." name="search"
+                                value="<?php echo e(request('search')); ?>">
+                            <i class="ri-search-line search-icon"></i>
+                        </div>
+                        <button type="submit" class="btn btn-primary mr-4">Search</button>
+                        <select class="form-control w-md" data-choices data-choices-search-false name="status_filter">
+                            <option value="All">All</option>
+                            <option value="Open">Open</option>
+                            <option value="On Progress">On Progress</option>
+                            <option value="Closed">Closed</option>
+                            <option value="Canceled">Canceled</option>
+                        </select>
                     </div>
-                    <select class="form-control w-md" data-choices data-choices-search-false>
-                        <option value="All">All</option>
-                        <option value="Today">Today</option>
-                        <option value="Yesterday" selected>Yesterday</option>
-                        <option value="Last 7 Days">Last 7 Days</option>
-                        <option value="Last 30 Days">Last 30 Days</option>
-                        <option value="This Month">This Month</option>
-                        <option value="Last Year">Last Year</option>
-                    </select>
-                    
-                </div>
+                </form>
             </div>
-            
         </div>
 
         <div class="row w-1000px">
             <?php
                 $projectExists = false;
+                
             ?>
             <?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $project): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <?php
                     $projectMembers = $members->where('id_project', $project->id_project)->where('idnik', session('user')->idnik);
                     $count = $projectMembers->count();
+                    $isClosedOrCanceled = $project->status === 'Closed' || $project->status === 'Canceled';
                 ?>
 
                 <?php if($count > 0): ?>
                     <?php
                         $projectExists = true;
                     ?>
-                    <div class="col-xxl-3 col-sm-6 project-card">
+                    <div class="col-xxl-3 col-sm-6 project-card"
+                        style="opacity: <?php echo e($isClosedOrCanceled ? '0.7' : '1'); ?>;
+           filter: <?php echo e($isClosedOrCanceled ? 'grayscale(100%)' : 'none'); ?>;">
                         <div class="card card-height-100">
                             <div class="card-body">
                                 <div class="d-flex flex-column h-100">
@@ -106,31 +108,37 @@
                                                     </button>
 
                                                     <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item"
-                                                            href="<?php echo e(route('projects.view', ['id' => $project->id_project])); ?>">
-                                                            <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
-                                                        </a>
-                                                        <?php if($project->idnik == session('user')->idnik): ?>
+                                                        <?php if($project->status === 'Closed'): ?>
                                                             <a class="dropdown-item"
-                                                                href="<?php echo e(route('projects.edit', ['id' => $project->id_project])); ?>">
-                                                                <i
-                                                                    class="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit
+                                                                href="<?php echo e(route('projects.view', ['id' => $project->id_project])); ?>">
+                                                                <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
                                                             </a>
+                                                        <?php else: ?>
+                                                            <?php if($project->idnik == session('user')->idnik): ?>
+                                                                <a class="dropdown-item"
+                                                                    href="<?php echo e(route('projects.edit', ['id' => $project->id_project])); ?>">
+                                                                    <i
+                                                                        class="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit
+                                                                </a>
+                                                            <?php endif; ?>
+                                                            <a class="dropdown-item"
+                                                                href="<?php echo e(route('projects.view', ['id' => $project->id_project])); ?>">
+                                                                <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
+                                                            </a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="#"
+                                                                onclick="event.preventDefault(); document.getElementById('delete-form-<?php echo e($project->id_project); ?>').submit();">
+                                                                <i
+                                                                    class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>Delete
+                                                            </a>
+
+                                                            <form id="delete-form-<?php echo e($project->id_project); ?>"
+                                                                action="<?php echo e(route('projects.delete', ['id' => $project->id_project])); ?>"
+                                                                method="POST" style="display: none;">
+                                                                <?php echo csrf_field(); ?>
+                                                                <?php echo method_field('DELETE'); ?>
+                                                            </form>
                                                         <?php endif; ?>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item" href="#"
-                                                            onclick="event.preventDefault(); document.getElementById('delete-form-<?php echo e($project->id_project); ?>').submit();">
-                                                            <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
-                                                            Delete
-                                                        </a>
-
-                                                        <form id="delete-form-<?php echo e($project->id_project); ?>"
-                                                            action="<?php echo e(route('projects.delete', ['id' => $project->id_project])); ?>"
-                                                            method="POST" style="display: none;">
-                                                            <?php echo csrf_field(); ?>
-                                                            <?php echo method_field('DELETE'); ?>
-                                                        </form>
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -146,13 +154,10 @@
                                             </div>
                                         </div>
                                         <div class="flex-grow-1">
-                                            <h5 class="mb-1 fs-15"><a href="apps-projects-overview"
+                                            <h5 class="mb-1 fs-15"><a
+                                                    href="<?php echo e(route('projects.view', ['id' => $project->id_project])); ?>"
                                                     class="text-dark"><?php echo e($project->title); ?></a></h5>
-                                            <div class="text-muted text-truncate-two-lines mb-3"><?php echo str_replace(
-                                                ["\r\n", "\r", "\n"],
-                                                ', ',
-                                                Illuminate\Support\Str::limit(strip_tags($project->description), 35),
-                                            ); ?>
+                                            <div class="text-muted text-truncate-two-lines mb-3"><?php echo e($project->status); ?>
 
                                             </div>
                                         </div>

@@ -41,9 +41,10 @@
                     
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="<?php echo e(route('it-helpdesk')); ?>">
-                            <i class="ri-dashboard-2-line"></i> <span>IT Helpdesk</span>
+                            <i class="ri-pencil-ruler-2-line"></i> <span>IT Helpdesk</span>
                         </a>
                     </li>
+
 
 
 
@@ -68,7 +69,22 @@
                         </li>
                     <?php endif; ?>
 
+
+
+
+
                 </ul>
+                <?php if(session('user')['access_type'] === 'Admin'): ?>
+                    <ul class="navbar-nav" id="navbar-nav">
+                        <li class="menu-title"><span>Admin Access</span></li>
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="<?php echo e(route('admin.dashboard')); ?>">
+                                <i class="ri-honour-line"></i> <span>Administrator</span>
+                            </a>
+                        </li>
+                    </ul>
+                <?php endif; ?>
             </div>
             <!-- Sidebar -->
         </div>

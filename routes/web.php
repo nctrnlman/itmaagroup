@@ -4,13 +4,16 @@ use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ITHelpdeskController;
 use App\Http\Controllers\Tasks\TaskController;
-use App\Http\Controllers\CompanyRegulationController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\AdministratorController;
+use App\Http\Controllers\CompanyRegulationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,8 +58,6 @@ Route::get('/download',  [CompanyRegulationController::class, 'downloadFile'])->
 
 // Rute-rute yang perlu dilindungi oleh middleware auth
 Route::group(['middleware' => 'auth'], function () {
-
-
     //it helpdesk
 Route::get('/it-helpdesk', [ITHelpdeskController::class, 'index'])->name('it-helpdesk');
 Route::post('/it-helpdesk', [ITHelpdeskController::class, 'insert'])->name('it-helpdesk.insert');
@@ -92,12 +93,20 @@ Route::get('/employee/update/{idnik}', [EmployeeController::class, 'getUpdateEmp
 Route::post('/employee/update/{idnik}', [EmployeeController::class, 'insertUpdateEmployee'])->name('employee.update');
 Route::post('/employee/update/change-password/{idnik}', [EmployeeController::class, 'changePassword'])->name('changePassword');
 Route::post('/employee/update/photo-profile/{idnik}', [EmployeeController::class, 'photoProfile'])->name('employee.photoProfile');
+
+
+//administrator
+Route::get('/admin/dashboard', [AdministratorController::class, 'dashboard'])->name('admin.dashboard');
+Route::post('/admin', [AdministratorController::class, 'store'])->name('admin.store');
+Route::put('/admin/{id}', [AdministratorController::class, 'update'])->name('admin.update');
+Route::delete('/admin/{id}', [AdministratorController::class, 'destroy'])->name('admin.destroy');
+
+//download
+Route::get('/download/{folder}/{filename}', [DownloadController::class,'download'])->name('download');
+
+
+
 });
-
-
-
-
-
 
 
 Route::fallback(function () {

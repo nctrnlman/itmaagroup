@@ -356,7 +356,7 @@
                                         $iconClass = 'fa fa-file-video text-warning';
                                         break;
                                     default:
-                                        $iconClass = 'fa fa-file text-secondary'; // default icon if no matching icon found
+                                        $iconClass = 'fa fa-file text-secondary';
                                         break;
                                 }
                             ?>
@@ -366,17 +366,20 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-1"><a
-                                    href="<?php echo e(asset('storage/uploads/ithelpdesk/' . $lampiran)); ?>">Lampiran
-                                    <?php echo e($loop->iteration); ?></a></h6>
-                            <small
-                                class="text-muted"><?php echo e(Helper::formatSizeUnits(filesize(storage_path('app/public/uploads/ithelpdesk/' . $lampiran)))); ?></small>
+                            <h6 class="mb-1">
+                                <a href="<?php echo e(asset('storage/ithelpdesk/' . $lampiran)); ?>">Lampiran
+                                    <?php echo e($loop->iteration); ?></a>
+                            </h6>
+                            <small class="text-muted">
+                                <?php echo e(Helper::formatSizeUnits(filesize(storage_path('app/public/ithelpdesk/' . $lampiran)))); ?>
+
+                            </small>
                         </div>
                         <div class="hstack gap-3 fs-16">
-                            <a href="<?php echo e(asset('storage/uploads/ithelpdesk/' . $lampiran)); ?>" class="text-muted"
-                                onclick="downloadFile('<?php echo e(asset('storage/uploads/ithelpdesk/' . $lampiran)); ?>')"><i
-                                    class="fa fa-download"></i></a>
-
+                            <a href="<?php echo e(route('download', ['folder' => 'ithelpdesk', 'filename' => $lampiran])); ?>"
+                                class="text-muted">
+                                <i class="fa fa-download"></i>
+                            </a>
                         </div>
                     </div>
                 <?php endif; ?>

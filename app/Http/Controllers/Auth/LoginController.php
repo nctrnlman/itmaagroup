@@ -76,10 +76,12 @@ class LoginController extends Controller
         if ($user) {
             Auth::login($user);
 
-            $userWithJoin = User::join('user', 'login.idnik', '=', 'user.idnik')
-                ->where('user.idnik', $user->idnik)
-                ->select('user.*', 'login.*')
-                ->first();
+            $userWithJoin = User::join('user', 'user.idnik', '=', 'login.idnik')
+    ->leftJoin('access_menu', 'access_menu.idnik', '=', 'user.idnik')
+    ->where('user.idnik', $user->idnik)
+    ->select('user.*', 'login.*', 'access_menu.access_type')
+    ->first();
+
             // dd($userWithJoin);
             $request->session()->put('user', $userWithJoin);
               // Check if there is a URL that the user tried to access before login

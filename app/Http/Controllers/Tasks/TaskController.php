@@ -65,6 +65,7 @@ class TaskController extends Controller
                 'id_project' => 'required',
                 'description' => 'required',
                 'status' => 'required',
+                'start_date' => 'required',
                 'due_date' => 'required',
             ]);
 
@@ -84,7 +85,6 @@ class TaskController extends Controller
                 $existingTask = Task::where('id_task', $idTask)->first();
 
                 if (!$existingTask) {
-
                     $generatedId = true;
                 }
             }
@@ -92,12 +92,13 @@ class TaskController extends Controller
             $task = new Task;
             $task->id_task = $idTask;
             $task->idnik = $idnik;
-            $task->create_date = $currentDate;
+            $task->start_date = $request->start_date;
             $task->title = $request->title;
             $task->id_project = $request->id_project;
             $task->description = $request->description;
             $task->status = $request->status;
             $task->due_date = $request->due_date;
+            // dd($task);
             $task->save();
 
             Session::flash('success', 'Task created successfully.');
@@ -157,6 +158,7 @@ class TaskController extends Controller
                 'description' => 'required',
                 'status' => 'required',
                 'due_date' => 'required',
+                'start_date' => 'required',
             ]);
 
             $task = Task::find($id_task);
@@ -170,11 +172,12 @@ class TaskController extends Controller
             $task->description = $request->description;
             $task->status = $request->status;
             $task->due_date = $request->due_date;
+            $task->start_date = $request->start_date;
 
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
                 $fileName = $id_task . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/uploads/tasks', $fileName);
+                $file->storeAs('public/tasks', $fileName);
                 $task->file = $fileName;
             }
 

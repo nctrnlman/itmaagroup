@@ -352,7 +352,7 @@
                                         $iconClass = 'fa fa-file-video text-warning';
                                         break;
                                     default:
-                                        $iconClass = 'fa fa-file text-secondary'; // default icon if no matching icon found
+                                        $iconClass = 'fa fa-file text-secondary';
                                         break;
                                 }
                             @endphp
@@ -362,17 +362,19 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-1"><a
-                                    href="{{ asset('storage/uploads/ithelpdesk/' . $lampiran) }}">Lampiran
-                                    {{ $loop->iteration }}</a></h6>
-                            <small
-                                class="text-muted">{{ Helper::formatSizeUnits(filesize(storage_path('app/public/uploads/ithelpdesk/' . $lampiran))) }}</small>
+                            <h6 class="mb-1">
+                                <a href="{{ asset('storage/ithelpdesk/' . $lampiran) }}">Lampiran
+                                    {{ $loop->iteration }}</a>
+                            </h6>
+                            <small class="text-muted">
+                                {{ Helper::formatSizeUnits(filesize(storage_path('app/public/ithelpdesk/' . $lampiran))) }}
+                            </small>
                         </div>
                         <div class="hstack gap-3 fs-16">
-                            <a href="{{ asset('storage/uploads/ithelpdesk/' . $lampiran) }}" class="text-muted"
-                                onclick="downloadFile('{{ asset('storage/uploads/ithelpdesk/' . $lampiran) }}')"><i
-                                    class="fa fa-download"></i></a>
-
+                            <a href="{{ route('download', ['folder' => 'ithelpdesk', 'filename' => $lampiran]) }}"
+                                class="text-muted">
+                                <i class="fa fa-download"></i>
+                            </a>
                         </div>
                     </div>
                 @endif

@@ -1,9 +1,9 @@
-@extends('layouts.master')
-@section('title')
-    @lang('translation.overview')
-@endsection
 
-@section('css')
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get('translation.overview'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('css'); ?>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0@/css/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0@/css/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
@@ -12,13 +12,13 @@
 
 
 
-    @php
+    <?php
         use App\Helpers\Helper;
-    @endphp
-@endsection
+    ?>
+<?php $__env->stopSection(); ?>
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="row">
         <div class="col-lg-12">
             <div class="card mt-n4 mx-n4">
@@ -30,26 +30,26 @@
                                     <div class="col-md-auto">
                                         <div class="avatar-md">
                                             <div class="avatar-title  rounded-circle" style="background-color: #b30000">
-                                                <img src="{{ URL::asset('assets/images/logo_MAAA.png') }}" alt="logo"
+                                                <img src="<?php echo e(URL::asset('assets/images/logo_MAAA.png')); ?>" alt="logo"
                                                     width="65px">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md">
                                         <div>
-                                            <h4 class="fw-bold">{{ $project->title }}</h4>
+                                            <h4 class="fw-bold"><?php echo e($project->title); ?></h4>
                                             <div class="hstack gap-3 flex-wrap">
                                                 <div><i class="ri-building-line align-bottom me-1"></i>MAA GROUP</div>
                                                 <div class="vr"></div>
                                                 <div>Start Date : <span
-                                                        class="fw-medium">{{ date('d F Y', strtotime($project->start_date)) }}</span>
+                                                        class="fw-medium"><?php echo e(date('d F Y', strtotime($project->start_date))); ?></span>
                                                 </div>
                                                 <div class="vr"></div>
                                                 <div>Due Date : <span
-                                                        class="fw-medium">{{ date('d F Y', strtotime($project->due_date)) }}</span>
+                                                        class="fw-medium"><?php echo e(date('d F Y', strtotime($project->due_date))); ?></span>
                                                 </div>
                                                 <div class="vr"></div>
-                                                <div>Status : <span class="fw-medium">{{ $project->status }}</span></div>
+                                                <div>Status : <span class="fw-medium"><?php echo e($project->status); ?></span></div>
                                             </div>
                                         </div>
                                     </div>
@@ -96,7 +96,7 @@
                                 <div class="card-body">
                                     <div class="text-muted">
                                         <h4 class="mb-3 fw-semibold text-uppercase ">Summary</h4>
-                                        <p style=" overflow-y: auto;">{!! $project->description !!}</p>
+                                        <p style=" overflow-y: auto;"><?php echo $project->description; ?></p>
                                     </div>
                                 </div>
                                 <!-- end card body -->
@@ -120,12 +120,12 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-xs flex-shrink-0 me-3">
 
-                                                    <img src="@if ($member->file_foto) {{ asset('uploads/uploads/' . $member->file_foto) }}@else{{ asset('uploads/uploads/default.jpg') }} @endif"
+                                                    <img src="<?php if($member->file_foto): ?> <?php echo e(asset('uploads/uploads/' . $member->file_foto)); ?><?php else: ?><?php echo e(asset('uploads/uploads/default.jpg')); ?> <?php endif; ?>"
                                                         alt="" class="img-fluid rounded-circle">
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <h5 class="fs-13 mb-0">
-                                                        <a href="/employee/view/{{ $member->idnik }}"
+                                                        <a href="/employee/view/<?php echo e($member->idnik); ?>"
                                                             class="text-body d-block"><?= $member->nama ?></a>
                                                     </h5>
                                                 </div>
@@ -167,7 +167,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if ($project->file !== null)
+                                                <?php if($project->file !== null): ?>
                                                     <tr>
                                                         <td>
                                                             <div class="d-flex align-items-center">
@@ -199,14 +199,14 @@
                                                                                 break;
                                                                         }
                                                                         ?>
-                                                                        <i class="{{ $iconClass }}"></i>
+                                                                        <i class="<?php echo e($iconClass); ?>"></i>
                                                                     </div>
                                                                 </div>
                                                                 <div class="ms-3 flex-grow-1">
                                                                     <h5 class="fs-14 mb-0">
                                                                         <a href="javascript:void(0)"
                                                                             class="text-dark">Resource
-                                                                            {{ $project->title }}</a>
+                                                                            <?php echo e($project->title); ?></a>
                                                                     </h5>
                                                                 </div>
                                                             </div>
@@ -216,7 +216,8 @@
                                                         $fileExtension = pathinfo($project->file, PATHINFO_EXTENSION);
                                                         echo strtoupper($fileExtension);
                                                         ?></td>
-                                                        <td>{{ Helper::formatSizeUnits(filesize(storage_path('app/public/projects/' . $project->file))) }}
+                                                        <td><?php echo e(Helper::formatSizeUnits(filesize(storage_path('app/public/projects/' . $project->file)))); ?>
+
                                                         </td>
 
                                                         <td>
@@ -229,7 +230,7 @@
                                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                                     <li>
                                                                         <a class="dropdown-item"
-                                                                            href="{{ route('download', ['folder' => 'projects', 'filename' => $project->file]) }}"
+                                                                            href="<?php echo e(route('download', ['folder' => 'projects', 'filename' => $project->file])); ?>"
                                                                             download>
                                                                             <i
                                                                                 class="ri-download-2-fill me-2 align-bottom text-muted"></i>
@@ -240,10 +241,10 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                @endif
+                                                <?php endif; ?>
 
-                                                @foreach ($taskFiles as $file)
-                                                    @if ($file->file !== null)
+                                                <?php $__currentLoopData = $taskFiles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $file): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php if($file->file !== null): ?>
                                                         <tr>
                                                             <td>
                                                                 <div class="d-flex align-items-center">
@@ -275,13 +276,13 @@
                                                                                     break;
                                                                             }
                                                                             ?>
-                                                                            <i class="{{ $iconClass }}"></i>
+                                                                            <i class="<?php echo e($iconClass); ?>"></i>
                                                                         </div>
                                                                     </div>
                                                                     <div class="ms-3 flex-grow-1">
                                                                         <h5 class="fs-14 mb-0">
                                                                             <a href="javascript:void(0)"
-                                                                                class="text-dark">{{ $file->title }}</a>
+                                                                                class="text-dark"><?php echo e($file->title); ?></a>
                                                                         </h5>
                                                                     </div>
                                                                 </div>
@@ -290,7 +291,8 @@
                                                             $fileExtension = pathinfo($file->file, PATHINFO_EXTENSION);
                                                             echo strtoupper($fileExtension);
                                                             ?></td>
-                                                            <td>{{ Helper::formatSizeUnits(filesize(storage_path('app/public/tasks/' . $file->file))) }}
+                                                            <td><?php echo e(Helper::formatSizeUnits(filesize(storage_path('app/public/tasks/' . $file->file)))); ?>
+
                                                             </td>
                                                             <td>
                                                                 <div class="dropdown">
@@ -302,7 +304,7 @@
                                                                     <ul class="dropdown-menu dropdown-menu-end">
                                                                         <li>
                                                                             <a class="dropdown-item"
-                                                                                href="{{ route('download', ['folder' => 'tasks', 'filename' => $file->file]) }}"
+                                                                                href="<?php echo e(route('download', ['folder' => 'tasks', 'filename' => $file->file])); ?>"
                                                                                 download>
                                                                                 <i
                                                                                     class="ri-download-2-fill me-2 align-bottom text-muted"></i>
@@ -314,14 +316,14 @@
                                                                 </div>
                                                             </td>
                                                         </tr>
-                                                    @endif
-                                                @endforeach
+                                                    <?php endif; ?>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                                                @if ($project->file === null && $taskFiles->where('file', '!=', null)->isEmpty())
+                                                <?php if($project->file === null && $taskFiles->where('file', '!=', null)->isEmpty()): ?>
                                                     <tr>
                                                         <td colspan="5" class="text-center">No files available yet</td>
                                                     </tr>
-                                                @endif
+                                                <?php endif; ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -349,12 +351,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($taskList as $task)
+                                            <?php $__currentLoopData = $taskList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr>
-                                                    <td>{{ $task->title }}</td>
-                                                    <td>{{ $task->nama }}</td>
-                                                    <td>{{ date('d F Y', strtotime($task->due_date)) }}</td>
-                                                    <td>{{ $task->status }}</td>
+                                                    <td><?php echo e($task->title); ?></td>
+                                                    <td><?php echo e($task->nama); ?></td>
+                                                    <td><?php echo e(date('d F Y', strtotime($task->due_date))); ?></td>
+                                                    <td><?php echo e($task->status); ?></td>
                                                     <td>
                                                         <div class="dropdown d-inline-block">
                                                             <button class="btn btn-soft-secondary btn-sm dropdown"
@@ -363,7 +365,7 @@
                                                                 <i class="ri-more-fill align-middle"></i>
                                                             </button>
                                                             <ul class="dropdown-menu dropdown-menu-end">
-                                                                <a href="{{ route('tasks.view', ['id_task' => $task->id_task]) }}"
+                                                                <a href="<?php echo e(route('tasks.view', ['id_task' => $task->id_task])); ?>"
                                                                     class="dropdown-item view-item-btn">
                                                                     <i
                                                                         class="ri-eye-fill align-bottom me-2 text-muted"></i>
@@ -373,7 +375,7 @@
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </tbody>
                                     </table>
 
@@ -393,13 +395,13 @@
         </div>
         <!-- end col -->
     </div>
-@endsection
-@section('script')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
     <script src="https://kit.fontawesome.com/{YOUR_FONTAWESOME_KIT_ID}.js" crossorigin="anonymous"></script>
-    <script src="{{ URL::asset('assets/libs/list.js/list.js.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/list.pagination.js/list.pagination.js.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/js/pages/tasks-list.init.js') }}"></script>
-    <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/list.js/list.js.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/list.pagination.js/list.pagination.js.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/js/pages/tasks-list.init.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
@@ -410,8 +412,8 @@
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
     <script src="assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
-    <script src="{{ URL::asset('assets/js/pages/project-overview.init.js') }}"></script>
-    <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/js/pages/project-overview.init.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
     <script>
         $(document).ready(function() {
             $('#exampleee').DataTable({
@@ -422,4 +424,6 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/project/project-view.blade.php ENDPATH**/ ?>
