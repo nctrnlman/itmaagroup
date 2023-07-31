@@ -53,6 +53,11 @@
                             <i class="ri-pencil-ruler-2-line"></i> <span>IT Helpdesk</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{{ route('ga-facilities.index') }}">
+                            <i class="ri-file-list-3-line"></i> <span>GA Facilities</span>
+                        </a>
+                    </li>
 
 
 

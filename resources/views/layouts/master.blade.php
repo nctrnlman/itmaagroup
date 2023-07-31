@@ -38,6 +38,7 @@
 <!-- END layout-wrapper -->
 
 <!-- JAVASCRIPT -->
+@include('sweetalert::alert')
 @include('layouts.vendor-scripts')
 </body>
 

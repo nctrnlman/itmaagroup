@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Employee;
 use App\Models\AccessMenu;
+use App\Helpers\CustomHelper;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class AdministratorController extends Controller
 {
@@ -45,6 +47,7 @@ class AdministratorController extends Controller
                 $parts = explode("-", $generatedUuid);
                 $numericUuid = implode("", array_filter($parts, 'is_numeric'));
                 $uuid = substr($numericUuid, 0, 3);
+                $uuid = sprintf('%03d', $uuid);
                 $idAccess = 'ACS' . $year . $currentDate->format('md') . substr($idnik, -3) . $uuid;
 
                 $existingTask = AccessMenu::where('id_access', $idAccess)->first();
@@ -60,9 +63,9 @@ class AdministratorController extends Controller
             $admin->access_type = $request->access_type;
             $admin->save();
 
-            Session::flash('success', 'Administrator assigned successfully!');
+            Alert::success('Success', 'Administrator assigned successfully!');
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to assign administrator.');
+            Alert::error('Error', 'Failed to assign administrator.');
         }
 
         return redirect()->back();
@@ -78,10 +81,10 @@ class AdministratorController extends Controller
             $admin = AccessMenu::findOrFail($id);
             $admin->access_type = $request->access_type;
             $admin->save();
+            Alert::success('Success', 'Administrator updated successfully!');
 
-            Session::flash('success', 'Administrator updated successfully!');
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to update administrator.');
+            Alert::error('Error', 'Failed to update administrator.');
         }
 
         return redirect()->back();
@@ -91,11 +94,11 @@ class AdministratorController extends Controller
      {
         try {
             $admin = AccessMenu::findOrFail($id);
-            $admin->delete();
 
-            Session::flash('success', 'Administrator deleted successfully!');
+            $admin->delete();
+            Alert::success('Success', 'Administrator deleted successfully!');
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to delete administrator.');
+            Alert::error('Error', 'Failed to delete administrator.');
         }
 
         return redirect()->back();

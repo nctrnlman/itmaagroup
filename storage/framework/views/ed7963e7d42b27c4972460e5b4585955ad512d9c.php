@@ -36,6 +36,7 @@
                                     <label for="choices-status-input" class="form-label">Status</label>
                                     <select class="form-select" data-choices id="choices-status-input" name="status"
                                         required>
+                                        <option value="">Enter status</option>
                                         <option value="Open">Open</option>
                                         <option value="On Progress">On Progress</option>
                                         <option value="Closed">Closed</option>
@@ -187,10 +188,13 @@
     <script src="<?php echo e(URL::asset('assets/libs/@ckeditor/@ckeditor.min.js')); ?>"></script>
     <script src="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.js')); ?>"></script>
     <script src="assets/js/pages/project-create.init.js"></script>
+    <script src="<?php echo e(asset('assets/libs/choices.js/choices.js.min.js')); ?>"></script>
     <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <script>
+        var sessionIdnik = <?php echo json_encode(session('user')->idnik); ?>;
+    </script>
     <script>
         // Get the modal and teamMembers container
         var inviteModal = document.getElementById('inviteMembersModal');
@@ -201,6 +205,19 @@
 
         // Array to store the member IDs
         var memberIds = [];
+
+        function getSessionIdnik() {
+            return sessionIdnik;
+        }
+
+        // Function to update the hidden input value with the memberIds array
+        function updateMemberIdsInput() {
+            var memberIdsInput = document.getElementById('memberIds');
+            memberIdsInput.value = memberIds.join(',');
+        }
+
+        // Automatically add the session idnik to the memberIds array on page load
+        memberIds.push(getSessionIdnik());
 
         // Add click event listener to each "Add" button
         for (var i = 0; i < addButtons.length; i++) {
@@ -322,7 +339,6 @@
             });
         });
     </script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var projectSelectElement = document.querySelector('#choices-member-input');

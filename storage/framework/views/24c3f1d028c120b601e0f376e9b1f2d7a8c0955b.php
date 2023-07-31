@@ -3,7 +3,7 @@
         <?php echo app('translator')->get('translation.project-list'); ?>
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('css'); ?>
-        <link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('content'); ?>
         <?php $__env->startComponent('components.breadcrumb'); ?>
@@ -14,30 +14,6 @@
                 Project List
             <?php $__env->endSlot(); ?>
         <?php echo $__env->renderComponent(); ?>
-
-        <?php if(Session::has('success')): ?>
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    Swal.fire({
-                        title: '<?php echo e(Session::get('success')); ?>',
-                        icon: 'success',
-                        showCloseButton: false
-                    });
-                });
-            </script>
-        <?php endif; ?>
-
-        <?php if(Session::has('error')): ?>
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    Swal.fire({
-                        title: '<?php echo e(Session::get('error')); ?>',
-                        icon: 'error',
-                        showCloseButton: false
-                    });
-                });
-            </script>
-        <?php endif; ?>
 
         <div class="row g-4 mb-3">
             <div class="col-sm-auto">
@@ -125,9 +101,9 @@
                                                                 href="<?php echo e(route('projects.view', ['id' => $project->id_project])); ?>">
                                                                 <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
                                                             </a>
-                                                            <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item" href="#"
-                                                                onclick="event.preventDefault(); document.getElementById('delete-form-<?php echo e($project->id_project); ?>').submit();">
+                                                            
+                                                            <a class="dropdown-item"
+                                                                onclick="event.preventDefault(); showConfirmation('<?php echo e($project->id_project); ?>');">
                                                                 <i
                                                                     class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>Delete
                                                             </a>
@@ -307,6 +283,7 @@
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('script'); ?>
         <script src="<?php echo e(URL::asset('assets/js/pages/project-list.init.js')); ?>"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
         <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
         <script>
             $('#removeProjectModal').on('show.bs.modal', function(event) {
@@ -318,8 +295,23 @@
                 modal.find('form').attr('action', '/projects/' + projectId);
             });
         </script>
-        <script src="<?php echo e(URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js')); ?>"></script>
-        <script src="<?php echo e(URL::asset('/assets/js/pages/sweetalerts.init.js')); ?>"></script>
+        <script>
+            function showConfirmation(projectId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You are about to delete this project!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-form-' + projectId).submit();
+                    }
+                });
+            }
+        </script>
         <script src="assets/js/app.min.js"></script>
         <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
     <?php $__env->stopSection(); ?>

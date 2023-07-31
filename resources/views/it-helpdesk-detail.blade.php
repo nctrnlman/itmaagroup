@@ -6,12 +6,10 @@
 
 @section('css')
     <link href="{{ URL::asset('assets/libs/jsvectormap/jsvectormap.min.css') }}" rel="stylesheet">
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css"> --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0@/css/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ asset('css/ckeditor.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet">
     <!-- ... -->
@@ -23,10 +21,10 @@
 @section('content')
     @component('components.breadcrumb')
         @slot('li_1')
-            Dashboard
+            IT Helpdesk
         @endslot
         @slot('title')
-            IT Helpdesk
+            Detail Ticketing
         @endslot
     @endcomponent
 
@@ -60,11 +58,11 @@
                                                         class="fw-medium">{{ date('Y-m-d', strtotime($ticket->start_date)) }}</span>
                                                 </div>
                                                 <div class="vr"></div>
-                                                @if (strpos(session('user')->position, 'IT') !== false)
+                                                @if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT')
                                                     <div class="text-muted">Status : <span class="fw-medium"></span></div>
                                                     <div>
-                                                        <select class="form-select" data-choices data-choices-search-false
-                                                            aria-label="Default select example" name="status_tiket">
+                                                        <select class="form-select" data-choices id="choices-status-input"
+                                                            name="status_tiket">
                                                             @foreach (['Pending', 'Process', 'Closed', 'Rejected'] as $option)
                                                                 <option value="{{ $option }}"
                                                                     {{ $ticket->status_tiket == $option ? 'selected' : '' }}>
@@ -79,8 +77,8 @@
                                                     </div>
                                                     <div>
                                                         <select class="form-select" name="kategori_tiket" data-choices
-                                                            data-choices-search-false aria-label="Default select example">
-                                                            <option value="No Set"
+                                                            id="choices-status-input">
+                                                            <option value=""
                                                                 {{ $ticket->kategori_tiket == null ? 'selected' : '' }}>No
                                                                 Set</option>
                                                             @foreach (['Network', 'Hardware', 'Software', 'Cloud Storage', 'Printer & Scanner'] as $option)
@@ -96,9 +94,8 @@
                                                     </div>
                                                     <div>
                                                         <select class="form-select" name="nik_pic" data-choices
-                                                            data-choices-search-false aria-label="Default select example">
-
-                                                            <option value="No Set">No Set</option>
+                                                            id="choices-status-input">
+                                                            <option value="">No Set</option>
                                                             @foreach ($usersIT as $userIT)
                                                                 <option value="{{ $userIT->idnik }}"
                                                                     {{ $ticket->nik_pic == $userIT->idnik ? 'selected' : '' }}>
@@ -172,7 +169,7 @@
                     <p class="text-muted">{!! $ticket->disc_keluhan !!}</p>
 
                     <h6 class="fw-semibold text-uppercase mb-3 fs-5">Justification IT</h6>
-                    @if (strpos(session('user')->position, 'IT') !== false)
+                    @if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT')
                         <textarea class="form-control" id="ckeditor-classic-justification" placeholder="Justification IT" rows="5"
                             name="justification">{{ $ticket->justification }}</textarea>
                     @else
@@ -181,7 +178,7 @@
 
                     <div class="mt-4">
                         <h6 class="fw-semibold text-uppercase mb-3 fs-5">Progress / Action Note</h6>
-                        @if (strpos(session('user')->position, 'IT') !== false)
+                        @if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT')
                             <textarea class="form-control" id="ckeditor-classic-action-note" placeholder="Progress / Action Note" rows="5"
                                 name="actionNote">{{ $ticket->action_note }}</textarea>
                         @else
@@ -189,10 +186,9 @@
                         @endif
                     </div>
 
-                    @if (strpos(session('user')->position, 'IT') !== false)
+                    @if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT')
                         <div class="flex pt-4">
                             <button type="submit" class="btn btn-primary">Update</button>
-                            {{-- <a href="{{ route('it-helpdesk') }}" class="btn btn-soft-success m-1">Cancel</a> --}}
                         </div>
                     @endif
 
@@ -206,12 +202,12 @@
         <div data-simplebar style="height: 300px;" class="px-3 mx-n3">
             <div class="d-flex mb-4">
                 <div class="flex-shrink-0">
-                    <img src="{{ URL::asset('assets/images/users/avatar-4.jpg') }}" alt=""
+                    <img src="{{ URL::asset('assets/images/users/avatar-7.jpg') }}" alt=""
                         class="avatar-xs rounded-circle" />
                 </div>
                 <div class="flex-grow-1 ms-3">
                     <h5 class="fs-13">IT Support <small
-                            class="text-muted">{{ date('d M Y - h:iA', strtotime('2021-12-20 05:47AM')) }}</small>
+                            class="text-muted">{{ date('d M Y - h:iA', strtotime('2023-12-27 05:47AM')) }}</small>
                     </h5>
                     <p class="text-muted">I got a message from you guys that they have a problem. Can you state their
                         problems?</p>
@@ -238,7 +234,7 @@
     @endif
     @if ($ticket->status_tiket == 'Closed')
         <div class="alert alert-warning" role="alert">
-            Komentar tidak dapat ditambahkan karena status tiket telah ditutup.
+            Comment cannot be added as the ticket is already closed.
         </div>
     @else
         <form action="/it-helpdesk/komentar" method="POST" class="mt-3">
@@ -250,7 +246,7 @@
                     <textarea class="form-control bg-light border-light" name="keterangan_komen" rows="3"
                         placeholder="Enter comments"></textarea>
                 </div>
-                <div class="col-lg-12 text-end">
+                <div class="col-lg-12">
                     <button type="submit" class="btn btn-success" onclick="postComment()">Post Comment</button>
                 </div>
             </div>
@@ -325,69 +321,76 @@
             <h6 class="card-title fw-semibold mb-0">Files Attachment</h6>
         </div>
         <div class="card-body">
-            @foreach ([$ticket->lampiran1, $ticket->lampiran2] as $lampiran)
-                @if ($lampiran)
-                    <div class="d-flex align-items-center border border-dashed p-2 rounded mt-2">
-                        <div class="flex-shrink-0 avatar-sm">
-                            @php
-                                $extension = pathinfo($lampiran, PATHINFO_EXTENSION);
-                                $iconClass = '';
-                                
-                                switch ($extension) {
-                                    case 'png':
-                                    case 'jpg':
-                                    case 'jpeg':
-                                        $iconClass = 'fa fa-file-image text-primary';
-                                        break;
-                                    case 'pdf':
-                                        $iconClass = 'fa fa-file-pdf text-danger';
-                                        break;
-                                    case 'xls':
-                                    case 'xlsx':
-                                        $iconClass = 'fa fa-file-excel text-success';
-                                        break;
-                                    case 'mp4':
-                                    case 'mkv':
-                                    case 'avi':
-                                        $iconClass = 'fa fa-file-video text-warning';
-                                        break;
-                                    default:
-                                        $iconClass = 'fa fa-file text-secondary';
-                                        break;
-                                }
-                            @endphp
+            @if ($ticket->lampiran1 || $ticket->lampiran2)
+                @foreach ([$ticket->lampiran1, $ticket->lampiran2] as $lampiran)
+                    @if ($lampiran)
+                        <div class="d-flex align-items-center border border-dashed p-2 rounded mt-2">
+                            <div class="flex-shrink-0 avatar-sm">
+                                @php
+                                    $extension = pathinfo($lampiran, PATHINFO_EXTENSION);
+                                    $iconClass = '';
+                                    
+                                    switch ($extension) {
+                                        case 'png':
+                                        case 'jpg':
+                                        case 'jpeg':
+                                            $iconClass = 'fa fa-file-image text-primary';
+                                            break;
+                                        case 'pdf':
+                                            $iconClass = 'fa fa-file-pdf text-danger';
+                                            break;
+                                        case 'xls':
+                                        case 'xlsx':
+                                            $iconClass = 'fa fa-file-excel text-success';
+                                            break;
+                                        case 'mp4':
+                                        case 'mkv':
+                                        case 'avi':
+                                            $iconClass = 'fa fa-file-video text-warning';
+                                            break;
+                                        default:
+                                            $iconClass = 'fa fa-file text-secondary';
+                                            break;
+                                    }
+                                @endphp
 
-                            <div class="avatar-title bg-light rounded">
-                                <i class="{{ $iconClass }} fs-20"></i>
+                                <div class="avatar-title bg-light rounded">
+                                    <i class="{{ $iconClass }} fs-20"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">
+                                    <a href="{{ asset('storage/ithelpdesk/' . $lampiran) }}">Lampiran
+                                        {{ $loop->iteration }}</a>
+                                </h6>
+                                <small class="text-muted">
+                                    {{ Helper::formatSizeUnits(filesize(storage_path('app/public/ithelpdesk/' . $lampiran))) }}
+                                </small>
+                            </div>
+                            <div class="hstack gap-3 fs-16">
+                                <a href="{{ route('download', ['folder' => 'ithelpdesk', 'filename' => $lampiran]) }}"
+                                    class="text-muted">
+                                    <i class="fa fa-download"></i>
+                                </a>
                             </div>
                         </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-1">
-                                <a href="{{ asset('storage/ithelpdesk/' . $lampiran) }}">Lampiran
-                                    {{ $loop->iteration }}</a>
-                            </h6>
-                            <small class="text-muted">
-                                {{ Helper::formatSizeUnits(filesize(storage_path('app/public/ithelpdesk/' . $lampiran))) }}
-                            </small>
-                        </div>
-                        <div class="hstack gap-3 fs-16">
-                            <a href="{{ route('download', ['folder' => 'ithelpdesk', 'filename' => $lampiran]) }}"
-                                class="text-muted">
-                                <i class="fa fa-download"></i>
-                            </a>
-                        </div>
-                    </div>
-                @endif
-            @endforeach
-        </div>
-    </div>
-    <div class="col-lg-12">
-        <div class="hstack gap-2 justify-content-end">
-            @if (session('user')->divisi !== 'it')
-                <a href="{{ route('it-helpdesk') }}" class="btn btn-soft-success">Cancel</a>
+                    @endif
+                @endforeach
+            @else
+                <div class="alert alert-info mt-3" role="alert">
+                    <i class="fa fa-info-circle me-2"></i>
+                    No files uploaded.
+                </div>
             @endif
         </div>
     </div>
+    @if (session('user')['access_type'] !== 'Admin' || session('user')['access_type'] !== 'IT')
+        <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+                <a href="{{ route('it-helpdesk') }}" class="btn btn-soft-success">Cancel</a>
+            </div>
+        </div>
+    @endif
     <!--end col-->
 </div>
 </div>
@@ -404,8 +407,7 @@
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
 <script src="assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
 <script src="{{ URL::asset('assets/libs/@ckeditor/@ckeditor.min.js') }}"></script>
-<script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-<script src="{{ URL::asset('/assets/js/pages/sweetalerts.init.js') }}"></script>
+<script src="{{ asset('assets/libs/choices.js/choices.js.min.js') }}"></script>
 <script src="assets/js/app.min.js"></script>
 <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
 <script>

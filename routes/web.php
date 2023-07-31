@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ITHelpdeskController;
 use App\Http\Controllers\Tasks\TaskController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\GAFacilitiesController;
 use App\Http\Controllers\AdministratorController;
 use App\Http\Controllers\CompanyRegulationController;
 
@@ -36,7 +37,7 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('roo
 Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
-// Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
+Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
 // Route::get('/home', [LandingPageControlle::class, 'index'])->name('dashboard')
 
@@ -104,8 +105,13 @@ Route::delete('/admin/{id}', [AdministratorController::class, 'destroy'])->name(
 //download
 Route::get('/download/{folder}/{filename}', [DownloadController::class,'download'])->name('download');
 
-
-
+//GA Facilities
+Route::get('/ga-facilities', [GAFacilitiesController::class, 'index'])->name('ga-facilities.index');
+Route::post('/ga-facilities/insert', [GAFacilitiesController::class, 'insert'])->name('ga-facilities.insert');
+Route::get('/ga-facilities/detail/{id_tiket}', [GAFacilitiesController::class, 'detailTicket'])->name('ga-facilities.detail');
+Route::post('/ga-facilities/komentar', [GAFacilitiesController::class, 'komentar'])->name('ga-facilities.komentar');
+Route::put('/ga-facilities/update/{id_tiket}', [GAFacilitiesController::class, 'update'])->name('ga-facilities.update');
+Route::delete('/ga-facilities/delete/{id_tiket}', [GAFacilitiesController::class, 'delete'])->name('ga-facilities.delete');
 });
 
 

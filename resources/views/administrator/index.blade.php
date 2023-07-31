@@ -11,9 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
-    <link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
     <link href="{{ asset('css/ckeditor.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -25,30 +24,6 @@
             Assign PIC
         @endslot
     @endcomponent
-
-    {{-- @if (Session::has('success'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Swal.fire({
-                    title: '{{ Session::get('success') }}',
-                    icon: 'success',
-                    showCloseButton: false
-                });
-            });
-        </script>
-    @endif
-
-    @if (Session::has('error'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Swal.fire({
-                    title: '{{ Session::get('error') }}',
-                    icon: 'error',
-                    showCloseButton: false
-                });
-            });
-        </script>
-    @endif --}}
 
     <div class="row">
         <div class="col-lg-12">
@@ -70,11 +45,10 @@
                             <tr>
                                 <th>No.</th>
                                 <th>NIK</th>
-                                <th>Photo</th>
                                 <th>Name</th>
                                 <th>Access Type</th>
                                 <th>Division</th>
-                                <th>Location</th>
+                                <th>Position</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -83,21 +57,10 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $admin->idnik }}</td>
-                                    <td>
-                                        <div class="avatar-group">
-                                            <a href="" class="avatar-group-item" data-img="avatar-3.jpg"
-                                                data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top"
-                                                title="">
-
-                                                <img src="{{ $admin->file_foto ? asset('uploads/uploads/' . $admin->file_foto) : asset('uploads/uploads/default.jpg') }}"
-                                                    class="rounded-circle avatar-xs">
-                                            </a>
-                                        </div>
-                                    </td>
                                     <td>{{ $admin->nama }}</td>
                                     <td>{{ $admin->access_type }}</td>
                                     <td>{{ $admin->divisi }}</td>
-                                    <td>{{ $admin->lokasi }}</td>
+                                    <td>{{ $admin->position }}</td>
                                     <td>
                                         <div class="dropdown d-inline-block">
                                             <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
@@ -117,7 +80,8 @@
                                                     method="POST" class="delete-form">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="dropdown-item edit-item-btn">
+                                                    <button type="button" class="dropdown-item edit-item-btn"
+                                                        onclick="showConfirmation('{{ $admin->id_access }}', '{{ $admin->nama }}')">
                                                         <i class="fa fa-trash align-bottom me-2 text-muted"></i> Delete
                                                     </button>
                                                 </form>
@@ -167,8 +131,10 @@
                                 <select class="form-select" data-choices id="choices-status-input" name="access_type">
                                     <option value="">Select Access Type</option>
                                     <option value="IT">IT</option>
-                                    <option value="GA">GA</option>
-                                    <option value="Admin">Super Admin</option>
+                                    <option value="GA Building">GA Building</option>
+                                    <option value="GA RP">GA RP</option>
+                                    <option value="GA ATK">GA ATK</option>
+                                    <option value="Admin">Admin</option>
                                 </select>
                             </div>
                         </div>
@@ -212,10 +178,17 @@
                                         <option value="">Select Access Type</option>
                                         <option value="IT" {{ $admin->access_type === 'IT' ? 'selected' : '' }}>IT
                                         </option>
-                                        <option value="GA" {{ $admin->access_type === 'GA' ? 'selected' : '' }}>GA
+                                        <option value="GA Building"
+                                            {{ $admin->access_type === 'GA Building' ? 'selected' : '' }}>GA Building
+                                        </option>
+                                        <option value="GA RP" {{ $admin->access_type === 'GA RP' ? 'selected' : '' }}>GA
+                                            RP
+                                        </option>
+                                        <option value="GA ATK" {{ $admin->access_type === 'GA ATK' ? 'selected' : '' }}>GA
+                                            ATK
                                         </option>
                                         <option value="Admin" {{ $admin->access_type === 'Admin' ? 'selected' : '' }}>
-                                            Super Admin</option>
+                                            Admin</option>
                                     </select>
                                 </div>
                             </div>
@@ -241,14 +214,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
-    <script src="{{ URL::asset('assets/libs/@ckeditor/@ckeditor.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
     <script src="{{ asset('assets/libs/choices.js/choices.js.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
-    <script src="{{ URL::asset('/assets/js/pages/sweetalerts.init.js') }}"></script>
-    {{-- <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script> --}}
     <script src="assets/js/app.min.js"></script>
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+    <script>
+        function showConfirmation(idAccess, adminName) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `You are about to delete ${adminName}!`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.querySelector(`form[action="{{ route('admin.destroy', ['id' => ':id_access']) }}"]`
+                        .replace(':id_access', idAccess)).submit();
+                }
+            });
+        }
+    </script>
     <script>
         $(document).ready(function() {
             $('#exampleee').DataTable({
@@ -266,34 +253,6 @@
                 $('#modal-id select[name="id_access"]').val(nama);
                 $('#modal-id select[name="access_type"]').val(accessType);
             });
-        });
-
-        // $('.delete-form').on('submit', function(event) {
-        //     event.preventDefault();
-        //     const form = this;
-        //     Swal.fire({
-        //         title: 'Konfirmasi Hapus',
-        //         text: 'Apakah Anda yakin ingin menghapus administrator ini?',
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonText: 'Ya, hapus!',
-        //         cancelButtonText: 'Batal'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             // Submit formulir jika pengguna mengonfirmasi
-        //             form.submit();
-        //         }
-        //     });
-        // });
-        $('.delete-form').on('submit', function(event) {
-            // Hentikan proses submit form secara default
-            event.preventDefault();
-
-            // Ambil form yang sedang diklik
-            const form = this;
-
-            // Submit formulir untuk menghapus item langsung
-            form.submit();
         });
     </script>
 @endsection

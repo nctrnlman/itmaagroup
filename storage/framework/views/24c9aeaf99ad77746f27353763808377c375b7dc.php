@@ -1,7 +1,8 @@
 <?php $__env->startSection('title'); ?>
-    <?php echo app('translator')->get('translation.logout'); ?>
+    <?php echo app('translator')->get('translation.success-message'); ?>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
+
     <div class="auth-page-wrapper pt-5">
         <!-- auth page bg -->
         <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
@@ -23,11 +24,10 @@
                         <div class="text-center mt-sm-5 mb-4 text-white-50">
                             <div>
                                 <a href="index" class="d-inline-block auth-logo">
-                                    <img src="<?php echo e(URL::asset('assets/images/logo_MAAA.png')); ?>" alt=""
-                                        height="40">
+                                    <img src="<?php echo e(URL::asset('assets/images/logo-light.png')); ?>" alt="" height="20">
                                 </a>
                             </div>
-                            <p class="mt-3 fs-15 fw-medium"></p>
+                            <p class="mt-3 fs-15 fw-medium">Premium Admin & Dashboard Template</p>
                         </div>
                     </div>
                 </div>
@@ -37,16 +37,16 @@
                     <div class="col-md-8 col-lg-6 col-xl-5">
                         <div class="card mt-4">
                             <div class="card-body p-4 text-center">
-                                <lord-icon src="https://cdn.lordicon.com/hzomhqxz.json" trigger="loop"
-                                    colors="primary:#405189,secondary:#08a88a" style="width:180px;height:180px">
-                                </lord-icon>
-
+                                <div class="avatar-lg mx-auto mt-2">
+                                    <div class="avatar-title bg-light text-success display-3 rounded-circle">
+                                        <i class="ri-checkbox-circle-fill"></i>
+                                    </div>
+                                </div>
                                 <div class="mt-4 pt-2">
-                                    <h5>You are Logged Out</h5>
-                                    <p class="text-muted">Thank you for using <span class="fw-semibold">EIP</span>
-                                    </p>
+                                    <h4>Well done !</h4>
+                                    <p class="text-muted mx-4">Aww yeah, you successfully read this important message.</p>
                                     <div class="mt-4">
-                                        <a href="<?php echo e(route('login')); ?>" class="btn btn-success w-100">Sign In</a>
+                                        <a href="auth-signin-basic" class="btn btn-success w-100">Back to Dashboard</a>
                                     </div>
                                 </div>
                             </div>
@@ -55,7 +55,6 @@
                         <!-- end card -->
 
                     </div>
-                    <!-- end col -->
                 </div>
                 <!-- end row -->
             </div>
@@ -69,22 +68,24 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="text-center">
-                            <p class="mb-0 text-muted">&copy;
-                                <script>
-                                    document.write(new Date().getFullYear())
-                                </script> Aplikasi Employee Information Portal <i
-                                    class="mdi mdi-heart text-danger"></i> by Mineral Alam Abadi
-                            </p>
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script> Velzon. Crafted with <i
+                                    class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
                         </div>
                     </div>
                 </div>
             </div>
         </footer>
         <!-- end Footer -->
-    <?php $__env->stopSection(); ?>
-    <?php $__env->startSection('script'); ?>
-        <script src="<?php echo e(URL::asset('assets/libs/particles.js/particles.js.min.js')); ?>"></script>
-        <script src="<?php echo e(URL::asset('assets/js/pages/particles.app.js')); ?>"></script>
-    <?php $__env->stopSection(); ?>
+    </div>
+    <!-- end auth-page-wrapper -->
 
-<?php echo $__env->make('layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/auth-logout-basic.blade.php ENDPATH**/ ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
+    <script src="<?php echo e(URL::asset('assets/libs/particles.js/particles.js.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/js/pages/particles.app.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/js/pages/password-addon.init.js')); ?>"></script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/auth-success-msg-basic.blade.php ENDPATH**/ ?>

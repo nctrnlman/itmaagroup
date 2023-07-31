@@ -3,7 +3,7 @@
         @lang('translation.project-list')
     @endsection
     @section('css')
-        <link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
     @endsection
     @section('content')
         @component('components.breadcrumb')
@@ -14,30 +14,6 @@
                 Project List
             @endslot
         @endcomponent
-
-        @if (Session::has('success'))
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    Swal.fire({
-                        title: '{{ Session::get('success') }}',
-                        icon: 'success',
-                        showCloseButton: false
-                    });
-                });
-            </script>
-        @endif
-
-        @if (Session::has('error'))
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    Swal.fire({
-                        title: '{{ Session::get('error') }}',
-                        icon: 'error',
-                        showCloseButton: false
-                    });
-                });
-            </script>
-        @endif
 
         <div class="row g-4 mb-3">
             <div class="col-sm-auto">
@@ -125,9 +101,9 @@
                                                                 href="{{ route('projects.view', ['id' => $project->id_project]) }}">
                                                                 <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
                                                             </a>
-                                                            <div class="dropdown-divider"></div>
-                                                            <a class="dropdown-item" href="#"
-                                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{ $project->id_project }}').submit();">
+                                                            {{-- <div class="dropdown-divider"></div> --}}
+                                                            <a class="dropdown-item"
+                                                                onclick="event.preventDefault(); showConfirmation('{{ $project->id_project }}');">
                                                                 <i
                                                                     class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>Delete
                                                             </a>
@@ -304,6 +280,7 @@
     @endsection
     @section('script')
         <script src="{{ URL::asset('assets/js/pages/project-list.init.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
         <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
         <script>
             $('#removeProjectModal').on('show.bs.modal', function(event) {
@@ -315,8 +292,23 @@
                 modal.find('form').attr('action', '/projects/' + projectId);
             });
         </script>
-        <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-        <script src="{{ URL::asset('/assets/js/pages/sweetalerts.init.js') }}"></script>
+        <script>
+            function showConfirmation(projectId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You are about to delete this project!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-form-' + projectId).submit();
+                    }
+                });
+            }
+        </script>
         <script src="assets/js/app.min.js"></script>
         <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
     @endsection

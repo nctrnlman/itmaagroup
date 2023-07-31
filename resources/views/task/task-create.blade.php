@@ -18,19 +18,6 @@
         @endslot
     @endcomponent
 
-    @if (Session::has('error'))
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Swal.fire({
-                    title: 'error',
-                    text: '{{ Session::get('error') }}',
-                    icon: 'error',
-                    showCloseButton: true
-                });
-            });
-        </script>
-    @endif
-
     <form action="{{ route('tasks.create') }}" method="POST" id="createForm" enctype="multipart/form-data">
         @csrf
         <div class="row">
@@ -108,8 +95,6 @@
     <script src="{{ URL::asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
     <script src="{{ asset('assets/libs/choices.js/choices.js.min.js') }}"></script>
     <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
-    <script src="{{ URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-    <script src="{{ URL::asset('/assets/js/pages/sweetalerts.init.js') }}"></script>
     <script src="assets/js/app.min.js"></script>
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
     <script>

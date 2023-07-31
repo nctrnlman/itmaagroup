@@ -74,7 +74,7 @@
                         aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
                             <img class="rounded-circle header-profile-user"
-                                src="<?php if(session('user')->file_foto): ?> <?php echo e(asset('uploads/uploads/' . session('user')->file_foto)); ?><?php else: ?><?php echo e(asset('uploads/uploads/default.jpg')); ?> <?php endif; ?>"
+                                src="<?php if(session('user')->file_foto): ?> http://eip.maagroup.co.id/file/profile/<?php echo e(session('user')->file_foto); ?> <?php else: ?> <?php echo e(asset('uploads/uploads/default.jpg')); ?> <?php endif; ?>"
                                 alt="Header Avatar">
                             <span class="text-start ms-xl-2">
                                 <span

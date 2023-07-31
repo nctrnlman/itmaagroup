@@ -74,7 +74,7 @@
                         aria-haspopup="true" aria-expanded="false">
                         <span class="d-flex align-items-center">
                             <img class="rounded-circle header-profile-user"
-                                src="@if (session('user')->file_foto) {{ asset('uploads/uploads/' . session('user')->file_foto) }}@else{{ asset('uploads/uploads/default.jpg') }} @endif"
+                                src="@if (session('user')->file_foto) http://eip.maagroup.co.id/file/profile/{{ session('user')->file_foto }} @else {{ asset('uploads/uploads/default.jpg') }} @endif"
                                 alt="Header Avatar">
                             <span class="text-start ms-xl-2">
                                 <span

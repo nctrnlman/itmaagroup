@@ -51,7 +51,7 @@
                 <div class="card-body p-4">
                     <div class="text-center mb-3">
                         <div class="profile-user position-relative d-inline-block mx-auto  mb-4">
-                            <img src="<?php echo e($employee->file_foto == null ? asset('uploads/uploads/default.jpg') : asset('uploads/uploads/' . $employee->file_foto)); ?>"
+                            <img src="<?php if($employee->file_foto == null): ?> <?php echo e(asset('uploads/uploads/default.jpg')); ?>  <?php else: ?> http://eip.maagroup.co.id/file/profile/<?php echo e($employee->file_foto); ?> <?php endif; ?>"
                                 class="rounded-circle avatar-xl img-thumbnail user-profile-image" alt="user-profile-image">
                             <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
                                 <form method="POST"
@@ -480,7 +480,8 @@
                                 <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
                                     <h4>Are you Sure ?</h4>
                                     <p class="text-muted mx-4 mb-0">Are you Sure You want to Remove this Records <br>
-                                        <b></b> ?</p>
+                                        <b></b> ?
+                                    </p>
                                 </div>
                             </div>
                             <div class="d-flex gap-2 justify-content-center mt-4 mb-2">

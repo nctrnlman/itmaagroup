@@ -21,30 +21,6 @@
         <?php $__env->endSlot(); ?>
     <?php echo $__env->renderComponent(); ?>
 
-    <?php if(Session::has('success')): ?>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Swal.fire({
-                    title: '<?php echo e(Session::get('success')); ?>',
-                    icon: 'success',
-                    showCloseButton: false
-                });
-            });
-        </script>
-    <?php endif; ?>
-
-    <?php if(Session::has('error')): ?>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Swal.fire({
-                    title: '<?php echo e(Session::get('error')); ?>',
-                    icon: 'error',
-                    showCloseButton: false
-                });
-            });
-        </script>
-    <?php endif; ?>
-
     <div class="row">
         <div class="col-xxl-3 col-sm-6">
             <div class="card card-animate">
@@ -193,7 +169,7 @@
                                                         method="POST" style="display: inline-block;">
                                                         <?php echo csrf_field(); ?>
                                                         <?php echo method_field('DELETE'); ?>
-                                                        <button type="submit"
+                                                        <button type="button"
                                                             class="dropdown-item edit-item-btn delete-button"
                                                             data-task-id="<?php echo e($task->id_task); ?>">
                                                             <i class="fa fa-trash align-bottom me-2 text-muted"></i> Delete
@@ -273,6 +249,37 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-button');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const taskId = this.getAttribute('data-task-id');
+                    showConfirmation(taskId);
+                });
+            });
+
+            function showConfirmation(taskId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You are about to delete this project!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.querySelector(
+                            `form[action="${route('tasks.delete', ['id_task' => ':id_task'])}"]`
+                            .replace(':id_task', taskId)).submit();
+                    }
+                });
+            }
         });
     </script>
 <?php $__env->stopSection(); ?>

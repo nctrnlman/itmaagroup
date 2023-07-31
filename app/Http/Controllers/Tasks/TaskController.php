@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Projects\Project;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class TaskController extends Controller
@@ -80,6 +81,7 @@ class TaskController extends Controller
                 $parts = explode("-", $generatedUuid);
                 $numericUuid = implode("", array_filter($parts, 'is_numeric'));
                 $uuid = substr($numericUuid, 0, 3);
+                $uuid = sprintf('%03d', $uuid);
                 $idTask = 'TSK' . $year . $currentDate->format('md') . substr($idnik, -3) . $uuid;
 
                 $existingTask = Task::where('id_task', $idTask)->first();
@@ -98,16 +100,14 @@ class TaskController extends Controller
             $task->description = $request->description;
             $task->status = $request->status;
             $task->due_date = $request->due_date;
-            // dd($task);
             $task->save();
 
-            Session::flash('success', 'Task created successfully.');
+            Alert::success('Success', 'Task created successfully!');
 
             return redirect()->route('tasks.index');
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to create task. Please try again.');
-
-            return redirect()->route('tasks.index');
+            Alert::error('Error', 'Failed to create task. Please try again.');
+            return redirect()->back();
         }
     }
 
@@ -183,13 +183,12 @@ class TaskController extends Controller
 
             $task->save();
 
-            Session::flash('success', 'Task updated successfully.');
+            Alert::success('Success', 'Task updated successfully!');
 
             return redirect()->route('tasks.index');
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to update task. Please try again.');
-
-            return redirect()->route('tasks.index');
+            Alert::error('Error', 'Failed to update task. Please try again.');
+            return redirect()->back();
         }
     }
 
@@ -200,15 +199,14 @@ class TaskController extends Controller
 
             if ($task) {
                 $task->delete();
-
-                return redirect()->route('tasks.index')->with('success', 'Task deleted successfully');
+                Alert::success('Success', 'Task deleted successfully!');
+                return redirect()->route('tasks.index');
             } else {
                 throw new \Exception('Task not found');
             }
         } catch (\Exception $e) {
-            $errorMessage = 'Failed to delete task. Please try again.';
-
-            return redirect()->route('tasks.index')->with('error', $errorMessage);
+            Alert::error('Error', 'Failed to delete task. Please try again.');
+            return redirect()->route('tasks.index');
         }
     }
 }

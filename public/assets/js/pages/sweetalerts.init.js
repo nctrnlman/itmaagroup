@@ -41,7 +41,7 @@ document.getElementById("sa-title").addEventListener("click", function () {
 document.getElementById("sa-success").addEventListener("click", function () {
   Swal.fire({
     title: 'Good job!',
-    text: 'You clicked the button!',
+    text: 'bagus',
     icon: 'success',
     showCancelButton: true,
     confirmButtonClass: 'btn btn-primary w-xs me-2 mt-2',

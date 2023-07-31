@@ -18,19 +18,6 @@
         <?php $__env->endSlot(); ?>
     <?php echo $__env->renderComponent(); ?>
 
-    <?php if(Session::has('error')): ?>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                Swal.fire({
-                    title: 'error',
-                    text: '<?php echo e(Session::get('error')); ?>',
-                    icon: 'error',
-                    showCloseButton: true
-                });
-            });
-        </script>
-    <?php endif; ?>
-
     <form action="<?php echo e(route('tasks.create')); ?>" method="POST" id="createForm" enctype="multipart/form-data">
         <?php echo csrf_field(); ?>
         <div class="row">
@@ -108,8 +95,6 @@
     <script src="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.js')); ?>"></script>
     <script src="<?php echo e(asset('assets/libs/choices.js/choices.js.min.js')); ?>"></script>
     <script src="<?php echo e(asset('assets/libs/flatpickr/flatpickr.min.js')); ?>"></script>
-    <script src="<?php echo e(URL::asset('/assets/libs/sweetalert2/sweetalert2.min.js')); ?>"></script>
-    <script src="<?php echo e(URL::asset('/assets/js/pages/sweetalerts.init.js')); ?>"></script>
     <script src="assets/js/app.min.js"></script>
     <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
     <script>

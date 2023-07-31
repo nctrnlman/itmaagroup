@@ -26,8 +26,7 @@
                                     <h4 class="fs-20 mb-2">Hello!, <?php echo e(session('user')->nama); ?></h4>
                                     <p class="text-muted mb-0"> Welcome to EIP (Enterprise Information Portal). We are
                                         delighted to have you onboard and contribute to managing company information more
-                                        efficiently. If you need any assistance or have any questions, feel free to reach
-                                        out to our team. Wishing you a day filled with energy and success!</p>
+                                        efficiently. Wishing you a day filled with energy and success!</p>
                                 </div>
                             </div><!-- end card header -->
                         </div>
@@ -158,7 +157,7 @@
                     <!-- Cards in a row -->
                     <div class="row mt-4">
 
-                        <!-- It Helpdesk Card -->
+                        <!-- IT Helpdesk Card -->
                         <div class="col-xl-4">
                             <div class="card card-animate">
                                 <div class="card-body">
@@ -176,6 +175,25 @@
                             </div>
                         </div>
 
+                        <!-- GA Facilities Card -->
+                        <div class="col-xl-4">
+                            <div class="card card-animate">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <h5 class="text-info mb-2">GA Facilities</h5>
+                                            <p class="text-muted mb-0">Manage and handle General Affairs (GA) Facilities
+                                                requests and track requests.</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <a href="<?php echo e(route('ga-facilities.index')); ?>" class="btn btn-info">View GA
+                                            Facilities</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Project Card -->
                         <?php if(session('user')->divisi === 'HRGA'): ?>
                             <div class="col-xl-4">
@@ -184,13 +202,15 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1 overflow-hidden">
                                                 <h5 class="text-success mb-2">Project Management</h5>
-                                                <p class="text-muted mb-0">View and manage ongoing projects, track progress,
+                                                <p class="text-muted mb-0">View and manage ongoing projects, track
+                                                    progress,
                                                     and
                                                     collaborate with team members.</p>
                                             </div>
                                         </div>
                                         <div class="mt-4">
-                                            <a href="<?php echo e(route('projects.show')); ?>" class="btn btn-success">View Projects</a>
+                                            <a href="<?php echo e(route('projects.show')); ?>" class="btn btn-success">View
+                                                Projects</a>
                                         </div>
                                     </div>
                                 </div>

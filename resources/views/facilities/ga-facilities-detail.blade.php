@@ -1,35 +1,36 @@
+@extends('layouts.master')
 
+@section('title')
+    GA Facilities
+@endsection
 
-<?php $__env->startSection('title'); ?>
-    Helpdesk
-<?php $__env->stopSection(); ?>
-
-<?php $__env->startSection('css'); ?>
-    <link href="<?php echo e(URL::asset('assets/libs/jsvectormap/jsvectormap.min.css')); ?>" rel="stylesheet">
+@section('css')
+    <link href="{{ URL::asset('assets/libs/jsvectormap/jsvectormap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0@/css/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <link href="<?php echo e(asset('css/ckeditor.css')); ?>" rel="stylesheet">
-    <link href="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.css')); ?>" rel="stylesheet">
+    <link href="{{ asset('css/ckeditor.css') }}" rel="stylesheet">
+    <link href="{{ URL::asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet">
     <!-- ... -->
-    <?php
+    @php
         use App\Helpers\Helper;
-    ?>
-<?php $__env->stopSection(); ?>
+    @endphp
+@endsection
 
-<?php $__env->startSection('content'); ?>
-    <?php $__env->startComponent('components.breadcrumb'); ?>
-        <?php $__env->slot('li_1'); ?>
-            IT Helpdesk
-        <?php $__env->endSlot(); ?>
-        <?php $__env->slot('title'); ?>
+@section('content')
+    @component('components.breadcrumb')
+        @slot('li_1')
+            GA Facilities
+        @endslot
+        @slot('title')
             Detail Ticketing
-        <?php $__env->endSlot(); ?>
-    <?php echo $__env->renderComponent(); ?>
+        @endslot
+    @endcomponent
 
-    <form action="<?php echo e(route('it-helpdesk.update', ['id_tiket' => $ticket->id_tiket])); ?>" method="POST">
-        <?php echo csrf_field(); ?>
+    <form action="{{ route('ga-facilities.update', ['id_tiket' => $ticket->id_ga_facilities]) }}" method="POST">
+        @csrf
+        @method('PUT')
         <div class="row">
             <div class="col-lg-12">
                 <div class="card mt-n4 mx-n4 mb-n5">
@@ -40,8 +41,9 @@
                                     <div class="row align-items-center">
                                         <div class="col-md-auto">
                                             <div class="avatar-md mb-md-0 mb-4">
+                                                <input type="hidden" name="_method" value="PUT">
                                                 <div class="avatar-title  rounded-circle" style="background-color: #b30000">
-                                                    <img src="<?php echo e(URL::asset('assets/images/logo_MAAA.png')); ?>"
+                                                    <img src="{{ URL::asset('assets/images/logo_MAAA.png') }}"
                                                         alt="" width="65px" />
                                                 </div>
                                             </div>
@@ -49,27 +51,31 @@
                                         <!--end col-->
 
                                         <div class="col-md">
-                                            <h4 class="fw-semibold">#<?php echo e($ticket->id_tiket); ?> - Request Ticketing</h4>
+                                            <h4 class="fw-semibold">#{{ $ticket->id_ga_facilities }} - Request Ticketing
+                                            </h4>
                                             <div class="hstack gap-3 flex-wrap">
                                                 <div class="text-muted"><i class="ri-building-line align-bottom me-1"></i>
                                                     MAA GROUP</div>
                                                 <div class="vr"></div>
                                                 <div class="text-muted">Create Date : <span
-                                                        class="fw-medium"><?php echo e(date('Y-m-d', strtotime($ticket->start_date))); ?></span>
+                                                        class="fw-medium">{{ date('Y-m-d', strtotime($ticket->start_date)) }}</span>
                                                 </div>
                                                 <div class="vr"></div>
-                                                <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?>
+                                                @if (session('user')['access_type'] === 'Admin' ||
+                                                        (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Management') ||
+                                                        (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Repair & Purchase') ||
+                                                        (session('user')['access_type'] === 'GA ATK' && $ticket->kategori_tiket === 'ATK/Stationary'))
                                                     <div class="text-muted">Status : <span class="fw-medium"></span></div>
                                                     <div>
                                                         <select class="form-select" data-choices id="choices-status-input"
                                                             name="status_tiket">
-                                                            <?php $__currentLoopData = ['Pending', 'Process', 'Closed', 'Rejected']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($option); ?>"
-                                                                    <?php echo e($ticket->status_tiket == $option ? 'selected' : ''); ?>>
-                                                                    <?php echo e($option); ?>
-
+                                                            <option value="">Default..</option>
+                                                            @foreach (['Pending', 'Process', 'Closed', 'Rejected'] as $option)
+                                                                <option value="{{ $option }}"
+                                                                    {{ $ticket->status_tiket == $option ? 'selected' : '' }}>
+                                                                    {{ $option }}
                                                                 </option>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                            @endforeach
                                                         </select>
 
                                                     </div>
@@ -77,19 +83,20 @@
                                                     <div class="text-muted">Request type : <span class="fw-medium"> </span>
                                                     </div>
                                                     <div>
-                                                        <select class="form-select" name="kategori_tiket" data-choices
-                                                            id="choices-status-input">
-                                                            <option value=""
-                                                                <?php echo e($ticket->kategori_tiket == null ? 'selected' : ''); ?>>No
-                                                                Set</option>
-                                                            <?php $__currentLoopData = ['Network', 'Hardware', 'Software', 'Cloud Storage', 'Printer & Scanner']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($option); ?>"
-                                                                    <?php echo e($ticket->kategori_tiket == $option ? 'selected' : ''); ?>>
-                                                                    <?php echo e($option); ?>
-
-                                                                </option>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        <select class="form-select" name="kategori_tiket"
+                                                            id="choices-status-input" disabled>
+                                                            <option value="" disabled selected>Service..</option>
+                                                            <option value="Building Management"
+                                                                {{ $ticket->kategori_tiket == 'Building Management' ? 'selected' : '' }}>
+                                                                Building Management</option>
+                                                            <option value="Repair & Purchase"
+                                                                {{ $ticket->kategori_tiket == 'Repair & Purchase' ? 'selected' : '' }}>
+                                                                Repair & Purchase</option>
+                                                            <option value="ATK/Stationary"
+                                                                {{ $ticket->kategori_tiket == 'ATK/Stationary' ? 'selected' : '' }}>
+                                                                ATK/Stationary</option>
                                                         </select>
+
                                                     </div>
                                                     <div class="vr"></div>
                                                     <div class="text-muted">Assigned To : <span class="fw-medium"> </span>
@@ -98,34 +105,32 @@
                                                         <select class="form-select" name="nik_pic" data-choices
                                                             id="choices-status-input">
                                                             <option value="">No Set</option>
-                                                            <?php $__currentLoopData = $usersIT; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $userIT): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($userIT->idnik); ?>"
-                                                                    <?php echo e($ticket->nik_pic == $userIT->idnik ? 'selected' : ''); ?>>
-                                                                    <?php echo e($userIT->nama); ?>
-
+                                                            @foreach ($usersGA as $userGA)
+                                                                <option value="{{ $userGA->idnik }}"
+                                                                    {{ $ticket->nik_pic == $userGA->idnik ? 'selected' : '' }}>
+                                                                    {{ $userGA->nama }}
                                                                 </option>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                            @endforeach
 
                                                         </select>
                                                     </div>
-                                                <?php else: ?>
+                                                @else
                                                     <div class="text-muted">Status : <span class="fw-medium">
-                                                            <?php echo e($ticket->status_tiket ?: '-'); ?></span></div>
+                                                            {{ $ticket->status_tiket ?: '-' }}</span></div>
                                                     <div class="vr"></div>
                                                     <div class="text-muted">Request type : <span class="fw-medium">
-                                                            <?php echo e($ticket->kategori_tiket ?: '-'); ?></span></div>
+                                                            {{ $ticket->kategori_tiket ?: '-' }}</span></div>
                                                     <div class="vr"></div>
                                                     <div class="text-muted">Assigned To : <span class="fw-medium">
-                                                            <?php $__currentLoopData = $usersIT; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $userIT): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <?php if($userIT->idnik == $ticket->nik_pic): ?>
-                                                                    <?php echo e($userIT->nama ?: '-'); ?>
-
-                                                                <?php break; ?>
-                                                            <?php endif; ?>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                            @foreach ($usersGA as $userGA)
+                                                                @if ($userGA->idnik == $ticket->nik_pic)
+                                                                    {{ $userGA->nama ?: '-' }}
+                                                                @break
+                                                            @endif
+                                                        @endforeach
                                                     </span></div>
 
-                                            <?php endif; ?>
+                                            @endif
 
                                         </div>
                                     </div>
@@ -170,31 +175,40 @@
             <div class="card">
                 <div class="card-body p-4">
                     <h6 class="fw-semibold text-uppercase mb-3 fs-5">Ticket Description</h6>
-                    <p class="text-muted"><?php echo $ticket->disc_keluhan; ?></p>
+                    <p class="text-muted">{!! $ticket->disc_keluhan !!}</p>
 
-                    <h6 class="fw-semibold text-uppercase mb-3 fs-5">Justification IT</h6>
-                    <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?>
-                        <textarea class="form-control" id="ckeditor-classic-justification" placeholder="Justification IT" rows="5"
-                            name="justification"><?php echo e($ticket->justification); ?></textarea>
-                    <?php else: ?>
-                        <p class="text-muted"><?php echo $ticket->justification; ?></p>
-                    <?php endif; ?>
+                    <h6 class="fw-semibold text-uppercase mb-3 fs-5">Justification</h6>
+                    @if (session('user')['access_type'] === 'Admin' ||
+                            (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Management') ||
+                            (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Repair & Purchase') ||
+                            (session('user')['access_type'] === 'GA ATK' && $ticket->kategori_tiket === 'ATK/Stationary'))
+                        <textarea class="form-control" id="ckeditor-classic-justification"
+                            placeholder="Write Justrification in this field..." rows="5" name="justification">{{ $ticket->justification }}</textarea>
+                    @else
+                        <p class="text-muted">{!! $ticket->justification !!}</p>
+                    @endif
 
                     <div class="mt-4">
                         <h6 class="fw-semibold text-uppercase mb-3 fs-5">Progress / Action Note</h6>
-                        <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?>
-                            <textarea class="form-control" id="ckeditor-classic-action-note" placeholder="Progress / Action Note" rows="5"
-                                name="actionNote"><?php echo e($ticket->action_note); ?></textarea>
-                        <?php else: ?>
-                            <p class="text-muted"><?php echo $ticket->action_note; ?></p>
-                        <?php endif; ?>
+                        @if (session('user')['access_type'] === 'Admin' ||
+                                (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Management') ||
+                                (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Repair & Purchase') ||
+                                (session('user')['access_type'] === 'GA ATK' && $ticket->kategori_tiket === 'ATK/Stationary'))
+                            <textarea class="form-control" id="ckeditor-classic-action-note"
+                                placeholder="Write Progress/Action Note in this field..." rows="5" name="actionNote">{{ $ticket->action_note }}</textarea>
+                        @else
+                            <p class="text-muted">{!! $ticket->action_note !!}</p>
+                        @endif
                     </div>
 
-                    <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?>
+                    @if (session('user')['access_type'] === 'Admin' ||
+                            (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Management') ||
+                            (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Repair & Purchase') ||
+                            (session('user')['access_type'] === 'GA ATK' && $ticket->kategori_tiket === 'ATK/Stationary'))
                         <div class="flex pt-4">
                             <button type="submit" class="btn btn-primary">Update</button>
                         </div>
-                    <?php endif; ?>
+                    @endif
 
                 </div>
 </form>
@@ -202,48 +216,48 @@
 <div class="card-body p-4">
     <h5 class="card-title mb-4">Comments</h5>
 
-    <?php if($comments->isEmpty()): ?>
+    @if ($comments->isEmpty())
         <div data-simplebar style="height: 300px;" class="px-3 mx-n3">
             <div class="d-flex mb-4">
                 <div class="flex-shrink-0">
-                    <img src="<?php echo e(URL::asset('assets/images/users/avatar-7.jpg')); ?>" alt=""
+                    <img src="{{ URL::asset('assets/images/users/avatar-9.jpg') }}" alt=""
                         class="avatar-xs rounded-circle" />
                 </div>
                 <div class="flex-grow-1 ms-3">
-                    <h5 class="fs-13">IT Support <small
-                            class="text-muted"><?php echo e(date('d M Y - h:iA', strtotime('2023-12-27 05:47AM'))); ?></small>
+                    <h5 class="fs-13">General Affair PIC <small
+                            class="text-muted">{{ date('d M Y - h:iA', strtotime('2023-12-27 05:47AM')) }}</small>
                     </h5>
                     <p class="text-muted">I got a message from you guys that they have a problem. Can you state their
                         problems?</p>
                 </div>
             </div>
         </div>
-    <?php else: ?>
+    @else
         <div data-simplebar style="max-height: 300px; overflow-y: auto;" class="px-3 mx-n3">
-            <?php $__currentLoopData = $comments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            @foreach ($comments as $comment)
                 <div class="d-flex mb-4">
                     <div class="flex-shrink-0">
-                        <img src="<?php echo e($comment->file_foto == null || '' ? asset('uploads/uploads/default.jpg') : asset('uploads/uploads/' . $comment->file_foto)); ?>"
+                        <img src="{{ $comment->file_foto == null || '' ? asset('uploads/uploads/default.jpg') : asset('uploads/uploads/' . $comment->file_foto) }}"
                             alt="" class="avatar-xs rounded-circle" />
                     </div>
                     <div class="flex-grow-1 ms-3">
-                        <h5 class="fs-13"><?php echo e($comment['nama']); ?> <small
-                                class="text-muted"><?php echo e(date('d M Y - h:iA', strtotime($comment['datetime']))); ?></small>
+                        <h5 class="fs-13">{{ $comment['nama'] }} <small
+                                class="text-muted">{{ date('d M Y - h:iA', strtotime($comment['datetime'])) }}</small>
                         </h5>
-                        <p class="text-muted"><?php echo e($comment['keterangan_komen']); ?></p>
+                        <p class="text-muted">{{ $comment['keterangan_komen'] }}</p>
                     </div>
                 </div>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            @endforeach
         </div>
-    <?php endif; ?>
-    <?php if($ticket->status_tiket == 'Closed'): ?>
+    @endif
+    @if ($ticket->status_tiket == 'Closed')
         <div class="alert alert-warning" role="alert">
             Comment cannot be added as the ticket is already closed.
         </div>
-    <?php else: ?>
+    @else
         <form action="/it-helpdesk/komentar" method="POST" class="mt-3">
-            <?php echo csrf_field(); ?>
-            <input type="hidden" name="id_tiket" value="<?php echo e($ticket->id_tiket); ?>">
+            @csrf
+            <input type="hidden" name="id_tiket" value="{{ $ticket->id_ga_facilities }}">
             <div class="row g-3">
                 <div class="col-lg-12">
                     <label for="keterangan_komen" class="form-label">Leave a Comment</label>
@@ -255,7 +269,7 @@
                 </div>
             </div>
         </form>
-    <?php endif; ?>
+    @endif
 
 </div>
 <!-- end card body -->
@@ -281,36 +295,36 @@
                     <tbody>
                         <tr>
                             <td class="fw-medium">Ticket</td>
-                            <td>#<?php echo e($ticket->id_tiket ?: '-'); ?></td>
+                            <td>#{{ $ticket->id_ga_facilities ?: '' }}</td>
                         </tr>
                         <tr>
                             <td class="fw-medium">Client</td>
-                            <td><?php echo e($ticket->nama ?: '-'); ?></td>
+                            <td>{{ $ticket->nama ?: '-' }}</td>
                         </tr>
                         <tr>
                             <td class="fw-medium">Email</td>
-                            <td><?php echo e($ticket->username ?: '-'); ?></td>
+                            <td>{{ $ticket->username ?: '-' }}</td>
                         </tr>
                         <tr>
                             <td class="fw-medium">No.Hp</td>
-                            <td><?php echo e($ticket->whatsapp ?: '-'); ?></td>
+                            <td>{{ $ticket->whatsapp ?: '-' }}</td>
                         </tr>
                         <tr>
                             <td class="fw-medium">Division</td>
-                            <td><?php echo e($ticket->divisi ?: '-'); ?></td>
+                            <td>{{ $ticket->divisi ?: '-' }}</td>
                         </tr>
                         <tr>
                             <td class="fw-medium">Office Location</td>
-                            <td><?php echo e($ticket->lokasi ?: '-'); ?></td>
+                            <td>{{ $ticket->lokasi ?: '-' }}</td>
                         </tr>
 
                         <tr>
                             <td class="fw-medium">Start Date</td>
-                            <td><?php echo e(date('Y-m-d', strtotime($ticket->start_date))); ?></td>
+                            <td>{{ date('Y-m-d', strtotime($ticket->start_date)) }}</td>
                         </tr>
                         <tr>
                             <td class="fw-medium">End Date</td>
-                            <td><?php echo e($ticket->end_date ? date('Y-m-d', strtotime($ticket->end_date)) : '-'); ?></td>
+                            <td>{{ $ticket->end_date ? date('Y-m-d', strtotime($ticket->end_date)) : '-' }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -325,12 +339,12 @@
             <h6 class="card-title fw-semibold mb-0">Files Attachment</h6>
         </div>
         <div class="card-body">
-            <?php if($ticket->lampiran1 || $ticket->lampiran2): ?>
-                <?php $__currentLoopData = [$ticket->lampiran1, $ticket->lampiran2]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $lampiran): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <?php if($lampiran): ?>
+            @if ($ticket->lampiran1 || $ticket->lampiran2)
+                @foreach ([$ticket->lampiran1, $ticket->lampiran2] as $lampiran)
+                    @if ($lampiran)
                         <div class="d-flex align-items-center border border-dashed p-2 rounded mt-2">
                             <div class="flex-shrink-0 avatar-sm">
-                                <?php
+                                @php
                                     $extension = pathinfo($lampiran, PATHINFO_EXTENSION);
                                     $iconClass = '';
                                     
@@ -356,46 +370,45 @@
                                             $iconClass = 'fa fa-file text-secondary';
                                             break;
                                     }
-                                ?>
+                                @endphp
 
                                 <div class="avatar-title bg-light rounded">
-                                    <i class="<?php echo e($iconClass); ?> fs-20"></i>
+                                    <i class="{{ $iconClass }} fs-20"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-1">
-                                    <a href="<?php echo e(asset('storage/ithelpdesk/' . $lampiran)); ?>">Lampiran
-                                        <?php echo e($loop->iteration); ?></a>
+                                    <a href="{{ asset('storage/gafacilities/' . $lampiran) }}">Lampiran
+                                        {{ $loop->iteration }}</a>
                                 </h6>
                                 <small class="text-muted">
-                                    <?php echo e(Helper::formatSizeUnits(filesize(storage_path('app/public/ithelpdesk/' . $lampiran)))); ?>
-
+                                    {{ Helper::formatSizeUnits(filesize(storage_path('app/public/gafacilities/' . $lampiran))) }}
                                 </small>
                             </div>
                             <div class="hstack gap-3 fs-16">
-                                <a href="<?php echo e(route('download', ['folder' => 'ithelpdesk', 'filename' => $lampiran])); ?>"
+                                <a href="{{ route('download', ['folder' => 'gafacilities', 'filename' => $lampiran]) }}"
                                     class="text-muted">
                                     <i class="fa fa-download"></i>
                                 </a>
                             </div>
                         </div>
-                    <?php endif; ?>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            <?php else: ?>
+                    @endif
+                @endforeach
+            @else
                 <div class="alert alert-info mt-3" role="alert">
                     <i class="fa fa-info-circle me-2"></i>
                     No files uploaded.
                 </div>
-            <?php endif; ?>
+            @endif
         </div>
     </div>
-    <?php if(session('user')['access_type'] !== 'Admin' || session('user')['access_type'] !== 'IT'): ?>
+    @if (session('user')['access_type'] !== 'Admin' || session('user')['access_type'] !== 'IT')
         <div class="col-lg-12">
             <div class="hstack gap-2 justify-content-end">
-                <a href="<?php echo e(route('it-helpdesk')); ?>" class="btn btn-soft-success">Cancel</a>
+                <a href="{{ route('ga-facilities.index') }}" class="btn btn-soft-success">Cancel</a>
             </div>
         </div>
-    <?php endif; ?>
+    @endif
     <!--end col-->
 </div>
 </div>
@@ -406,15 +419,15 @@
 
 
 <!--end row-->
-<?php $__env->stopSection(); ?>
-<?php $__env->startSection('script'); ?>
-<script src="<?php echo e(URL::asset('assets/js/pages/ticketdetail.init.js')); ?>"></script>
-<script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
+@endsection
+@section('script')
+<script src="{{ URL::asset('assets/js/pages/ticketdetail.init.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
 <script src="assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
-<script src="<?php echo e(URL::asset('assets/libs/@ckeditor/@ckeditor.min.js')); ?>"></script>
-<script src="<?php echo e(asset('assets/libs/choices.js/choices.js.min.js')); ?>"></script>
+<script src="{{ URL::asset('assets/libs/@ckeditor/@ckeditor.min.js') }}"></script>
+<script src="{{ asset('assets/libs/choices.js/choices.js.min.js') }}"></script>
 <script src="assets/js/app.min.js"></script>
-<script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
+<script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
 <script>
     ClassicEditor
         .create(document.querySelector('#ckeditor-classic-justification'))
@@ -434,6 +447,4 @@
             console.error(error);
         });
 </script>
-<?php $__env->stopSection(); ?>
-
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/it-helpdesk-detail.blade.php ENDPATH**/ ?>
+@endsection
