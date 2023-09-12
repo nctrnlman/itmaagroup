@@ -29,6 +29,7 @@ class Project extends Model
         'create_date',
         'due_date',
         'file',
+        'cost',
         'idnik'
     ];
 

@@ -46,8 +46,9 @@
         <div class="row w-1000px">
             @php
                 $projectExists = false;
-                
+                $isAdmin = session('user')->access_type === 'Admin';
             @endphp
+
             @foreach ($projects as $project)
                 @php
                     $projectMembers = $members->where('id_project', $project->id_project)->where('idnik', session('user')->idnik);
@@ -55,13 +56,13 @@
                     $isClosedOrCanceled = $project->status === 'Closed' || $project->status === 'Canceled';
                 @endphp
 
-                @if ($count > 0)
+                @if ($isAdmin || $count > 0)
                     @php
                         $projectExists = true;
                     @endphp
                     <div class="col-xxl-3 col-sm-6 project-card"
                         style="opacity: {{ $isClosedOrCanceled ? '0.7' : '1' }};
-           filter: {{ $isClosedOrCanceled ? 'grayscale(100%)' : 'none' }};">
+                        filter: {{ $isClosedOrCanceled ? 'grayscale(100%)' : 'none' }};">
                         <div class="card card-height-100">
                             <div class="card-body">
                                 <div class="d-flex flex-column h-100">
@@ -82,7 +83,6 @@
                                                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                         <i data-feather="more-horizontal" class="icon-sm"></i>
                                                     </button>
-
                                                     <div class="dropdown-menu dropdown-menu-end">
                                                         @if ($project->status === 'Closed')
                                                             <a class="dropdown-item"
@@ -90,7 +90,7 @@
                                                                 <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
                                                             </a>
                                                         @else
-                                                            @if ($project->idnik == session('user')->idnik)
+                                                            @if ($project->idnik == session('user')->idnik || $isAdmin)
                                                                 <a class="dropdown-item"
                                                                     href="{{ route('projects.edit', ['id' => $project->id_project]) }}">
                                                                     <i
@@ -101,13 +101,11 @@
                                                                 href="{{ route('projects.view', ['id' => $project->id_project]) }}">
                                                                 <i class="ri-eye-fill align-bottom me-2 text-muted"></i>View
                                                             </a>
-                                                            {{-- <div class="dropdown-divider"></div> --}}
                                                             <a class="dropdown-item"
                                                                 onclick="event.preventDefault(); showConfirmation('{{ $project->id_project }}');">
                                                                 <i
                                                                     class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>Delete
                                                             </a>
-
                                                             <form id="delete-form-{{ $project->id_project }}"
                                                                 action="{{ route('projects.delete', ['id' => $project->id_project]) }}"
                                                                 method="POST" style="display: none;">
@@ -123,7 +121,7 @@
                                     <div class="d-flex mb-2">
                                         <div class="flex-shrink-0 me-3">
                                             <div class="avatar-md">
-                                                <span class="avatar-title rounded p-2"style="background-color: #b30000">
+                                                <span class="avatar-title rounded p-2" style="background-color: #b30000">
                                                     <img src="{{ URL::asset('assets/images/logo_MAAA.png') }}"
                                                         alt="Thumbnail" class="img-fluid p-1">
                                                 </span>
@@ -154,20 +152,16 @@
                                             <div class="progress-bar bg-success" role="progressbar"
                                                 aria-valuenow="{{ $project->progressPercentage }}" aria-valuemin="0"
                                                 aria-valuemax="100" style="width: {{ $project->progressPercentage }}%;">
-                                            </div><!-- /.progress-bar -->
-                                        </div><!-- /.progress -->
+                                            </div>
+                                        </div>
                                     </div>
-
-
                                 </div>
-
                             </div>
                             <!-- end card body -->
                             <div class="card-footer bg-transparent border-top-dashed py-2">
                                 <div class="d-flex align-items-center">
                                     <div class="flex-grow-1">
                                         <div class="avatar-group">
-                                            <!-- Render anggota proyek -->
                                             @php $count = 0; @endphp
                                             @foreach ($members as $member)
                                                 @if ($member->id_project == $project->id_project)
@@ -184,7 +178,6 @@
                                                     @endif
                                                 @endif
                                             @endforeach
-
                                             @if ($count > 5)
                                                 <a href="javascript: void(0);" class="avatar-group-item"
                                                     data-bs-toggle="tooltip" data-bs-trigger="hover"
@@ -195,34 +188,30 @@
                                                     </div>
                                                 </a>
                                             @endif
-
-
-                                            </a>
                                         </div>
                                     </div>
                                     <div class="flex-shrink-0">
                                         <div class="text-muted">
-                                            <i
-                                                class="ri-calendar-event-fill me-1 align-bottom"></i>{{ date('d F Y', strtotime($project->due_date)) }}
+                                            <i class="ri-calendar-event-fill me-1 align-bottom"></i>
+                                            {{ date('d F Y', strtotime($project->due_date)) }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
                             <!-- end card footer -->
                         </div>
                         <!-- end card -->
                     </div>
                 @endif
             @endforeach
+
             @if (!$projectExists)
                 <div class="col-12">
                     <div class="alert alert-info">No Projects</div>
                 </div>
             @endif
-            <!-- end col -->
         </div>
+
         <!-- end col -->
         <!-- end row -->
 

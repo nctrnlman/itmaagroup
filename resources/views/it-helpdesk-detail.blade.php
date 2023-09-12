@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Helpdesk
+    IT Support
 @endsection
 
 @section('css')
@@ -21,7 +21,7 @@
 @section('content')
     @component('components.breadcrumb')
         @slot('li_1')
-            IT Helpdesk
+            IT Support
         @endslot
         @slot('title')
             Detail Ticketing
@@ -237,20 +237,20 @@
             Comment cannot be added as the ticket is already closed.
         </div>
     @else
-        <form action="/it-helpdesk/komentar" method="POST" class="mt-3">
-            @csrf
-            <input type="hidden" name="id_tiket" value="{{ $ticket->id_tiket }}">
-            <div class="row g-3">
-                <div class="col-lg-12">
-                    <label for="keterangan_komen" class="form-label">Leave a Comment</label>
-                    <textarea class="form-control bg-light border-light" name="keterangan_komen" rows="3"
-                        placeholder="Enter comments"></textarea>
-                </div>
-                <div class="col-lg-12">
-                    <button type="submit" class="btn btn-success" onclick="postComment()">Post Comment</button>
-                </div>
-            </div>
-        </form>
+        <form action="{{ route('it-helpdesk.komentar') }}" method="post">
+    @csrf
+    <input type="hidden" name="id_tiket" value="{{ $ticket->id_tiket }}">
+    <div class="row g-3">
+        <div class="col-lg-12">
+            <label for="keterangan_komen" class="form-label">Leave a Comment</label>
+            <textarea class="form-control bg-light border-light" name="keterangan_komen" rows="3"
+                placeholder="Enter comments"></textarea>
+        </div>
+        <div class="col-lg-12">
+            <button type="submit" class="btn btn-success">Post Comment</button>
+        </div>
+    </div>
+</form>
     @endif
 
 </div>
@@ -360,8 +360,8 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-1">
-                                    <a href="{{ asset('storage/ithelpdesk/' . $lampiran) }}">Lampiran
-                                        {{ $loop->iteration }}</a>
+                                    <a href="{{ asset('storage/ithelpdesk/' . $lampiran) }}">Material Request Form
+                                        </a>
                                 </h6>
                                 <small class="text-muted">
                                     {{ Helper::formatSizeUnits(filesize(storage_path('app/public/ithelpdesk/' . $lampiran))) }}

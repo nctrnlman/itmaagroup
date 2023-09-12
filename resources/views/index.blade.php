@@ -5,6 +5,32 @@
     @section('css')
         <link href="assets/libs/jsvectormap/jsvectormap.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/libs/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+        <style>
+    .flex-grow-1 {
+        /* Gaya untuk container utama */
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .text-muted {
+        /* Gaya untuk teks abu-abu */
+        color: #af2a25;
+    }
+
+    .language-container {
+        /* Gaya untuk kontainer bahasa Indonesia */
+        margin-top: 2px;
+    }
+
+    .indonesian-text {
+        /* Gaya untuk teks dalam bahasa Indonesia */
+        display: block;
+        margin-top: 1px;
+        font-style: italic;
+        color: #555;
+    }
+</style>
     @endsection
     @section('content')
         @component('components.breadcrumb')
@@ -19,138 +45,31 @@
             <div class="col">
 
                 <div class="h-100">
-                    <div class="row mb-3 pb-1">
+                    <div class="row mb-1 pb-1">
                         <div class="col-12">
                             <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                                 <div class="flex-grow-1">
-                                    <h4 class="fs-20 mb-2">Hello!, {{ session('user')->nama }}</h4>
-                                    <p class="text-muted mb-0"> Welcome to EIP (Enterprise Information Portal). We are
-                                        delighted to have you onboard and contribute to managing company information more
-                                        efficiently. Wishing you a day filled with energy and success!</p>
-                                </div>
+   <div class="card bg-red" style="background-color: #af2a25; color: white;">
+    <div class="card-body">
+        <h4 class="fs-20 mb-4 " style="color:white">Hello, <?php echo session('user')->nama; ?></h4>
+        <p class="fs-15 mb-0">
+            This system will help you to get GA & IT request and also help us for manage, and track request from your submission.
+        </p>
+        <div class="language-container"> 
+            <p class="indonesian-text fs-14" style="color:white">
+                Sistem ini akan membantu Anda dalam pengajuan permintaan GA dan IT, serta membantu kami dalam mengelola dan melacak permintaan dari pengajuan Anda.
+            </p>
+        </div>
+    </div>
+</div>
+
+            
+</div>
                             </div><!-- end card header -->
                         </div>
                         <!--end col-->
                     </div>
                     <!--end row-->
-
-                    <div class="row">
-                        <div class="col-xl-3 col-md-6">
-                            <!-- card -->
-                            <div class="card card-animate">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-grow-1 overflow-hidden">
-                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
-                                                Total Employee</p>
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                            <h5 class="text-success fs-14 mb-0">
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-end justify-content-between mt-4">
-                                        <div>
-                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
-                                                    data-target="{{ $totalEmployee }}">0</span> </h4>
-                                        </div>
-                                        <div class="avatar-sm flex-shrink-0">
-                                            <span class="avatar-title bg-soft-success rounded fs-3">
-                                                <i class="bx bx-user-circle text-warning"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div><!-- end card body -->
-                            </div><!-- end card -->
-                        </div><!-- end col -->
-
-                        <div class="col-xl-3 col-md-6">
-                            <!-- card -->
-                            <div class="card card-animate">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-grow-1 overflow-hidden">
-                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
-                                                EMPLOYEE HO</p>
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                            <h5 class="text-danger fs-14 mb-0">
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-end justify-content-between mt-4">
-                                        <div>
-                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
-                                                    data-target=" {{ $employeeHO }}">0</span></h4>
-                                        </div>
-                                        <div class="avatar-sm flex-shrink-0">
-                                            <span class="avatar-title bg-soft-info rounded fs-3">
-                                                <i class="bx bx-user-circle text-warning"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div><!-- end card body -->
-                            </div><!-- end card -->
-                        </div><!-- end col -->
-
-                        <div class="col-xl-3 col-md-6">
-                            <!-- card -->
-                            <div class="card card-animate">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-grow-1 overflow-hidden">
-                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
-                                                EMPLOYEE OBI</p>
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                            <h5 class="text-success fs-14 mb-0">
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-end justify-content-between mt-4">
-                                        <div>
-                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
-                                                    data-target=" {{ $employeeOBI }}">0</span>
-                                            </h4>
-                                        </div>
-                                        <div class="avatar-sm flex-shrink-0">
-                                            <span class="avatar-title  bg-soft-info rounded fs-3">
-                                                <i class="bx bx-user-circle text-warning"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div><!-- end card body -->
-                            </div><!-- end card -->
-                        </div><!-- end col -->
-
-                        <div class="col-xl-3 col-md-6">
-                            <!-- card -->
-                            <div class="card card-animate">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-grow-1 overflow-hidden">
-                                            <p class="text-uppercase fw-medium text-muted text-truncate mb-0">
-                                                EMPLOYEE BCPM</p>
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-end justify-content-between mt-4">
-                                        <div>
-                                            <h4 class="fs-22 fw-semibold ff-secondary mb-4"><span class="counter-value"
-                                                    data-target="{{ $employeeBCPM }}">0</span>
-                                            </h4>
-                                        </div>
-                                        <div class="avatar-sm flex-shrink-0">
-                                            <span class="avatar-title  bg-soft-info rounded fs-3">
-                                                <i class="bx bx-user-circle text-warning"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div><!-- end card body -->
-                            </div><!-- end card -->
-                        </div><!-- end col -->
-                    </div> <!-- end row-->
 
 
                     <h4 class="text-left mb-4">Our Features</h4>
@@ -163,7 +82,7 @@
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-grow-1 overflow-hidden">
-                                            <h5 class="text-primary mb-2">IT Helpdesk</h5>
+                                            <h5 class="text-primary mb-2">IT Support</h5>
                                             <p class="text-muted mb-0">Submit your IT-related issues here. Our IT team will
                                                 assist you as soon as possible.</p>
                                         </div>
@@ -195,7 +114,7 @@
                         </div>
 
                         <!-- Project Card -->
-                        @if (session('user')->divisi === 'HRGA')
+                        @if (session('user')->divisi === 'HRGA' || session('user')->access_type === 'Admin')
                             <div class="col-xl-4">
                                 <div class="card card-animate">
                                     <div class="card-body">

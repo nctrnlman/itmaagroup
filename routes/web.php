@@ -28,7 +28,7 @@ use App\Http\Controllers\CompanyRegulationController;
 */
 
 Auth::routes();
-// //Language Translation
+//Language Translation
 Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('root');
@@ -37,36 +37,28 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'root'])->name('roo
 Route::post('/update-profile/{id}', [App\Http\Controllers\HomeController::class, 'updateProfile'])->name('updateProfile');
 Route::post('/update-password/{id}', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('updatePassword');
 
-Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
+// Testing
+// Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
-// Route::get('/home', [LandingPageControlle::class, 'index'])->name('dashboard')
 
 //login router
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('loginForm');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
-
-
-
-
 
 //Company Regulation Router
 Route::get('/company-regulation', [CompanyRegulationController::class, 'index'])->name('company-regulation');
 Route::get('/download',  [CompanyRegulationController::class, 'downloadFile'])->name('file.download');
 
 
-
-
-
 // Rute-rute yang perlu dilindungi oleh middleware auth
 Route::group(['middleware' => 'auth'], function () {
-    //it helpdesk
+//it helpdesk
 Route::get('/it-helpdesk', [ITHelpdeskController::class, 'index'])->name('it-helpdesk');
 Route::post('/it-helpdesk', [ITHelpdeskController::class, 'insert'])->name('it-helpdesk.insert');
 Route::get('/it-helpdesk/detail/{id_tiket}', [ITHelpdeskController::class, 'detailTicket'])->name('it-helpdesk.detail');
 Route::post('/it-helpdesk/update/{id_tiket}', [ITHelpdeskController::class, 'update'])->name('it-helpdesk.update');
 Route::delete('/it-helpdesk/delete/{id_tiket}', [ITHelpdeskController::class, 'delete'])->name('it-helpdesk.delete');
-Route::post('/it-helpdesk/komentar', [ITHelpdeskController::class, 'komentar']);
-
+Route::post('/it-helpdesk/komentar', [ITHelpdeskController::class, 'komentar'])->name('it-helpdesk.komentar');
 
 //project
 Route::get('/project', [ProjectController::class, 'index'])->name('projects.index');
@@ -94,7 +86,6 @@ Route::get('/employee/update/{idnik}', [EmployeeController::class, 'getUpdateEmp
 Route::post('/employee/update/{idnik}', [EmployeeController::class, 'insertUpdateEmployee'])->name('employee.update');
 Route::post('/employee/update/change-password/{idnik}', [EmployeeController::class, 'changePassword'])->name('changePassword');
 Route::post('/employee/update/photo-profile/{idnik}', [EmployeeController::class, 'photoProfile'])->name('employee.photoProfile');
-
 
 //administrator
 Route::get('/admin/dashboard', [AdministratorController::class, 'dashboard'])->name('admin.dashboard');

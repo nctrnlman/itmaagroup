@@ -43,11 +43,7 @@ class AdministratorController extends Controller
                 $currentDate = Carbon::now();
                 $year = substr($currentDate->year, -2);
                 $idnik =  $request->idnik;
-                $generatedUuid = Str::uuid();
-                $parts = explode("-", $generatedUuid);
-                $numericUuid = implode("", array_filter($parts, 'is_numeric'));
-                $uuid = substr($numericUuid, 0, 3);
-                $uuid = sprintf('%03d', $uuid);
+                $uuid = str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT);
                 $idAccess = 'ACS' . $year . $currentDate->format('md') . substr($idnik, -3) . $uuid;
 
                 $existingTask = AccessMenu::where('id_access', $idAccess)->first();

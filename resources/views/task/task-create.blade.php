@@ -32,12 +32,16 @@
 
                         <div class="mb-3">
                             <label for="choices-project-input" class="form-label">Project</label>
-                            <select class="form-select" data-choices id="choices-project-input" name="id_project">
-                                <option value="">Project...</option>
-                                @foreach ($projects as $project)
-                                    <option value="{{ $project->id_project }}">{{ $project->title }}</option>
-                                @endforeach
-                            </select>
+                            <form id="getMembersForm">
+                                @csrf
+                                <select class="form-select" data-choices id="choices-project-input" name="id_project">
+                                    <option value="">Select Project</option>
+                                    @foreach ($projects as $project)
+                                        <option value="{{ $project->id_project }}">{{ $project->title }}</option>
+                                    @endforeach
+                                </select>
+                            </form>
+                            <input type="hidden" name="selected_project_id" id="selected-project-id">
                         </div>
 
                         <div class="mb-3">
@@ -93,8 +97,8 @@
 @section('script')
     <script src="{{ URL::asset('assets/libs/@ckeditor/@ckeditor.min.js') }}"></script>
     <script src="{{ URL::asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/choices.js/choices.js.min.js') }}"></script>
     <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/choices.js/choices.js.min.js') }}"></script>
     <script src="assets/js/app.min.js"></script>
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
     <script>

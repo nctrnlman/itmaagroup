@@ -62,7 +62,7 @@ class GAFacilitiesController extends Controller
             $tickets = GAFacilities::join('user', 'ga_facilities.id_nik_request', '=', 'user.idnik')
             ->select('ga_facilities.*', 'user.*')
             ->where(function ($query) use ($userId) {
-                $query->where('kategori_tiket', 'Building Management')
+                $query->where('kategori_tiket', 'Building Maintenance support')
                     ->orWhere('id_nik_request', $userId);
             })
             ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
@@ -77,7 +77,7 @@ class GAFacilitiesController extends Controller
         $tickets = GAFacilities::join('user', 'ga_facilities.id_nik_request', '=', 'user.idnik')
             ->select('ga_facilities.*', 'user.*')
             ->where(function ($query) use ($userId) {
-                $query->where('kategori_tiket', 'Repair & Purchase')
+                $query->where('kategori_tiket', 'Other facilities Request (Purchase Request)')
                     ->orWhere('id_nik_request', $userId);
             })
             ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
@@ -120,12 +120,8 @@ class GAFacilitiesController extends Controller
                 'kategori_tiket' => 'required',    'request' => 'required',
             ]);
 
-            if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'GA ATK' || session('user')['access_type'] === 'GA Building' || session('user')['access_type'] === 'GA RP' ) {
-                $id_nik_request = $request->input('request');
-            } else {
-                $id_nik_request = session('user')->idnik;
-            }
-
+            $id_nik_request = $request->input('request');
+            
             $generatedId = false;
             $idGA = '';
 
@@ -133,11 +129,7 @@ class GAFacilitiesController extends Controller
                 $currentDate = Carbon::now();
                 $year = substr($currentDate->year, -2);
                 $idnik =  $id_nik_request;
-                $generatedUuid = Str::uuid();
-                $parts = explode("-", $generatedUuid);
-                $numericUuid = implode("", array_filter($parts, 'is_numeric'));
-                $uuid = substr($numericUuid, 0, 3);
-                $uuid = sprintf('%03d', $uuid);
+                $uuid = str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT);
                 $idGA = 'GA' . $year . $currentDate->format('md') . substr($idnik, -3) . $uuid;
 
                 $existingTask = GAFacilities::where('id_ga_facilities', $idGA)->first();
@@ -155,13 +147,6 @@ class GAFacilitiesController extends Controller
                 $lampiran1->storeAs('public/gafacilities', $filename1);
             }
 
-            $filename2 = null;
-            if ($request->hasFile('lampiran2')) {
-                $lampiran2 = $request->file('lampiran2');
-                $filename2 = $idGA . '_' . $lampiran2->getClientOriginalName();
-                $lampiran2->storeAs('public/gafacilities', $filename2);
-            }
-
             $GAFacilities = new GAFacilities();
             $GAFacilities->id_ga_facilities = $idGA;
             $GAFacilities->id_nik_request =  $id_nik_request;
@@ -169,7 +154,6 @@ class GAFacilitiesController extends Controller
             $GAFacilities->disc_keluhan = $request->desc;
             $GAFacilities->kategori_tiket = $request->kategori_tiket;
             $GAFacilities->lampiran1 = $filename1;
-            $GAFacilities->lampiran2 = $filename2;
             $GAFacilities->whatsapp = $request->wa;
             
             $GAFacilities->save();
@@ -179,8 +163,13 @@ class GAFacilitiesController extends Controller
             $link = route('ga-facilities.detail', ['id_tiket' => $idGA]);
 
             $target = $request->wa;
-            $message = "Halo " . $namaEmployee . "!\n\nTiket dengan ID #" . $idGA . " Anda sudah berhasil dibuat dengan status 'Pending'\n\nTerima kasih telah menggunakan layanan kami. Jangan lupa untuk selalu cek Employee Information Portal (EIP) untuk informasi selanjutnya. Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim General Affairs kami.\n\nTerima kasih!\n\nInfo lebih lanjut tentang tiket ini: " . $link;
+           $message = "Halo " . $namaEmployee . ",\n\nTiket dengan ID #" . $idGA . " Anda telah berhasil dibuat dengan status 'OPEN'.\n\nThank you for your time to fill and support EIP (Employee Information Portal) for request System, We will respond to your request, please wait we will process according to the queue !! :) \n
+Terima kasih atas waktunya untuk mengisi dan mendukung sistem request EIP, kami akan memproses permintaan anda, mohon kesediaannya untuk menunggu sesuai dengan antrian !! \n
+Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim General Affairs kami: ".$link ."\n\nTerima kasih! :)";
             SendWhatsAppMessageJob::dispatch($target, $message)->onQueue('whatsapp');
+
+
+
             
             Alert::success('Success', 'Ticket created successfully!');
             return redirect()->back();
@@ -215,11 +204,11 @@ class GAFacilitiesController extends Controller
             ->first();
 
             if ($ticket) {
-                if ($ticket->kategori_tiket === 'Building Management') {
+                if ($ticket->kategori_tiket === 'Building Maintenance support') {
                     $usersGA = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
                         ->whereIn('access_menu.access_type', ['GA Building'])
                         ->get();
-                } elseif ($ticket->kategori_tiket === 'Repair & Purchase') {
+                } elseif ($ticket->kategori_tiket === 'Other facilities Request (Purchase Request)') {
                     $usersGA = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
                         ->whereIn('access_menu.access_type', ['GA RP'])
                         ->get();
@@ -329,11 +318,7 @@ class GAFacilitiesController extends Controller
                 $currentDate = Carbon::now();
                 $year = substr($currentDate->year, -2);
                 $idnik = session('user')->idnik;
-                $generatedUuid = Str::uuid();
-                $parts = explode("-", $generatedUuid);
-                $numericUuid = implode("", array_filter($parts, 'is_numeric'));
-                $uuid = substr($numericUuid, 0, 3);
-                $uuid = sprintf('%03d', $uuid);
+                $uuid = str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT);
                 $idComment = 'CMT' . $year . $currentDate->format('md') . substr($idnik, -3) . $uuid;
         
                 $existingTask = Comment::where('id_komen_tiket', $idComment)->exists();

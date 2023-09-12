@@ -22,7 +22,6 @@ class Task extends Model
         'id_task',
         'id_project',
         'title',
-        'idnik',
         'description',
         'status',
         'create_date',

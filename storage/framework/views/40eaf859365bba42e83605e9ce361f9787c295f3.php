@@ -1,14 +1,12 @@
-@extends('layouts.master-without-nav')
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get('translation.404-alt'); ?>
+<?php $__env->stopSection(); ?>
 
-@section('title')
-    @lang('translation.404-alt')
-@endsection
-
-@section('body')
+<?php $__env->startSection('body'); ?>
 
 <body>
-@endsection
-@section('content')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content'); ?>
 
         <!-- auth-page wrapper -->
         <div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
@@ -45,5 +43,7 @@
             <!-- end auth page content -->
         </div>
         <!-- end auth-page-wrapper -->
-        @endsection
+        <?php $__env->stopSection(); ?>
 
+
+<?php echo $__env->make('layouts.master-without-nav', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\eip-it\resources\views/auth-404-alt.blade.php ENDPATH**/ ?>

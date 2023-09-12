@@ -39,51 +39,57 @@
                                         <div>
                                             <h4 class="fw-bold">{{ $project->title }}</h4>
                                             <div class="hstack gap-3 flex-wrap">
-                                                <div><i class="ri-building-line align-bottom me-1"></i>MAA GROUP</div>
+                                                <div><i class="ri-building-line align-bottom me-1"></i>MAA GROUP
+                                                </div>
                                                 <div class="vr"></div>
                                                 <div>Start Date : <span
-                                                        class="fw-medium">{{ date('d F Y', strtotime($project->start_date)) }}</span>
+                                                        class="fw-medium">{{ $project->start_date ? date('d F Y', strtotime($project->start_date)) : '-' }}</span>
                                                 </div>
                                                 <div class="vr"></div>
                                                 <div>Due Date : <span
-                                                        class="fw-medium">{{ date('d F Y', strtotime($project->due_date)) }}</span>
+                                                        class="fw-medium">{{ $project->due_date ? date('d F Y', strtotime($project->due_date)) : '-' }}</span>
                                                 </div>
                                                 <div class="vr"></div>
-                                                <div>Status : <span class="fw-medium">{{ $project->status }}</span></div>
+                                                <div>Status : <span class="fw-medium">{{ $project->status ?: '-' }}</span>
+                                                </div>
+                                                <div class="vr"></div>
+                                                <div>Cost : <span class="fw-medium"
+                                                        id="cost">{{ $project->cost ? 'Rp ' . number_format($project->cost, 0, ',', '.') : '-' }}</span>
+                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <ul class="nav nav-tabs-custom border-bottom-0" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active fw-semibold" data-bs-toggle="tab" href="#project-overview"
-                                    role="tab">
-                                    Overview
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#project-documents"
-                                    role="tab">
-                                    Documents
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#project-activities"
-                                    role="tab">
-                                    Tasks
-                                </a>
-                            </li>
-                        </ul>
                     </div>
-                    <!-- end card body -->
+
+                    <ul class="nav nav-tabs-custom border-bottom-0" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active fw-semibold" data-bs-toggle="tab" href="#project-overview"
+                                role="tab">
+                                Overview
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#project-documents" role="tab">
+                                Documents
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#project-activities" role="tab">
+                                Tasks
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+                <!-- end card body -->
             </div>
-            <!-- end card -->
         </div>
-        <!-- end col -->
+        <!-- end card -->
+    </div>
+    <!-- end col -->
     </div>
     <!-- end row -->
     <div class="row">
@@ -96,7 +102,7 @@
                                 <div class="card-body">
                                     <div class="text-muted">
                                         <h4 class="mb-3 fw-semibold text-uppercase ">Summary</h4>
-                                        <p style=" overflow-y: auto;">{!! $project->description !!}</p>
+                                        <p style=" overflow-y: auto; ">{!! $project->description !!}</p>
                                     </div>
                                 </div>
                                 <!-- end card body -->
@@ -342,7 +348,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Task</th>
-                                                <th>Assign To</th>
+                                                <th>Start Date</th>
                                                 <th>Due Date</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
@@ -352,7 +358,7 @@
                                             @foreach ($taskList as $task)
                                                 <tr>
                                                     <td>{{ $task->title }}</td>
-                                                    <td>{{ $task->nama }}</td>
+                                                    <td>{{ date('d F Y', strtotime($task->start_date)) }}</td>
                                                     <td>{{ date('d F Y', strtotime($task->due_date)) }}</td>
                                                     <td>{{ $task->status }}</td>
                                                     <td>
@@ -363,15 +369,26 @@
                                                                 <i class="ri-more-fill align-middle"></i>
                                                             </button>
                                                             <ul class="dropdown-menu dropdown-menu-end">
-                                                                <a href="{{ route('tasks.view', ['id_task' => $task->id_task]) }}"
-                                                                    class="dropdown-item view-item-btn">
-                                                                    <i
-                                                                        class="ri-eye-fill align-bottom me-2 text-muted"></i>
-                                                                    View
-                                                                </a>
+                                                                <li>
+                                                                    <a href="{{ route('tasks.view', ['id_task' => $task->id_task]) }}"
+                                                                        class="dropdown-item view-item-btn">
+                                                                        <i
+                                                                            class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                                                                        View
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="{{ route('tasks.edit', ['id_task' => $task->id_task]) }}"
+                                                                        class="dropdown-item edit-item-btn">
+                                                                        <i
+                                                                            class="ri-pencil-fill align-bottom me-2 text-muted"></i>
+                                                                        Edit
+                                                                    </a>
+                                                                </li>
                                                             </ul>
                                                         </div>
                                                     </td>
+
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -421,5 +438,13 @@
                 ]
             });
         });
+    </script>
+    <script>
+        const cost = {{ $project->cost }};
+        const formattedCost = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR'
+        }).format(cost);
+        document.getElementById('cost').textContent = formattedCost;
     </script>
 @endsection

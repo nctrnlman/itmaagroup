@@ -15,10 +15,12 @@ class CommentController extends Controller
             'keterangan_komen' => 'required',
             'id_tiket' => 'required',
         ]);
+        
+        
 
         $userId = session('user')->idnik;
-        $newCommentId = 'CMT' . substr(date('Y'), -2) . date('md') . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
         dd($userId);
+        $newCommentId = 'CMT' . substr(date('Y'), -2) . date('md') . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
 
         $comment = new Comment();
         $comment->id_komen_tiket = $newCommentId;

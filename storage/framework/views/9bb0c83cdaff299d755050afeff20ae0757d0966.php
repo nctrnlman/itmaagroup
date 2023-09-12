@@ -142,7 +142,7 @@
                             <?php $__currentLoopData = $tasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
                                     <td><?php echo e($task->id_task); ?></td>
-                                    <td><?php echo e($task->project->title); ?></td>
+                                    <td><?php echo e($task->project->title ?? 'No Project'); ?></td>
                                     <td><?php echo e($task->title); ?></td>
                                     <td><?php echo e(date('d F Y', strtotime($task->due_date))); ?></td>
                                     <td><?php echo e($task->status); ?></td>

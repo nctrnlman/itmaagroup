@@ -50,7 +50,7 @@
                     </li> --}}
                     <li class="nav-item">
                         <a class="nav-link menu-link" href="{{ route('it-helpdesk') }}">
-                            <i class="ri-pencil-ruler-2-line"></i> <span>IT Helpdesk</span>
+                            <i class="ri-pencil-ruler-2-line"></i> <span>IT Support</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -58,9 +58,6 @@
                             <i class="ri-file-list-3-line"></i> <span>GA Facilities</span>
                         </a>
                     </li>
-
-
-
 
                     {{-- <li class="nav-item">
                         <a class="nav-link menu-link" href="#sidebarApps" data-bs-toggle="collapse" role="button"
@@ -81,7 +78,7 @@
                         </div>
                     </li> --}}
 
-                    @if (session('user')->divisi === 'HRGA')
+                    @if (session('user')->divisi === 'HRGA' || session('user')->access_type === 'Admin')
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#project" data-bs-toggle="collapse" role="button"
                                 aria-expanded="false" aria-controls="project">

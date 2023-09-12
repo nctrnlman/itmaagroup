@@ -80,34 +80,48 @@
                     <div class="d-flex mb-3">
                         <h6 class="card-title mb-0 flex-grow-1">Assigned To</h6>
                     </div>
-                    <ul class="list-unstyled vstack gap-3 mb-0">
-                        <li>
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0">
-                                    <img src="@if (session('user')->file_foto) {{ asset('uploads/uploads/' . session('user')->file_foto) }}@else{{ asset('uploads/uploads/default.jpg') }} @endif"
-                                        alt="" class="avatar-xs rounded-circle">
-                                </div>
-                                <div class="flex-grow-1 ms-2">
-                                    <h6 class="mb-1"><a href="pages-profile">{{ session('user')->nama }}</a></h6>
-                                </div>
-                                <div class="flex-shrink-0">
-                                    <div class="dropdown">
-                                        <button class="btn btn-icon btn-sm fs-16 text-muted dropdown" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ri-more-fill"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item"
-                                                    href="{{ route('employee.view', ['idnik' => session('user.idnik')]) }}"><i
-                                                        class="ri-eye-fill text-muted me-2 align-bottom"></i>View</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                    <div class="scrollable-list" style="max-height: 192px; overflow-y: auto;">
+                        <ul class="list-unstyled vstack gap-3 mb-0">
+                            @foreach ($projectMembers as $projectMember)
+                                @php
+                                    $employee = $employees->where('idnik', $projectMember->idnik)->first();
+                                @endphp
+                                <li>
+                                    @if ($employee)
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <img src="{{ $employee->file_foto ? asset('uploads/uploads/' . $employee->file_foto) : asset('uploads/uploads/default.jpg') }}"
+                                                    alt="{{ $employee->nama }}" class="avatar-xs rounded-circle">
+                                            </div>
+                                            <div class="flex-grow-1 ms-2">
+                                                <h6 class="mb-1"><a href="pages-profile">{{ $employee->nama }}</a></h6>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-icon btn-sm fs-16 text-muted dropdown"
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="ri-more-fill"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item"
+                                                                href="{{ route('employee.view', ['idnik' => $employee->idnik]) }}"><i
+                                                                    class="ri-eye-fill text-muted me-2 align-bottom"></i>View</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <p>Employee not found for idnik: {{ $projectMember->idnik }}</p>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
+
+
             <!--end card-->
             <div class="card">
                 <div class="card-body">

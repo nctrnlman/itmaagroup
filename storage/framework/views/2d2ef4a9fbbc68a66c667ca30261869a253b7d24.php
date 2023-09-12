@@ -195,7 +195,7 @@
                         </div>
 
                         <!-- Project Card -->
-                        <?php if(session('user')->divisi === 'HRGA'): ?>
+                        <?php if(session('user')->divisi === 'HRGA' || session('user')->access_type === 'Admin'): ?>
                             <div class="col-xl-4">
                                 <div class="card card-animate">
                                     <div class="card-body">

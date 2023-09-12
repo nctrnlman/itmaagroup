@@ -27,7 +27,14 @@ class ProjectController extends Controller
     {
         try {
             $divisi = session('user')->divisi;
-            $users = Employee::where('divisi', $divisi)->get();
+            $isAdmin = session('user')->access_type === 'Admin';
+
+            if ($isAdmin) {
+                $users = Employee::all();
+            }else{
+                $users = Employee::where('divisi', $divisi)->get();
+            }
+   
             return view('project.index', ['users' => $users]);
         } catch (\Exception $e) {
             $errorMessage = $e->getMessage();
@@ -38,51 +45,59 @@ class ProjectController extends Controller
     }
 
     public function show(Request $request)
-{
-    try {
-        $perPage = 8;
-        $query = Project::query();
-        $search = $request->input('search');
-        if ($search) {
-            $query->where('title', 'like', '%' . $search . '%');
+    {
+        try {
+            $perPage = 8;
+            $query = Project::query();
+            $search = $request->input('search');
+            if ($search) {
+                $query->where('title', 'like', '%' . $search . '%');
+            }
+    
+            $statusFilter = $request->input('status_filter');
+            if ($statusFilter && $statusFilter != 'All') {
+                $query->where('status', $statusFilter);
+            }
+    
+           // Cek apakah pengguna adalah admin
+        $isAdmin = session('user')->access_type === 'Admin';
+        // dd($isAdmin);
+
+        // Jika pengguna adalah admin, jangan tambahkan kondisi 'whereIn'
+        if (!$isAdmin) {
+            $query->whereIn('id_project', function ($subquery) {
+                $subquery->select('id_project')
+                    ->from('project_member')
+                    ->where('idnik', session('user')->idnik);
+            });
         }
 
-        $statusFilter = $request->input('status_filter');
-        if ($statusFilter && $statusFilter != 'All') {
-            $query->where('status', $statusFilter);
+    
+            $query->orderByRaw("FIELD(status, 'Open', 'On Progress', 'Closed', 'Canceled')");
+    
+            $query->withCount('tasks');
+        
+            $projectPage = $query->paginate($perPage);
+            $projects = $projectPage->items();
+            
+            $members = DB::table('project_member')
+                ->join('user', 'project_member.idnik', '=', 'user.idnik')
+                ->select('project_member.*', 'user.*')
+                ->get();
+    
+            foreach ($projects as $project) {
+                $project->completedTasksCount = $project->tasks()->where('status', 'completed')->count();
+                $project->totalTasksCount = $project->tasks_count;
+                $project->progressPercentage = $project->totalTasksCount > 0 ? ($project->completedTasksCount / $project->totalTasksCount) * 100 : 0;
+            }
+    
+            return view('project.project-list', ['projects' => $projects, 'members' => $members, 'projectPage' => $projectPage]);
+        } catch (\Exception $e) {
+            $errorMessage = $e->getMessage();
+            Session::flash('error', $errorMessage);
+            return redirect()->back();
         }
-
-    $query->orderByRaw("FIELD(status, 'Open', 'On Progress', 'Closed', 'Canceled')");
-
-        $query->whereIn('id_project', function ($subquery) {
-            $subquery->select('id_project')
-                ->from('project_member')
-                ->where('idnik', session('user')->idnik);
-        });
-
-        $query->withCount('tasks');
-
-        $projectPage = $query->paginate($perPage);
-        $projects = $projectPage->items();
-
-        $members = DB::table('project_member')
-            ->join('user', 'project_member.idnik', '=', 'user.idnik')
-            ->select('project_member.*', 'user.*')
-            ->get();
-
-        foreach ($projects as $project) {
-            $project->completedTasksCount = $project->tasks()->where('status', 'completed')->count();
-            $project->totalTasksCount = $project->tasks_count;
-            $project->progressPercentage = $project->totalTasksCount > 0 ? ($project->completedTasksCount / $project->totalTasksCount) * 100 : 0;
-        }
-
-        return view('project.project-list', ['projects' => $projects, 'members' => $members, 'projectPage' => $projectPage]);
-    } catch (\Exception $e) {
-        $errorMessage = $e->getMessage();
-        Session::flash('error', $errorMessage);
-        return redirect()->back();
     }
-}
 
 
 
@@ -103,11 +118,10 @@ class ProjectController extends Controller
                 ->select('project.*', 'task.*')
                 ->get();
 
+            
             $taskList = DB::table('task')
-                ->join('user', 'task.idnik', '=', 'user.idnik')
-                ->where('task.id_project', $id)
-                ->select('task.*', 'user.nama')
-                ->get();
+            ->where('id_project', $id)
+            ->get();
 
             $members = DB::table('project_member')
                 ->join('user', 'project_member.idnik', '=', 'user.idnik')
@@ -136,8 +150,10 @@ class ProjectController extends Controller
             'due_date' => 'required|date|after_or_equal:start_date',
             'start_date' => 'required|date|before_or_equal:due_date',
             'categories' => 'required',
-            'memberIds' => 'required',
+            'cost'=>'required',
         ]);
+
+        
 
         $generatedId = false;
         $idProject = '';
@@ -146,11 +162,7 @@ class ProjectController extends Controller
             $currentDate = Carbon::now();
             $year = substr($currentDate->year, -2);
             $idnik = session('user')->idnik;
-            $generatedUuid = Str::uuid();
-            $parts = explode("-", $generatedUuid);
-            $numericUuid = implode("", array_filter($parts, 'is_numeric'));
-            $uuid = substr($numericUuid, 0, 3);
-            $uuid = sprintf('%03d', $uuid);
+            $uuid = str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT);
             $idProject = 'PJT' . $year . $currentDate->format('md') . substr($idnik, -3) . $uuid;
 
             $existingProject = Project::where('id_project', $idProject)->first();
@@ -174,12 +186,14 @@ class ProjectController extends Controller
 
         $project->id_project = $idProject;
         $project->title = $request->input('title');
+        $project->cost = $request->input('cost');
         $project->description = $request->input('description');
         $project->status = $request->input('status');
         $project->categories = $request->input('categories');
         $project->idnik = session('user')->idnik;
         $project->start_date = $request->input('start_date');
         $project->due_date = $request->input('due_date');
+        // dd($project);
         $project->save();
 
         $memberIdsArray = explode(',', $request->input('memberIds')[0]);
@@ -214,7 +228,13 @@ class ProjectController extends Controller
         try {
             $divisi = session('user')->divisi;
             $project = Project::findOrFail($id);
-            $users = Employee::where('divisi', $divisi)->get();
+            $isAdmin = session('user')->access_type === 'Admin';
+
+            if ($isAdmin) {
+                $users = Employee::all();
+            }else{
+                $users = Employee::where('divisi', $divisi)->get();
+            }
 
             $selectedUsers = DB::table('project_member')
                 ->join('user', 'project_member.idnik', '=', 'user.idnik')
@@ -241,6 +261,7 @@ class ProjectController extends Controller
                 'categories' => 'nullable',
                 'selectedMembers' => 'nullable|array',
                 'file' => 'nullable|file',
+                'cost' => 'required'
             ]);
 
             $project = Project::findOrFail($id);
@@ -251,6 +272,7 @@ class ProjectController extends Controller
             $project->due_date = $request->input('due_date');
             $project->start_date = $request->input('start_date');
             $project->categories = $request->input('categories');
+            $project->cost = $request->input('cost');
 
             $fileUrl = null;
             if ($request->hasFile('file')) {
@@ -266,7 +288,7 @@ class ProjectController extends Controller
 
                 $project->file = $fileName;
             }
-
+            // dd($project);
             $project->save();
 
             $selectedMembers = $request->input('selectedMembers', []);

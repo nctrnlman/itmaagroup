@@ -33,7 +33,7 @@ class SendWhatsAppMessageJob implements ShouldQueue
      */
     public function handle()
     {
-        $token = 'i#mnEEkjcD4+HUxBuVyT'; // Ganti dengan token Anda
+        $token = 'SuQ7o9ufuZ89LqrLjN9N'; // Ganti dengan token Anda
 
         $response = Http::withHeaders([
             'Authorization' => $token,

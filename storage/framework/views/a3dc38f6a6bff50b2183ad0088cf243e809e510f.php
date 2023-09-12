@@ -50,12 +50,9 @@
                         </a>
                     </li>
 
-
-
-
                     
 
-                    <?php if(session('user')->divisi === 'HRGA'): ?>
+                    <?php if(session('user')->divisi === 'HRGA' || session('user')->access_type === 'Admin'): ?>
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="#project" data-bs-toggle="collapse" role="button"
                                 aria-expanded="false" aria-controls="project">

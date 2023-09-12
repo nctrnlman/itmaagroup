@@ -20,15 +20,20 @@ class ITHelpdeskController extends Controller
     public function index()
     {
         $userId = session('user')->idnik;
+        $userLokasi = session('user')->lokasi;
 
         $usersIT = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
                      ->whereIn('access_menu.access_type', ['it', 'admin'])
                      ->get();
 
         $isAdmin = AccessMenu::where('idnik', $userId)
-                     ->whereIn('access_type', ['it', 'admin'])
+                     ->whereIn('access_type', [ 'admin'])
                      ->exists();
 
+
+        $isIT = AccessMenu::where('idnik', $userId)
+        ->whereIn('access_type', ['it'])
+        ->exists();
 
         $allUsers = Employee::all();
 
@@ -43,11 +48,24 @@ class ITHelpdeskController extends Controller
             $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
             $processTickets = $tickets->where('status_tiket', 'Process')->count();
             $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
-        } else {
+        }else if($isIT){
+            $tickets = Ticketing::join('user', 'ticketing.id_nik_request', '=', 'user.idnik')
+            ->select('ticketing.*', 'user.*')
+            ->where('user.lokasi', $userLokasi) // Filter tiket berdasarkan lokasi sesi 'user_lokasi'
+            ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+            ->orderBy('start_date', 'desc')
+            ->get();
+
+            $totalTickets = $tickets->count();
+            $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
+            $processTickets = $tickets->where('status_tiket', 'Process')->count();
+            $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
+        }else {
             $tickets = Ticketing::where('id_nik_request', $userId)
             ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
             ->orderBy('start_date', 'desc')
             ->get();
+
             $totalTickets = $tickets->count();
             $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
             $processTickets = $tickets->where('status_tiket', 'Process')->count();
@@ -85,11 +103,7 @@ class ITHelpdeskController extends Controller
                 $currentDate = Carbon::now();
                 $year = substr($currentDate->year, -2);
                 $idnik =  $id_nik_request;
-                $generatedUuid = Str::uuid();
-                $parts = explode("-", $generatedUuid);
-                $numericUuid = implode("", array_filter($parts, 'is_numeric'));
-                $uuid = substr($numericUuid, 0, 3);
-                $uuid = sprintf('%03d', $uuid);
+                $uuid = str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT);
                 $idHelpdesk = 'IT' . $year . $currentDate->format('md') . substr($idnik, -3) . $uuid;
 
                 $existingTask = Ticketing::where('id_tiket', $idHelpdesk)->first();
@@ -210,11 +224,7 @@ class ITHelpdeskController extends Controller
             $target = $ticket->whatsapp;
 
 
-            if ($statusTiket === 'Closed') {
-                $message = "Halo " . $namaEmployee . "!\n\nTicketing dengan ID #" . $id_tiket . " dan status " . $statusTiket . " sudah berhasil diupdate dan ditutup.\n\nTerima kasih telah menggunakan layanan kami. Jangan lupa untuk selalu cek Employee Information Portal (EIP) untuk informasi selanjutnya. Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim IT kami.\n\nTerima kasih!\n\nInfo lebih lanjut tentang tiket ini: \n" . $link;
-            } else {
-                $message = "Halo " . $namaEmployee . "!\n\nTicketing dengan ID #" . $id_tiket . " dan status " . $statusTiket . " sudah berhasil diupdate.\n\nTerima kasih telah menggunakan layanan kami. Jangan lupa untuk selalu cek Employee Information Portal (EIP) untuk informasi selanjutnya. Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim IT kami.\n\nTerima kasih!\n\nInfo lebih lanjut tentang tiket ini: \n" . $link;
-            }
+            $message = "Halo " . $namaEmployee . "!\n\nTicketing dengan ID #" . $id_tiket . "sudah berhasil diupdate dengan status " . $statusTiket . " .\n\nTerima kasih telah menggunakan layanan kami. Jangan lupa untuk selalu cek Employee Information Portal (EIP) untuk informasi selanjutnya. Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim IT kami.\n\nTerima kasih!\n\nInfo lebih lanjut tentang tiket ini: \n". $link;
 
             SendWhatsAppMessageJob::dispatch($target, $message)->onQueue('whatsapp');
                         Alert::success('Success', 'Update Successfully!');
@@ -253,7 +263,7 @@ class ITHelpdeskController extends Controller
                 'keterangan_komen' => 'required',
                 'id_tiket' => 'required',
             ]);
-        
+  
             $generatedId = false;
             $idComment = '';
         

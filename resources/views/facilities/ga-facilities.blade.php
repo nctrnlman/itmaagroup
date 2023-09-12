@@ -12,6 +12,37 @@
     <link href="{{ asset('css/ckeditor.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
     <link href="{{ URL::asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet">
+ <style>
+    .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .note {
+        font-size: 12px;
+        margin-top: 20px;
+        background-color: #f7f7f7;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .note-title {
+        font-weight: bold;
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .note-item {
+        margin-bottom: 5px;
+        text-align: justify;
+    }
+
+    .highlight {
+        font-weight: bold;
+    }
+</style>
 @endsection
 
 @section('content')
@@ -218,8 +249,8 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 @if (session('user')['access_type'] === 'Admin' ||
-                                                        (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Management') ||
-                                                        (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Repair & Purchase') ||
+                                                        (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Maintenance support') ||
+                                                        (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Other facilities Request (Purchase Request)') ||
                                                         (session('user')['access_type'] === 'GA ATK' && $ticket->kategori_tiket === 'ATK/Stationary'))
                                                     <li>
                                                         <a href="{{ route('ga-facilities.detail', ['id_tiket' => $ticket->id_ga_facilities]) }}"
@@ -279,7 +310,7 @@
 
     <div class="modal fade zoomIn" id="showModal" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 1070px;">
             <div class="modal-content border-0">
                 <div class="modal-header p-3 bg-soft-info">
                     <h5 class="modal-title" id="exampleModalLabel">Create Request GA Facilities</h5>
@@ -292,38 +323,34 @@
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-lg-6">
-                                <div class="mb-2">
+                                <div class="mb-3">
                                     <label for="kategori_tiket" class="form-label">Type of service</label>
                                     <select class="form-select" name="kategori_tiket" data-choices
                                         id="choices-status-input">
                                         <option value="">Service..</option>
-                                        <option value="Building Management">Building Management</option>
-                                        <option value="Repair & Purchase">Repair & Purchase</option>
+                                        <option value="Building Maintenance support">Building Maintenance support</option>
+                                        <option value="Other facilities Request (Purchase Request)">Other facilities Request (Purchase Request)</option>
                                         <option value="ATK/Stationary">ATK/Stationary</option>
                                     </select>
                                 </div>
-                                <div>
+                                <div >
                                     <label for="desc" class="form-label">Description</label>
-                                    <textarea class="form-control" id="ckeditor-classic" placeholder="Description your problem" rows="9"
+                                    <textarea class="form-control" id="ckeditor-classic" placeholder="Description your problem" rows="25"
                                         name="desc" required></textarea>
                                 </div>
                             </div>
                             <div class="col-lg-6 ">
                                 <div class="mb-3">
-                                    <label for="lampiran1" class="form-label">Lampiran 1</label>
+                                    <label for="lampiran1" class="form-label">Material Request Form (if any)</label>
                                     <input type="file" id="lampiran1" class="form-control" name="lampiran1"
                                         required />
-                                </div>
-                                <div class="mb-2">
-                                    <label for="lampiran2" class="form-label">Lampiran 2</label>
-                                    <input type="file" id="lampiran2" class="form-control" name="lampiran2" />
                                 </div>
                                 <div>
                                     <label for="wa" class="form-label">No.Whatsapp</label>
                                     <input type="text" id="wa" class="form-control"
                                         placeholder="Insert your active number" name="wa" />
                                 </div>
-                                @if (session('user')['access_type'] === 'Admin' ||
+                                 @if (session('user')['access_type'] === 'Admin' ||
                                         session('user')['access_type'] === 'GA ATK' ||
                                         session('user')['access_type'] === 'GA RP' ||
                                         session('user')['access_type'] === 'GA Building')
@@ -337,9 +364,29 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                @else
+                                    <input type="hidden" name="request" value="{{ session('user')->idnik }}">
                                 @endif
+                                   <div class="note">
+            <div class="note-title">NOTE:</div>
+<div class="note-item">
+    <span class="highlight">Building Maintenance support</span>: Covers building and facility-related needs (e.g., Chair, roller blind, glass partition, access doors, and others).
+</div>
+<div class="note-item">
+    <span class="highlight">Other facilities Request (Purchase Request)</span>: For purchasing and replacing items, you are required to attach the approved material request form.
+</div>
+<div class="note-item">
+    <span class="highlight">ATK/Stationary</span>: Offers support for stationary-related requests.
+</div>
+<div class="note-item mt-3">
+    Requests that involve material procurement will take approximately 15 days to process. Kindly wait for further updates.
+</div>
+</div>
+
                             </div>
+                         
                         </div>
+                        
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Close</button>

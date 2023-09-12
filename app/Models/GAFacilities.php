@@ -24,7 +24,6 @@ class GAFacilities extends Model
         'disc_keluhan',
         'status_tiket',
         'lampiran1',
-        'lampiran2',
         'nik_pic',
         'kategori_tiket',
         'whatsapp',

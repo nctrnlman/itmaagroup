@@ -142,7 +142,7 @@
                             @foreach ($tasks as $task)
                                 <tr>
                                     <td>{{ $task->id_task }}</td>
-                                    <td>{{ $task->project->title }}</td>
+                                    <td>{{ $task->project->title ?? 'No Project' }}</td>
                                     <td>{{ $task->title }}</td>
                                     <td>{{ date('d F Y', strtotime($task->due_date)) }}</td>
                                     <td>{{ $task->status }}</td>
@@ -169,6 +169,7 @@
                                                         method="POST" style="display: inline-block;">
                                                         @csrf
                                                         @method('DELETE')
+
                                                         <button type="button"
                                                             class="dropdown-item edit-item-btn delete-button"
                                                             data-task-id="{{ $task->id_task }}">

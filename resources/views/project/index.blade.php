@@ -14,123 +14,131 @@
             Create Project
         @endslot
     @endcomponent
+    <div>
+        <form action="{{ route('projects.create') }}" method="POST" id="createForm" enctype="multipart/form-data">
+            @csrf
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label" for="project-title-input">Project Title</label>
+                                <input type="text" class="form-control" id="project-title-input" name="title"
+                                    placeholder="Enter project title">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Project Description</label>
+                                <textarea class="form-control" name="description"id="ckeditor-classic" rows="5"></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3 mb-lg-0">
+                                        <label for="choices-status-input" class="form-label">Status</label>
+                                        <select class="form-select" data-choices id="choices-status-input" name="status">
+                                            <option value="">Enter status</option>
+                                            <option value="Open">Open</option>
+                                            <option value="On Progress">On Progress</option>
+                                            <option value="Closed">Closed</option>
+                                            <option value="Rejected">Canceled</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div>
+                                        <label for="datepicker-deadline-input" class="form-label">Start Date</label>
+                                        <input type="text" class="form-control" id="datepicker-deadline-input"
+                                            name="start_date" placeholder="Enter due date" data-provider="flatpickr">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div>
+                                        <label for="datepicker-deadline-input" class="form-label">Due Date</label>
+                                        <input type="text" class="form-control" id="datepicker-deadline-input"
+                                            name="due_date" placeholder="Enter due date" data-provider="flatpickr">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3    ">
+                                <div class="col-lg-4">
+                                    <div>
+                                        <label for="choices-status-input" class="form-label">Categories</label>
+                                        <select class="form-select" data-choices id="choices-status-input"
+                                            name="categories">
+                                            <option value="">Enter categories</option>
+                                            <option value="Hardware">Hardware</option>
+                                            <option value="Network">Network</option>
+                                            <option value="Printer & Scanner">Printer & Scanner</option>
+                                            <option value="Software">Software</option>
+                                            <option value="Programming">Programming</option>
+                                            <option value="Infrastruktur">Infrastruktur</option>
+                                            <option value="CCTV">CCTV</option>
+                                            <option value="Server">Server</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div>
+                                        <label class="form-label">Cost</label>
+                                        <input type="text" class="form-control" id="priceInput" name="cost">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div>
+                                        <label for="file" class="form-label">Attached file</label>
+                                        <input type="file" id="file" class="form-control" name="file" />
+                                    </div>
+                                </div>
 
-    <form action="{{ route('projects.create') }}" method="POST" id="createForm" enctype="multipart/form-data">
-        @csrf
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-label" for="project-title-input">Project Title</label>
-                            <input type="text" class="form-control" id="project-title-input" name="title"
-                                placeholder="Enter project title">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" required>Project Description</label>
-                            <textarea class="form-control" name="description"id="ckeditor-classic" rows="5"></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <div class="mb-3 mb-lg-0">
-                                    <label for="choices-status-input" class="form-label">Status</label>
-                                    <select class="form-select" data-choices id="choices-status-input" name="status"
-                                        required>
-                                        <option value="">Enter status</option>
-                                        <option value="Open">Open</option>
-                                        <option value="On Progress">On Progress</option>
-                                        <option value="Closed">Closed</option>
-                                        <option value="Rejected">Canceled</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div>
-                                    <label for="datepicker-deadline-input" class="form-label">Start Date</label>
-                                    <input type="text" class="form-control" id="datepicker-deadline-input"
-                                        name="start_date" placeholder="Enter due date" data-provider="flatpickr" required>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div>
-                                    <label for="datepicker-deadline-input" class="form-label">Due Date</label>
-                                    <input type="text" class="form-control" id="datepicker-deadline-input"
-                                        name="due_date" placeholder="Enter due date" data-provider="flatpickr" required>
-                                </div>
                             </div>
                         </div>
+                        <!-- end card body -->
                     </div>
-                    <!-- end card body -->
+                    <!-- end card -->
+
+
+                    <!-- end card -->
+                    <!-- end card -->
+
+                    <!-- Isi form input lainnya -->
+
                 </div>
-                <!-- end card -->
+                <!-- end col -->
+                <div class="col-lg-4">
+                    <!-- end card body -->
 
 
-                <!-- end card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Members</h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <div class="avatar-group" id="teamMembers">
+                                    <!-- Existing members -->
+                                    {{-- MEMBER YG DI INVITE --}}
+                                </div>
+                                <input type="hidden" name="memberIds[]" id="memberIds" value="">
+                                <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal"
+                                    data-bs-target="#inviteMembersModal">Invite Members</button>
+                            </div>
+                        </div>
+                        <!-- end card body -->
+                    </div>
 
-                <!-- Isi form input lainnya -->
 
+                    <div class="text-end mb-4" form="createForm">
+                        <a href="{{ route('projects.show') }}" class="btn btn-danger w-sm">Cancel</a>
+                        <button type="submit" class="btn btn-success w-sm">Create</button>
+                    </div>
+                    <!-- end card -->
+                </div>
+
+                <!-- end col -->
             </div>
-            <!-- end col -->
-            <div class="col-lg-4">
 
-
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Tags</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="choices-categories-input" class="form-label">Categories</label>
-                            <input type="text" class="form-control" id="project-title-input" name="categories"
-                                placeholder="Enter project categories">
-                        </div>
-                    </div>
-                    <!-- end card body -->
-                </div>
-                <!-- end card -->
-
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Members</h5>
-                    </div>
-                    <div class="card-body">
-                        <div>
-                            <div class="avatar-group" id="teamMembers">
-                                <!-- Existing members -->
-                                {{-- MEMBER YG DI INVITE --}}
-                            </div>
-                            <input type="hidden" name="memberIds[]" id="memberIds" value="">
-                            <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal"
-                                data-bs-target="#inviteMembersModal">Invite Members</button>
-                        </div>
-                    </div>
-                    <!-- end card body -->
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Attached file</h5>
-                    </div>
-                    <div class="card-body">
-                        <div>
-                            <input name="file" type="file">
-                            <button id="deleteFileButton" class="btn btn-sm btn-danger" style="display: none;">Delete
-                                File</button>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="text-end mb-4" form="createForm">
-                    <a href="{{ route('projects.show') }}" class="btn btn-danger w-sm">Cancel</a>
-                    <button type="submit" class="btn btn-success w-sm" id="createButton">Create</button>
-                </div>
-                <!-- end card -->
-            </div>
-
-            <!-- end col -->
-        </div>
-
-        <!-- end row -->
-    </form>
+            <!-- end row -->
+        </form>
+    </div>
 
     <!-- HTML Modal -->
     <div class="modal fade" id="inviteMembersModal" tabindex="-1" aria-labelledby="inviteMembersModalLabel"
@@ -192,6 +200,34 @@
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inisialisasi format Rupiah pada input harga
+            var cleave = new Cleave('#priceInput', {
+                numeral: true,
+                numeralThousandsGroupStyle: 'thousand',
+                prefix: 'Rp ',
+            });
+
+            // Set nilai default pada input harga
+            var priceInput = document.querySelector('#priceInput');
+            priceInput.value = 'Rp 0';
+
+            // Fungsi untuk menghapus format Rupiah sebelum mengirim data ke backend
+            function removeRupiahFormat(value) {
+                return value.replace(/[^\d]/g, ''); // Menghapus semua karakter non-digit
+            }
+
+            // Menambahkan event listener pada saat form submit
+            var form = document.querySelector('#createForm');
+            form.addEventListener('submit', function(event) {
+                var costInput = document.querySelector('#priceInput');
+                costInput.value = removeRupiahFormat(costInput
+                    .value); // Menghapus format Rupiah sebelum submit
+            });
+        });
+    </script>
     <script>
         var sessionIdnik = <?php echo json_encode(session('user')->idnik); ?>;
     </script>
@@ -206,6 +242,8 @@
         // Array to store the member IDs
         var memberIds = [];
 
+
+
         function getSessionIdnik() {
             return sessionIdnik;
         }
@@ -214,6 +252,12 @@
         function updateMemberIdsInput() {
             var memberIdsInput = document.getElementById('memberIds');
             memberIdsInput.value = memberIds.join(',');
+
+            if (memberIds.length > 0) {
+                teamMembersContainer.innerHTML = '<h1>No member selected</h1>';
+            } else {
+                teamMembersContainer.innerHTML = ''; // Clear the container
+            }
         }
 
         // Automatically add the session idnik to the memberIds array on page load
@@ -300,6 +344,7 @@
         function updateMemberIdsInput() {
             var memberIdsInput = document.getElementById('memberIds');
             memberIdsInput.value = memberIds.join(',');
+
         }
     </script>
     <script>

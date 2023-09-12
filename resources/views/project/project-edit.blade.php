@@ -37,10 +37,14 @@
                                 <div class="mb-3 mb-lg-0">
                                     <label for="choices-status-input" class="form-label">Status</label>
                                     <select class="form-select" data-choices id="choices-status-input" name="status">
-                                        <option value="Open">Open</option>
-                                        <option value="On Progress">On Progress</option>
-                                        <option value="Closed">Closed</option>
-                                        <option value="Rejected">Canceled</option>
+                                        <option value="Open" {{ $project->status === 'Open' ? 'selected' : '' }}>Open
+                                        </option>
+                                        <option value="On Progress"
+                                            {{ $project->status === 'On Progress' ? 'selected' : '' }}>On Progress</option>
+                                        <option value="Closed" {{ $project->status === 'Closed' ? 'selected' : '' }}>Closed
+                                        </option>
+                                        <option value="Rejected" {{ $project->status === 'Rejected' ? 'selected' : '' }}>
+                                            Canceled</option>
                                     </select>
                                 </div>
                             </div>
@@ -61,6 +65,54 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-4">
+                                <div>
+                                    <label for="choices-status-input" class="form-label">Categories</label>
+                                    <select class="form-select" data-choices id="choices-status-input" name="categories">
+                                        <option value="">Enter categories</option>
+                                        <option
+                                            value="Hardware"{{ $project->categories === 'Hardware' ? ' selected' : '' }}>
+                                            Hardware</option>
+                                        <option value="Network"{{ $project->categories === 'Network' ? ' selected' : '' }}>
+                                            Network</option>
+                                        <option
+                                            value="Printer & Scanner"{{ $project->categories === 'Printer & Scanner' ? ' selected' : '' }}>
+                                            Printer & Scanner</option>
+                                        <option
+                                            value="Software"{{ $project->categories === 'Software' ? ' selected' : '' }}>
+                                            Software</option>
+                                        <option
+                                            value="Programming"{{ $project->categories === 'Programming' ? ' selected' : '' }}>
+                                            Programming</option>
+                                        <option
+                                            value="Infrastruktur"{{ $project->categories === 'Infrastruktur' ? ' selected' : '' }}>
+                                            Infrastruktur</option>
+                                        <option value="CCTV"{{ $project->categories === 'CCTV' ? ' selected' : '' }}>CCTV
+                                        </option>
+                                        <option value="Server"{{ $project->categories === 'Server' ? ' selected' : '' }}>
+                                            Server</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div>
+                                    <label class="form-label">Cost</label>
+                                    <input type="text" class="form-control" id="priceInput" name="cost"
+                                        value="{{ $project->cost ?: '' }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div>
+                                    <label for="file" class="form-label">Attached file</label>
+                                    <input type="file" id="file" class="form-control" name="file" />
+                                    @if ($project->file)
+                                        <p class="mt-2">File saat ini: {{ $project->file }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -69,20 +121,6 @@
             </div>
             <!-- end col -->
             <div class="col-lg-4">
-                <!-- Tags and Members sections -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Tags</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="choices-categories-input" class="form-label">Categories</label>
-                            <input type="text" class="form-control" id="project-title-input" name="categories"
-                                placeholder="Enter project categories" value="{{ $project->categories ?? '' }}">
-                        </div>
-                    </div>
-                </div>
-
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Members</h5>
@@ -109,28 +147,12 @@
                     </div>
                 </div>
 
-
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Attached file</h5>
-                    </div>
-                    <div class="card-body">
-                        <div>
-                            <input name="file" type="file">
-                            <button id="deleteFileButton" class="btn btn-sm btn-danger" style="display: none;">Delete
-                                File</button>
-                            @if ($project->file)
-                                <p class="mt-2">File saat ini: {{ $project->file }}</p>
-                            @endif
-                        </div>
-                    </div>
+                <div class="text-end mb-4" form="createForm">
+                    <a href="{{ route('projects.show') }}" class="btn btn-danger w-sm">Cancel</a>
+                    <button type="submit" class="btn btn-success w-sm" id="createForm">Update</button>
                 </div>
             </div>
-            <div class="text-end mb-4" form="createForm">
-                <a href="{{ route('projects.show') }}" class="btn btn-danger w-sm">Cancel</a>
-                <button type="submit" class="btn btn-success w-sm" id="createFormButton">Update</button>
 
-            </div>
             <!-- end col -->
         </div>
         <!-- end row -->
@@ -196,6 +218,36 @@
     <script src="assets/js/pages/project-create.init.js"></script>
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
     <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inisialisasi format Rupiah pada input harga
+            var cleave = new Cleave('#priceInput', {
+                numeral: true,
+                numeralThousandsGroupStyle: 'thousand',
+                prefix: 'Rp ',
+            });
+
+            // Set nilai input cost jika nilai $project->cost ada
+            var costInput = document.querySelector('#priceInput');
+            costInput.value = '{{ $project->cost ? 'Rp ' . number_format($project->cost, 0, ',', '.') : '' }}';
+
+            // Fungsi untuk menghapus format Rupiah dan tanda baca, hanya menyisakan integer
+            function removeRupiahFormat(value) {
+                return value.replace(/[^\d]/g, ''); // Menghapus semua karakter non-digit
+            }
+
+            // Menambahkan event listener pada saat form submit
+            var form = document.querySelector('#createForm');
+            form.addEventListener('submit', function(event) {
+                var costInput = document.querySelector('#priceInput');
+                costInput.value = removeRupiahFormat(costInput
+                    .value); // Menghapus format Rupiah sebelum submit
+            });
+        });
+    </script>
+
+
     <script>
         // Initialize Flatpickr
         flatpickr('#datepicker-deadline-input', {

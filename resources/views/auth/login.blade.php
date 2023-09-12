@@ -6,7 +6,7 @@
     <div class="auth-page-wrapper pt-5">
         <!-- auth page bg -->
         <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
-            <div class="bg-overlay" style="background-color: #b30000;"></div>
+            <div class="bg-overlay" style="background-color: #af2a25;"></div>
 
             <div class="shape">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"

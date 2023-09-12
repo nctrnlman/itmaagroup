@@ -62,8 +62,8 @@
                                                 </div>
                                                 <div class="vr"></div>
                                                 @if (session('user')['access_type'] === 'Admin' ||
-                                                        (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Management') ||
-                                                        (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Repair & Purchase') ||
+                                                        (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Maintenance support') ||
+                                                        (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Other facilities Request (Purchase Request)') ||
                                                         (session('user')['access_type'] === 'GA ATK' && $ticket->kategori_tiket === 'ATK/Stationary'))
                                                     <div class="text-muted">Status : <span class="fw-medium"></span></div>
                                                     <div>
@@ -87,10 +87,10 @@
                                                             id="choices-status-input" disabled>
                                                             <option value="" disabled selected>Service..</option>
                                                             <option value="Building Management"
-                                                                {{ $ticket->kategori_tiket == 'Building Management' ? 'selected' : '' }}>
-                                                                Building Management</option>
+                                                                {{ $ticket->kategori_tiket == 'Building Maintenance support' ? 'selected' : '' }}>
+                                                                Building Maintenance support</option>
                                                             <option value="Repair & Purchase"
-                                                                {{ $ticket->kategori_tiket == 'Repair & Purchase' ? 'selected' : '' }}>
+                                                                {{ $ticket->kategori_tiket == 'Other facilities Request (Purchase Request)' ? 'selected' : '' }}>
                                                                 Repair & Purchase</option>
                                                             <option value="ATK/Stationary"
                                                                 {{ $ticket->kategori_tiket == 'ATK/Stationary' ? 'selected' : '' }}>
@@ -179,8 +179,8 @@
 
                     <h6 class="fw-semibold text-uppercase mb-3 fs-5">Justification</h6>
                     @if (session('user')['access_type'] === 'Admin' ||
-                            (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Management') ||
-                            (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Repair & Purchase') ||
+                            (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Maintenance support') ||
+                            (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Other facilities Request (Purchase Request)') ||
                             (session('user')['access_type'] === 'GA ATK' && $ticket->kategori_tiket === 'ATK/Stationary'))
                         <textarea class="form-control" id="ckeditor-classic-justification"
                             placeholder="Write Justrification in this field..." rows="5" name="justification">{{ $ticket->justification }}</textarea>
@@ -191,8 +191,8 @@
                     <div class="mt-4">
                         <h6 class="fw-semibold text-uppercase mb-3 fs-5">Progress / Action Note</h6>
                         @if (session('user')['access_type'] === 'Admin' ||
-                                (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Management') ||
-                                (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Repair & Purchase') ||
+                                (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Maintenance support') ||
+                                (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Other facilities Request (Purchase Request)') ||
                                 (session('user')['access_type'] === 'GA ATK' && $ticket->kategori_tiket === 'ATK/Stationary'))
                             <textarea class="form-control" id="ckeditor-classic-action-note"
                                 placeholder="Write Progress/Action Note in this field..." rows="5" name="actionNote">{{ $ticket->action_note }}</textarea>
@@ -202,8 +202,8 @@
                     </div>
 
                     @if (session('user')['access_type'] === 'Admin' ||
-                            (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Management') ||
-                            (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Repair & Purchase') ||
+                            (session('user')['access_type'] === 'GA Building' && $ticket->kategori_tiket === 'Building Maintenance support') ||
+                            (session('user')['access_type'] === 'GA RP' && $ticket->kategori_tiket === 'Other facilities Request (Purchase Request)') ||
                             (session('user')['access_type'] === 'GA ATK' && $ticket->kategori_tiket === 'ATK/Stationary'))
                         <div class="flex pt-4">
                             <button type="submit" class="btn btn-primary">Update</button>
@@ -255,20 +255,21 @@
             Comment cannot be added as the ticket is already closed.
         </div>
     @else
-        <form action="/it-helpdesk/komentar" method="POST" class="mt-3">
-            @csrf
-            <input type="hidden" name="id_tiket" value="{{ $ticket->id_ga_facilities }}">
-            <div class="row g-3">
-                <div class="col-lg-12">
-                    <label for="keterangan_komen" class="form-label">Leave a Comment</label>
-                    <textarea class="form-control bg-light border-light" name="keterangan_komen" rows="3"
-                        placeholder="Enter comments"></textarea>
-                </div>
-                <div class="col-lg-12">
-                    <button type="submit" class="btn btn-success" onclick="postComment()">Post Comment</button>
-                </div>
-            </div>
-        </form>
+        <form action="{{ route('ga-facilities.komentar') }}" method="POST" class="mt-3">
+    @csrf
+    <input type="hidden" name="id_tiket" value="{{ $ticket->id_ga_facilities }}">
+    <div class="row g-3">
+        <div class="col-lg-12">
+            <label for="keterangan_komen" class="form-label">Leave a Comment</label>
+            <textarea class="form-control bg-light border-light" name="keterangan_komen" rows="3"
+                placeholder="Enter comments"></textarea>
+        </div>
+        <div class="col-lg-12">
+            <button type="submit" class="btn btn-success">Post Comment</button>
+        </div>
+    </div>
+</form>
+
     @endif
 
 </div>
@@ -378,8 +379,8 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-1">
-                                    <a href="{{ asset('storage/gafacilities/' . $lampiran) }}">Lampiran
-                                        {{ $loop->iteration }}</a>
+                                    <a href="{{ asset('storage/gafacilities/' . $lampiran) }}">Material Request Form
+                                    </a>
                                 </h6>
                                 <small class="text-muted">
                                     {{ Helper::formatSizeUnits(filesize(storage_path('app/public/gafacilities/' . $lampiran))) }}
