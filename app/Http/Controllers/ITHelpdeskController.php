@@ -23,55 +23,55 @@ class ITHelpdeskController extends Controller
         $userLokasi = session('user')->lokasi;
 
         $usersIT = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
-                     ->whereIn('access_menu.access_type', ['it', 'admin'])
-                     ->get();
+            ->whereIn('access_menu.access_type', ['it', 'admin'])
+            ->get();
 
         $isAdmin = AccessMenu::where('idnik', $userId)
-                     ->whereIn('access_type', [ 'admin'])
-                     ->exists();
+            ->whereIn('access_type', ['admin'])
+            ->exists();
 
 
         $isIT = AccessMenu::where('idnik', $userId)
-        ->whereIn('access_type', ['it'])
-        ->exists();
+            ->whereIn('access_type', ['it'])
+            ->exists();
 
         $allUsers = Employee::all();
 
         if ($isAdmin) {
             $tickets = Ticketing::join('user', 'ticketing.id_nik_request', '=', 'user.idnik')
-            ->select('ticketing.*', 'user.*')
-            ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
-            ->orderBy('start_date', 'desc')
-            ->get();
+                ->select('ticketing.*', 'user.*')
+                ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+                ->orderBy('start_date', 'desc')
+                ->get();
 
             $totalTickets = $tickets->count();
             $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
             $processTickets = $tickets->where('status_tiket', 'Process')->count();
             $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
-        }else if($isIT){
+        } else if ($isIT) {
             $tickets = Ticketing::join('user', 'ticketing.id_nik_request', '=', 'user.idnik')
-            ->select('ticketing.*', 'user.*')
-            ->where('user.lokasi', $userLokasi) // Filter tiket berdasarkan lokasi sesi 'user_lokasi'
-            ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
-            ->orderBy('start_date', 'desc')
-            ->get();
+                ->select('ticketing.*', 'user.*')
+                ->where('user.lokasi', $userLokasi) // Filter tiket berdasarkan lokasi sesi 'user_lokasi'
+                ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+                ->orderBy('start_date', 'desc')
+                ->get();
 
             $totalTickets = $tickets->count();
             $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
             $processTickets = $tickets->where('status_tiket', 'Process')->count();
             $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
-        }else {
+        } else {
             $tickets = Ticketing::where('id_nik_request', $userId)
-            ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
-            ->orderBy('start_date', 'desc')
-            ->get();
+                ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+                ->orderBy('start_date', 'desc')
+                ->get();
 
             $totalTickets = $tickets->count();
             $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
             $processTickets = $tickets->where('status_tiket', 'Process')->count();
             $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
         }
-        
+
         return view('it-helpdesk', [
             'tickets' => $tickets, 'totalTickets' => $totalTickets,
             'pendingTickets' => $pendingTickets,
@@ -90,7 +90,7 @@ class ITHelpdeskController extends Controller
                 'wa' => 'required',
             ]);
 
-            if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT' ) {
+            if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT') {
                 $id_nik_request = $request->input('request');
             } else {
                 $id_nik_request = session('user')->idnik;
@@ -113,7 +113,7 @@ class ITHelpdeskController extends Controller
                 }
             }
 
-            
+
             $filename1 = null;
             if ($request->hasFile('lampiran1')) {
                 $lampiran1 = $request->file('lampiran1');
@@ -136,7 +136,7 @@ class ITHelpdeskController extends Controller
             $Ticketing->lampiran1 = $filename1;
             $Ticketing->lampiran2 = $filename2;
             $Ticketing->whatsapp = $request->wa;
-            
+
             $Ticketing->save();
 
             $employee = Employee::where('idnik', $id_nik_request)->first();
@@ -144,14 +144,14 @@ class ITHelpdeskController extends Controller
             $link = route('it-helpdesk.detail', ['id_tiket' => $idHelpdesk]);
 
             $target = $request->wa;
-            $message = "Halo " . $namaEmployee . "!\n\nTicketing dengan ID #". $idHelpdesk ." Anda sudah berhasil dibuat dengan status 'Pending'\n\nTerima kasih telah menggunakan layanan kami. Jangan lupa untuk selalu cek Employee Information Portal (EIP) untuk informasi selanjutnya. Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim IT kami.\n\nTerima kasih!\n\nInfo lebih lanjut tentang tiket ini: " . $link;
+            $message = "Halo " . $namaEmployee . "!\n\nTicketing dengan ID #" . $idHelpdesk . " Anda sudah berhasil dibuat dengan status 'Pending'\n\nTerima kasih telah menggunakan layanan kami. Jangan lupa untuk selalu cek Employee Information Portal (EIP) untuk informasi selanjutnya. Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim IT kami.\n\nTerima kasih!\n\nInfo lebih lanjut tentang tiket ini: " . $link;
             SendWhatsAppMessageJob::dispatch($target, $message)->onQueue('whatsapp');
-            
+
             Alert::success('Success', 'Ticket created successfully!');
             return redirect()->back();
         } catch (\Illuminate\Validation\ValidationException $e) {
             $errors = $e->validator->getMessageBag();
-    
+
             if ($errors->has('desc')) {
                 Alert::error('Error', 'Please insert description.');
                 return redirect()->back();
@@ -180,7 +180,7 @@ class ITHelpdeskController extends Controller
         $usersIT = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
             ->where('access_menu.access_type', 'it')
             ->get();
-            
+
         $comments = Comment::join('user', 'komentar.nik_komen', '=', 'user.idnik')
             ->where('komentar.id_tiket', $id_tiket)
             ->select('komentar.*', 'user.*')
@@ -205,7 +205,7 @@ class ITHelpdeskController extends Controller
                 return redirect()->back();
             }
 
-            if ($ticket->status_tiket == 'Closed') {
+            if ($request->input('status_tiket') == 'Closed') {
                 $ticket->end_date = Carbon::now();
             }
 
@@ -220,20 +220,20 @@ class ITHelpdeskController extends Controller
             $namaEmployee = $ticketEmployee ? $ticketEmployee->nama : 'Bapak/Ibu';
             $link = route('it-helpdesk.detail', ['id_tiket' => $id_tiket]);
             $statusTiket = $request->status_tiket;
-            
+
             $target = $ticket->whatsapp;
 
 
-            $message = "Halo " . $namaEmployee . "!\n\nTicketing dengan ID #" . $id_tiket . "sudah berhasil diupdate dengan status " . $statusTiket . " .\n\nTerima kasih telah menggunakan layanan kami. Jangan lupa untuk selalu cek Employee Information Portal (EIP) untuk informasi selanjutnya. Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim IT kami.\n\nTerima kasih!\n\nInfo lebih lanjut tentang tiket ini: \n". $link;
+            $message = "Halo " . $namaEmployee . "!\n\nTicketing dengan ID #" . $id_tiket . "sudah berhasil diupdate dengan status " . $statusTiket . " .\n\nTerima kasih telah menggunakan layanan kami. Jangan lupa untuk selalu cek Employee Information Portal (EIP) untuk informasi selanjutnya. Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim IT kami.\n\nTerima kasih!\n\nInfo lebih lanjut tentang tiket ini: \n" . $link;
 
             SendWhatsAppMessageJob::dispatch($target, $message)->onQueue('whatsapp');
-                        Alert::success('Success', 'Update Successfully!');
-                        return redirect()->back();
-                    } catch (\Exception $e) {
-                        Alert::error('Error', 'Error occurred during update');
-                        return redirect()->back();
-                    }
-                }
+            Alert::success('Success', 'Update Successfully!');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Alert::error('Error', 'Error occurred during update');
+            return redirect()->back();
+        }
+    }
 
     public function delete(Request $request, $id_tiket)
     {
@@ -263,10 +263,10 @@ class ITHelpdeskController extends Controller
                 'keterangan_komen' => 'required',
                 'id_tiket' => 'required',
             ]);
-  
+
             $generatedId = false;
             $idComment = '';
-        
+
             while (!$generatedId) {
                 $currentDate = Carbon::now();
                 $year = substr($currentDate->year, -2);
@@ -277,29 +277,28 @@ class ITHelpdeskController extends Controller
                 $uuid = substr($numericUuid, 0, 3);
                 $uuid = sprintf('%03d', $uuid);
                 $idComment = 'CMT' . $year . $currentDate->format('md') . substr($idnik, -3) . $uuid;
-        
+
                 $existingTask = Comment::where('id_komen_tiket', $idComment)->exists();
-        
+
                 if (!$existingTask) {
                     $generatedId = true;
                 }
             }
-        
+
             $comment = new Comment();
             $comment->id_komen_tiket = $idComment;
             $comment->id_tiket = $request->id_tiket;
             $comment->nik_komen = $idnik;
             $comment->datetime = Carbon::now('Asia/Jakarta');
             $comment->keterangan_komen = $validatedData['keterangan_komen'];
-        
+
             $comment->save();
-        
+
             Alert::success('Success', 'Comment added successfully!');
             return redirect()->back();
         } catch (\Exception $e) {
             Alert::error('Error', 'An error occurred while adding the comment');
             return redirect()->back();
         }
-        
     }
 }

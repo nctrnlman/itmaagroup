@@ -22,85 +22,85 @@ class GAFacilitiesController extends Controller
         $accessType = session('user')->access_type;
 
         $usersGA = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
-                     ->whereIn('access_menu.access_type', ['GA Building', 'admin','GA RP','GA ATK'])
-                     ->get();
+            ->whereIn('access_menu.access_type', ['GA Building', 'admin', 'GA RP', 'GA ATK'])
+            ->get();
 
         $isAdmin = AccessMenu::where('idnik', $userId)
-                     ->whereIn('access_type', ['admin'])
-                     ->exists();
+            ->whereIn('access_type', ['admin'])
+            ->exists();
 
 
         $allUsers = Employee::all();
 
         if ($isAdmin) {
             $tickets = GAFacilities::join('user', 'ga_facilities.id_nik_request', '=', 'user.idnik')
-            ->select('ga_facilities.*', 'user.*')
-            ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
-            ->orderBy('start_date', 'desc')
-            ->get();
+                ->select('ga_facilities.*', 'user.*')
+                ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+                ->orderBy('start_date', 'desc')
+                ->get();
 
             $totalTickets = $tickets->count();
             $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
             $processTickets = $tickets->where('status_tiket', 'Process')->count();
             $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
-        }elseif ($accessType === 'GA ATK') {
+        } elseif ($accessType === 'GA ATK') {
             $tickets = GAFacilities::join('user', 'ga_facilities.id_nik_request', '=', 'user.idnik')
-            ->select('ga_facilities.*', 'user.*')
-            ->where(function ($query) use ($userId) {
-                $query->where('kategori_tiket', 'ATK/Stationary')
-                    ->orWhere('id_nik_request', $userId);
-            })
-            ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
-            ->orderBy('start_date', 'desc')
-            ->get();
-            
-        $totalTickets = $tickets->count();
-        $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
-        $processTickets = $tickets->where('status_tiket', 'Process')->count();
-        $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
+                ->select('ga_facilities.*', 'user.*')
+                ->where(function ($query) use ($userId) {
+                    $query->where('kategori_tiket', 'ATK/Stationary')
+                        ->orWhere('id_nik_request', $userId);
+                })
+                ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+                ->orderBy('start_date', 'desc')
+                ->get();
+
+            $totalTickets = $tickets->count();
+            $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
+            $processTickets = $tickets->where('status_tiket', 'Process')->count();
+            $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
         } elseif ($accessType === 'GA Building') {
             $tickets = GAFacilities::join('user', 'ga_facilities.id_nik_request', '=', 'user.idnik')
-            ->select('ga_facilities.*', 'user.*')
-            ->where(function ($query) use ($userId) {
-                $query->where('kategori_tiket', 'Building Maintenance support')
-                    ->orWhere('id_nik_request', $userId);
-            })
-            ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
-            ->orderBy('start_date', 'desc')
-            ->get();
+                ->select('ga_facilities.*', 'user.*')
+                ->where(function ($query) use ($userId) {
+                    $query->where('kategori_tiket', 'Building Maintenance support')
+                        ->orWhere('id_nik_request', $userId);
+                })
+                ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+                ->orderBy('start_date', 'desc')
+                ->get();
 
-        $totalTickets = $tickets->count();
-        $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
-        $processTickets = $tickets->where('status_tiket', 'Process')->count();
-        $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
-    } elseif ($accessType === 'GA RP') {
-        $tickets = GAFacilities::join('user', 'ga_facilities.id_nik_request', '=', 'user.idnik')
-            ->select('ga_facilities.*', 'user.*')
-            ->where(function ($query) use ($userId) {
-                $query->where('kategori_tiket', 'Other facilities Request (Purchase Request)')
-                    ->orWhere('id_nik_request', $userId);
-            })
-            ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
-            ->orderBy('start_date', 'desc')
-            ->get();
+            $totalTickets = $tickets->count();
+            $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
+            $processTickets = $tickets->where('status_tiket', 'Process')->count();
+            $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
+        } elseif ($accessType === 'GA RP') {
+            $tickets = GAFacilities::join('user', 'ga_facilities.id_nik_request', '=', 'user.idnik')
+                ->select('ga_facilities.*', 'user.*')
+                ->where(function ($query) use ($userId) {
+                    $query->where('kategori_tiket', 'Other facilities Request (Purchase Request)')
+                        ->orWhere('id_nik_request', $userId);
+                })
+                ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+                ->orderBy('start_date', 'desc')
+                ->get();
 
-        $totalTickets = $tickets->count();
-        $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
-        $processTickets = $tickets->where('status_tiket', 'Process')->count();
-        $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
-    }else {
+            $totalTickets = $tickets->count();
+            $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
+            $processTickets = $tickets->where('status_tiket', 'Process')->count();
+            $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
+        } else {
             $tickets = GAFacilities::where('id_nik_request', $userId)
-            ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
-            ->orderBy('start_date', 'desc')
-            ->get();
+                ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+                ->orderBy('start_date', 'desc')
+                ->get();
             $totalTickets = $tickets->count();
             $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
             $processTickets = $tickets->where('status_tiket', 'Process')->count();
             $closedTickets = $tickets->where('status_tiket', 'Closed')->count();
         }
 
-     
-        
+
+
         return view('facilities.ga-facilities', [
             'tickets' => $tickets, 'totalTickets' => $totalTickets,
             'pendingTickets' => $pendingTickets,
@@ -121,7 +121,7 @@ class GAFacilitiesController extends Controller
             ]);
 
             $id_nik_request = $request->input('request');
-            
+
             $generatedId = false;
             $idGA = '';
 
@@ -139,7 +139,7 @@ class GAFacilitiesController extends Controller
                 }
             }
 
-            
+
             $filename1 = null;
             if ($request->hasFile('lampiran1')) {
                 $lampiran1 = $request->file('lampiran1');
@@ -155,7 +155,7 @@ class GAFacilitiesController extends Controller
             $GAFacilities->kategori_tiket = $request->kategori_tiket;
             $GAFacilities->lampiran1 = $filename1;
             $GAFacilities->whatsapp = $request->wa;
-            
+
             $GAFacilities->save();
 
             $employee = Employee::where('idnik', $id_nik_request)->first();
@@ -163,23 +163,23 @@ class GAFacilitiesController extends Controller
             $link = route('ga-facilities.detail', ['id_tiket' => $idGA]);
 
             $target = $request->wa;
-           $message = "Halo " . $namaEmployee . ",\n\nTiket dengan ID #" . $idGA . " Anda telah berhasil dibuat dengan status 'OPEN'.\n\nThank you for your time to fill and support EIP (Employee Information Portal) for request System, We will respond to your request, please wait we will process according to the queue !! :) \n
+            $message = "Halo " . $namaEmployee . ",\n\nTiket dengan ID #" . $idGA . " Anda telah berhasil dibuat dengan status 'OPEN'.\n\nThank you for your time to fill and support EIP (Employee Information Portal) for request System, We will respond to your request, please wait we will process according to the queue !! :) \n
 Terima kasih atas waktunya untuk mengisi dan mendukung sistem request EIP, kami akan memproses permintaan anda, mohon kesediaannya untuk menunggu sesuai dengan antrian !! \n
-Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim General Affairs kami: ".$link ."\n\nTerima kasih! :)";
+Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu untuk menghubungi tim General Affairs kami: " . $link . "\n\nTerima kasih! :)";
             SendWhatsAppMessageJob::dispatch($target, $message)->onQueue('whatsapp');
 
 
 
-            
+
             Alert::success('Success', 'Ticket created successfully!');
             return redirect()->back();
         } catch (\Illuminate\Validation\ValidationException $e) {
             $errors = $e->validator->getMessageBag();
-    
+
             if ($errors->has('kategori_tiket')) {
                 Alert::error('Error', 'Please insert Service Type.');
                 return redirect()->back();
-            }elseif ($errors->has('desc')) {
+            } elseif ($errors->has('desc')) {
                 Alert::error('Error', 'Please insert Description.');
                 return redirect()->back();
             } elseif ($errors->has('wa')) {
@@ -203,28 +203,28 @@ Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu
             ->where('ga_facilities.id_ga_facilities', $id_tiket)
             ->first();
 
-            if ($ticket) {
-                if ($ticket->kategori_tiket === 'Building Maintenance support') {
-                    $usersGA = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
-                        ->whereIn('access_menu.access_type', ['GA Building'])
-                        ->get();
-                } elseif ($ticket->kategori_tiket === 'Other facilities Request (Purchase Request)') {
-                    $usersGA = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
-                        ->whereIn('access_menu.access_type', ['GA RP'])
-                        ->get();
-                } elseif ($ticket->kategori_tiket === 'ATK/Stationary') {
-                    $usersGA = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
-                        ->whereIn('access_menu.access_type', ['GA ATK'])
-                        ->get();
-                } else {
-                    // Default value jika kategori_tiket tidak sesuai dengan yang diharapkan
-                    $usersGA = collect(); // Atau $usersGA = [];
-                }
+        if ($ticket) {
+            if ($ticket->kategori_tiket === 'Building Maintenance support') {
+                $usersGA = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
+                    ->whereIn('access_menu.access_type', ['GA Building'])
+                    ->get();
+            } elseif ($ticket->kategori_tiket === 'Other facilities Request (Purchase Request)') {
+                $usersGA = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
+                    ->whereIn('access_menu.access_type', ['GA RP'])
+                    ->get();
+            } elseif ($ticket->kategori_tiket === 'ATK/Stationary') {
+                $usersGA = AccessMenu::join('user', 'access_menu.idnik', '=', 'user.idnik')
+                    ->whereIn('access_menu.access_type', ['GA ATK'])
+                    ->get();
             } else {
-                // Jika data dengan ID tidak ditemukan, berikan nilai default untuk $usersGA
+                // Default value jika kategori_tiket tidak sesuai dengan yang diharapkan
                 $usersGA = collect(); // Atau $usersGA = [];
             }
-            
+        } else {
+            // Jika data dengan ID tidak ditemukan, berikan nilai default untuk $usersGA
+            $usersGA = collect(); // Atau $usersGA = [];
+        }
+
         $comments = Comment::join('user', 'komentar.nik_komen', '=', 'user.idnik')
             ->where('komentar.id_tiket', $id_tiket)
             ->select('komentar.*', 'user.*')
@@ -249,7 +249,8 @@ Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu
                 return redirect()->back();
             }
 
-            if ($ticket->status_tiket == 'Closed') {
+            if ($request->input('status_tiket') == 'Closed') {
+
                 $ticket->end_date = Carbon::now();
             }
 
@@ -263,7 +264,7 @@ Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu
             $namaEmployee = $ticketEmployee ? $ticketEmployee->nama : 'Bapak/Ibu';
             $link = route('ga-facilities.detail', ['id_tiket' => $id_tiket]);
             $statusTiket = $request->status_tiket;
-            
+
             $target = $ticket->whatsapp;
 
 
@@ -274,13 +275,13 @@ Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu
             }
 
             SendWhatsAppMessageJob::dispatch($target, $message)->onQueue('whatsapp');
-                        Alert::success('Success', 'Update Successfully!');
-                        return redirect()->back();
-                    } catch (\Exception $e) {
-                        Alert::error('Error', 'Error occurred during update');
-                        return redirect()->back();
-                    }
-                }
+            Alert::success('Success', 'Update Successfully!');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Alert::error('Error', 'Error occurred during update');
+            return redirect()->back();
+        }
+    }
 
     public function delete(Request $request, $id_tiket)
     {
@@ -310,39 +311,38 @@ Jika Anda memiliki pertanyaan lebih lanjut atau membutuhkan bantuan, jangan ragu
                 'keterangan_komen' => 'required',
                 'id_tiket' => 'required',
             ]);
-        
+
             $generatedId = false;
             $idComment = '';
-        
+
             while (!$generatedId) {
                 $currentDate = Carbon::now();
                 $year = substr($currentDate->year, -2);
                 $idnik = session('user')->idnik;
                 $uuid = str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT);
                 $idComment = 'CMT' . $year . $currentDate->format('md') . substr($idnik, -3) . $uuid;
-        
+
                 $existingTask = Comment::where('id_komen_tiket', $idComment)->exists();
-        
+
                 if (!$existingTask) {
                     $generatedId = true;
                 }
             }
-        
+
             $comment = new Comment();
             $comment->id_komen_tiket = $idComment;
             $comment->id_tiket = $request->id_tiket;
             $comment->nik_komen = $idnik;
             $comment->datetime = Carbon::now('Asia/Jakarta');
             $comment->keterangan_komen = $validatedData['keterangan_komen'];
-        
+
             $comment->save();
-        
+
             Alert::success('Success', 'Comment added successfully!');
             return redirect()->back();
         } catch (\Exception $e) {
             Alert::error('Error', 'An error occurred while adding the comment');
             return redirect()->back();
         }
-        
     }
 }
