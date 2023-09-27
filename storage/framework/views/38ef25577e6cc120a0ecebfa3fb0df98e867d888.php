@@ -1,28 +1,28 @@
-@extends('layouts.master')
 
-@section('title')
+
+<?php $__env->startSection('title'); ?>
     IT Support
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('css')
-    <link href="{{ URL::asset('assets/libs/jsvectormap/jsvectormap.min.css') }}" rel="stylesheet">
+<?php $__env->startSection('css'); ?>
+    <link href="<?php echo e(URL::asset('assets/libs/jsvectormap/jsvectormap.min.css')); ?>" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
-    <link href="{{ asset('css/ckeditor.css') }}" rel="stylesheet">
-    <link href="{{ URL::asset('assets/libs/dropzone/dropzone.min.css') }}" rel="stylesheet">
-@endsection
+    <link href="<?php echo e(asset('css/ckeditor.css')); ?>" rel="stylesheet">
+    <link href="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.css')); ?>" rel="stylesheet">
+<?php $__env->stopSection(); ?>
 
-@section('content')
-    @component('components.breadcrumb')
-        @slot('li_1')
+<?php $__env->startSection('content'); ?>
+    <?php $__env->startComponent('components.breadcrumb'); ?>
+        <?php $__env->slot('li_1'); ?>
             Dashboard
-        @endslot
-        @slot('title')
+        <?php $__env->endSlot(); ?>
+        <?php $__env->slot('title'); ?>
             IT Support
-        @endslot
-    @endcomponent
+        <?php $__env->endSlot(); ?>
+    <?php echo $__env->renderComponent(); ?>
 
     <div class="row">
         <div class="col-xxl-3 col-sm-6">
@@ -33,9 +33,10 @@
                             <p class="fw-medium text-muted mb-0">Total Tickets</p>
                             <h2 class="mt-4 ff-secondary fw-semibold">
                                 <span class="counter-value"
-                                    data-target="@if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT') {{ $totalTickets }}
-                            @else
-                                {{ $totalTickets }} @endif">
+                                    data-target="<?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?> <?php echo e($totalTickets); ?>
+
+                            <?php else: ?>
+                                <?php echo e($totalTickets); ?> <?php endif; ?>">
                                 </span>
                             </h2>
                         </div>
@@ -59,9 +60,10 @@
                             <p class="fw-medium text-muted mb-0">Pending Tickets</p>
                             <h2 class="mt-4 ff-secondary fw-semibold">
                                 <span class="counter-value"
-                                    data-target='@if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT') {{ $pendingTickets }}
-                            @else
-                                {{ $pendingTickets }} @endif'>
+                                    data-target='<?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?> <?php echo e($pendingTickets); ?>
+
+                            <?php else: ?>
+                                <?php echo e($pendingTickets); ?> <?php endif; ?>'>
 
                                 </span>
                             </h2>
@@ -86,9 +88,10 @@
                             <p class="fw-medium text-muted mb-0">Process Tickets</p>
                             <h2 class="mt-4 ff-secondary fw-semibold">
                                 <span class="counter-value"
-                                    data-target='@if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT') {{ $processTickets }}
-                            @else
-                                {{ $processTickets }} @endif'>
+                                    data-target='<?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?> <?php echo e($processTickets); ?>
+
+                            <?php else: ?>
+                                <?php echo e($processTickets); ?> <?php endif; ?>'>
 
                                 </span>
                             </h2>
@@ -113,9 +116,10 @@
                             <p class="fw-medium text-muted mb-0">Closed Tickets</p>
                             <h2 class="mt-4 ff-secondary fw-semibold">
                                 <span class="counter-value"
-                                    data-target=' @if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT') {{ $closedTickets }}
-                            @else
-                                {{ $closedTickets }} @endif'>
+                                    data-target=' <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?> <?php echo e($closedTickets); ?>
+
+                            <?php else: ?>
+                                <?php echo e($closedTickets); ?> <?php endif; ?>'>
 
                                 </span>
                             </h2>
@@ -195,28 +199,28 @@
                         }
                         ?>
                         <tbody>
-                            @foreach ($tickets as $ticket)
+                            <?php $__currentLoopData = $tickets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ticket): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td>{{ $ticket->id_tiket }}</td>
-                                    <td>{{ date('d F Y', strtotime($ticket->start_date)) }}</td>
+                                    <td><?php echo e($ticket->id_tiket); ?></td>
+                                    <td><?php echo e(date('d F Y', strtotime($ticket->start_date))); ?></td>
 
-                                    @if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT')
-                                        <td>{{ $ticket->end_date }}</td>
-                                        <td>{{ $ticket->lokasi }}</td>
-                                        <td>{{ $ticket->nama }}</td>
-                                        <td>{{ $ticket->whatsapp }}</td>
-                                    @endif
-                                    <td>{!! $ticket->disc_keluhan !!}</td>
-                                    <td>{{ $ticket->status_tiket }}</td>
-                                    <td>{{ $ticket->kategori_tiket }}</td>
-                                    @php
+                                    <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?>
+                                        <td><?php echo e($ticket->end_date); ?></td>
+                                        <td><?php echo e($ticket->lokasi); ?></td>
+                                        <td><?php echo e($ticket->nama); ?></td>
+                                        <td><?php echo e($ticket->whatsapp); ?></td>
+                                    <?php endif; ?>
+                                    <td><?php echo $ticket->disc_keluhan; ?></td>
+                                    <td><?php echo e($ticket->status_tiket); ?></td>
+                                    <td><?php echo e($ticket->kategori_tiket); ?></td>
+                                    <?php
                                         $userIT = $usersIT->firstWhere('idnik', $ticket->nik_pic);
-                                    @endphp
-                                    <td>{{ $userIT ? $userIT->nama : '-' }}</td>
-                                    @if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT')
-                                        <td>{!! $ticket->justification !!}</td>
-                                        <td>{!! $ticket->action_note !!}</td>
-                                    @endif
+                                    ?>
+                                    <td><?php echo e($userIT ? $userIT->nama : '-'); ?></td>
+                                    <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?>
+                                        <td><?php echo $ticket->justification; ?></td>
+                                        <td><?php echo $ticket->action_note; ?></td>
+                                    <?php endif; ?>
 
                                     <td>
                                         <div class="dropdown d-inline-block">
@@ -225,53 +229,53 @@
                                                 <i class="ri-more-fill align-middle"></i>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
-                                                @if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT')
+                                                <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?>
                                                     <li>
-                                                        <a href="{{ route('it-helpdesk.detail', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                        <a href="<?php echo e(route('it-helpdesk.detail', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                             class="dropdown-item edit-item-btn">
                                                             <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a href="#" class="dropdown-item edit-item-btn"
-                                                            onclick="event.preventDefault(); showConfirmation('{{ $ticket->id_tiket }}');">
+                                                            onclick="event.preventDefault(); showConfirmation('<?php echo e($ticket->id_tiket); ?>');">
                                                             <i class="fa fa-trash align-bottom me-2 text-muted"></i> Delete
                                                         </a>
-                                                        <form id="delete-form-{{ $ticket->id_tiket }}"
-                                                            action="{{ route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                        <form id="delete-form-<?php echo e($ticket->id_tiket); ?>"
+                                                            action="<?php echo e(route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                             method="POST" style="display: none;">
-                                                            @csrf
-                                                            @method('DELETE')
+                                                            <?php echo csrf_field(); ?>
+                                                            <?php echo method_field('DELETE'); ?>
                                                         </form>
                                                     </li>
-                                                @else
+                                                <?php else: ?>
                                                     <li>
-                                                        <a href="{{ route('it-helpdesk.detail', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                        <a href="<?php echo e(route('it-helpdesk.detail', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                             class="dropdown-item view-item-btn">
                                                             <i class="ri-eye-fill align-bottom me-2 text-muted"></i> View
                                                         </a>
                                                     </li>
-                                                    @if ($ticket->status_tiket == 'Pending')
+                                                    <?php if($ticket->status_tiket == 'Pending'): ?>
                                                         <li>
                                                             <a href="#" class="dropdown-item edit-item-btn"
-                                                                onclick="event.preventDefault(); showConfirmation('{{ $ticket->id_tiket }}');">
+                                                                onclick="event.preventDefault(); showConfirmation('<?php echo e($ticket->id_tiket); ?>');">
                                                                 <i class="fa fa-trash align-bottom me-2 text-muted"></i>
                                                                 Delete
                                                             </a>
-                                                            <form id="delete-form-{{ $ticket->id_tiket }}"
-                                                                action="{{ route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket]) }}"
+                                                            <form id="delete-form-<?php echo e($ticket->id_tiket); ?>"
+                                                                action="<?php echo e(route('it-helpdesk.delete', ['id_tiket' => $ticket->id_tiket])); ?>"
                                                                 method="POST" style="display: none;">
-                                                                @csrf
-                                                                @method('DELETE')
+                                                                <?php echo csrf_field(); ?>
+                                                                <?php echo method_field('DELETE'); ?>
                                                             </form>
                                                         </li>
-                                                    @endif
-                                                @endif
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                             </ul>
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                 </div>
@@ -291,9 +295,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                         id="close-modal"></button>
                 </div>
-                <form action="{{ route('it-helpdesk.insert') }}" method="POST" id="myForm"
+                <form action="<?php echo e(route('it-helpdesk.insert')); ?>" method="POST" id="myForm"
                     enctype="multipart/form-data">
-                    @csrf
+                    <?php echo csrf_field(); ?>
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-lg-6">
@@ -318,18 +322,18 @@
                                     <input type="text" id="wa" class="form-control"
                                         placeholder="Insert your active number" name="wa" />
                                 </div>
-                                @if (session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT')
+                                <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'IT'): ?>
                                     <div class="mb-3 mt-2">
                                         <label for="choices-status-input" class="form-label">Request User</label>
                                         <select class="form-select" data-choices id="choices-status-input"
                                             name="request">
                                             <option value="">All Users</option>
-                                            @foreach ($allUsers as $user)
-                                                <option value="{{ $user->idnik }}">{{ $user->nama }}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $allUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($user->idnik); ?>"><?php echo e($user->nama); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -342,9 +346,9 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
@@ -353,12 +357,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
-    <script src="{{ URL::asset('assets/libs/@ckeditor/@ckeditor.min.js') }}"></script>
-    <script src="{{ URL::asset('assets/libs/dropzone/dropzone.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/@ckeditor/@ckeditor.min.js')); ?>"></script>
+    <script src="<?php echo e(URL::asset('assets/libs/dropzone/dropzone.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets/libs/flatpickr/flatpickr.min.js')); ?>"></script>
     <script src="assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
     <script src="assets/js/app.min.js"></script>
-    <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
+    <script src="<?php echo e(URL::asset('/assets/js/app.min.js')); ?>"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
     <script>
         function showConfirmation(ticketId) {
@@ -416,4 +420,6 @@
             document.getElementById('myForm').submit();
         }
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\it\ticket\resources\views/it-helpdesk.blade.php ENDPATH**/ ?>

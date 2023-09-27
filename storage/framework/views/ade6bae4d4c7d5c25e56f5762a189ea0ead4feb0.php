@@ -6,31 +6,31 @@
         <link href="assets/libs/jsvectormap/jsvectormap.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/libs/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
         <style>
-    .flex-grow-1 {
-        /* Gaya untuk container utama */
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-    }
+            .flex-grow-1 {
+                /* Gaya untuk container utama */
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+            }
 
-    .text-muted {
-        /* Gaya untuk teks abu-abu */
-        color: #af2a25;
-    }
+            .text-muted {
+                /* Gaya untuk teks abu-abu */
+                color: #af2a25;
+            }
 
-    .language-container {
-        /* Gaya untuk kontainer bahasa Indonesia */
-        margin-top: 2px;
-    }
+            .language-container {
+                /* Gaya untuk kontainer bahasa Indonesia */
+                margin-top: 2px;
+            }
 
-    .indonesian-text {
-        /* Gaya untuk teks dalam bahasa Indonesia */
-        display: block;
-        margin-top: 1px;
-        font-style: italic;
-        color: #555;
-    }
-</style>
+            .indonesian-text {
+                /* Gaya untuk teks dalam bahasa Indonesia */
+                display: block;
+                margin-top: 1px;
+                font-style: italic;
+                color: #555;
+            }
+        </style>
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('content'); ?>
         <?php $__env->startComponent('components.breadcrumb'); ?>
@@ -49,22 +49,25 @@
                         <div class="col-12">
                             <div class="d-flex align-items-lg-center flex-lg-row flex-column">
                                 <div class="flex-grow-1">
-   <div class="card bg-red" style="background-color: #af2a25; color: white;">
-    <div class="card-body">
-        <h4 class="fs-20 mb-4 " style="color:white">Hello, <?php echo session('user')->nama; ?></h4>
-        <p class="fs-15 mb-0">
-            This system will help you to get GA & IT request and also help us for manage, and track request from your submission.
-        </p>
-        <div class="language-container"> 
-            <p class="indonesian-text fs-14" style="color:white">
-                Sistem ini akan membantu Anda dalam pengajuan permintaan GA dan IT, serta membantu kami dalam mengelola dan melacak permintaan dari pengajuan Anda.
-            </p>
-        </div>
-    </div>
-</div>
+                                    <div class="card bg-red" style="background-color: #af2a25; color: white;">
+                                        <div class="card-body">
+                                            <h4 class="fs-20 mb-4 " style="color:white">Hello, <?php echo session('user')->nama; ?></h4>
+                                            <p class="fs-15 mb-0">
+                                                This system will help you to get GA & IT request and also help us for
+                                                manage, and track request from your submission.
+                                            </p>
+                                            <div class="language-container">
+                                                <p class="indonesian-text fs-14" style="color:white">
+                                                    Sistem ini akan membantu Anda dalam pengajuan permintaan GA dan IT,
+                                                    serta membantu kami dalam mengelola dan melacak permintaan dari
+                                                    pengajuan Anda.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
 
-            
-</div>
+
+                                </div>
                             </div><!-- end card header -->
                         </div>
                         <!--end col-->
@@ -94,20 +97,60 @@
                             </div>
                         </div>
 
-                        <!-- GA Facilities Card -->
                         <div class="col-xl-4">
                             <div class="card card-animate">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-grow-1 overflow-hidden">
-                                            <h5 class="text-info mb-2">GA Facilities</h5>
-                                            <p class="text-muted mb-0">Manage and handle General Affairs (GA) Facilities
-                                                requests and track requests.</p>
+                                            <h5 class="text-danger mb-2">Building Maintenance</h5>
+                                            <p class="text-muted mb-0">Submit building and facility-related maintenance
+                                                requests here. Our team
+                                                will assist you with building maintenance needs.</p>
                                         </div>
                                     </div>
                                     <div class="mt-4">
-                                        <a href="<?php echo e(route('ga-facilities.index')); ?>" class="btn btn-info">View GA
-                                            Facilities</a>
+                                        <a href="<?php echo e(route('building-facilities.index')); ?>" class="btn btn-danger">Open
+                                            Building Maintenance</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other Facilities Card -->
+                        <div class="col-xl-4">
+                            <div class="card card-animate">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <h5 class="text-secondary mb-2">Other Facilities Request</h5>
+                                            <p class="text-muted mb-0">For purchasing and replacing items, please attach the
+                                                approved material
+                                                request form and submit your request here.</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <a href="<?php echo e(route('other-facilities.index')); ?>" class="btn btn-secondary">Open Other
+                                            Facilities Request</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ATK/Stationary Card -->
+                        <div class="col-xl-4">
+                            <div class="card card-animate">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <h5 class=" mb-2" style="color: #af2a25">ATK/Stationary</h5>
+                                            <p class="text-muted mb-0">Submit your stationary-related requests here. Our
+                                                team will assist you with ATK/Stationary needs.</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <a href="<?php echo e(route('stationary-facilities.index')); ?>" class="btn "
+                                            style="background-color: #af2a25; color:white">Open
+                                            ATK/Stationary Request</a>
                                     </div>
                                 </div>
                             </div>

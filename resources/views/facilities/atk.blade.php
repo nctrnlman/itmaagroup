@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Administrator
+    ATK
 @endsection
 
 @section('css')
@@ -21,7 +21,7 @@
             Administrator
         @endslot
         @slot('title')
-            Assign PIC
+            ATK
         @endslot
     @endcomponent
 
@@ -30,10 +30,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h5 class="card-title mb-0 flex-grow-1">Administrator</h5>
+                        <h5 class="card-title mb-0 flex-grow-1">ATK List</h5>
                         <div class="flex-shrink-0">
                             <button class="btn btn-danger add-btn" data-bs-toggle="modal" data-bs-target="#showModal">
-                                <i class="ri-add-line align-bottom me-1"></i> Assign PIC
+                                <i class="ri-add-line align-bottom me-1"></i> Add ATK
                             </button>
                         </div>
                     </div>
@@ -43,24 +43,16 @@
                     <table id="exampleee" class="display table table-bordered dt-responsive" style="width:100%">
                         <thead>
                             <tr>
-                                <th>No.</th>
-                                <th>NIK</th>
-                                <th>Name</th>
-                                <th>Access Type</th>
-                                <th>Division</th>
-                                <th>Position</th>
+                                <th>ID ATK</th>
+                                <th>Description</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($admins as $admin)
+                            @foreach ($atkList as $atk)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $admin->idnik }}</td>
-                                    <td>{{ $admin->nama }}</td>
-                                    <td>{{ $admin->access_type }}</td>
-                                    <td>{{ $admin->divisi }}</td>
-                                    <td>{{ $admin->position }}</td>
+                                    <td>{{ $atk->id_atk }}</td>
+                                    <td>{{ $atk->description }}</td>
                                     <td>
                                         <div class="dropdown d-inline-block">
                                             <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
@@ -70,18 +62,17 @@
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li><a href="javascript:void(0);" class="dropdown-item edit-item-btn"
                                                         data-bs-toggle="modal"
-                                                        data-bs-target="#editModal{{ $admin->id_access }}"
-                                                        data-nama="{{ $admin->nama }}"
-                                                        data-access-type="{{ $admin->access_type }}">
+                                                        data-bs-target="#editModal{{ $atk->id_atk }}"
+                                                        data-nama="{{ $atk->description }}">
                                                         <i class="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit
                                                     </a>
                                                 </li>
-                                                <form action="{{ route('admin.destroy', ['id' => $admin->id_access]) }}"
+                                                <form action="{{ route('atk.destroy', ['id' => $atk->id_atk]) }}"
                                                     method="POST" class="delete-form">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" class="dropdown-item edit-item-btn"
-                                                        onclick="showConfirmation('{{ $admin->id_access }}', '{{ $admin->nama }}')">
+                                                        onclick="showConfirmation('{{ $atk->id_atk }}', '{{ $atk->description }}')">
                                                         <i class="fa fa-trash align-bottom me-2 text-muted"></i> Delete
                                                     </button>
                                                 </form>
@@ -100,98 +91,68 @@
 
     </div>
 
-    <!-- Modal for Adding New Administrator -->
+    <!-- Modal for Adding New atkistrator -->
     <div class="modal fade zoomIn" id="showModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0">
                 <div class="modal-header p-3 bg-soft-info">
-                    <h5 class="modal-title" id="exampleModalLabel">Assign PIC</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add ATK</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                         id="close-modal"></button>
                 </div>
-                <form action="{{ route('admin.store') }}" method="POST">
+                <form action="{{ route('atk.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-lg-6">
                                 <div id="modal-id">
-                                    <label for="choices-status-input" class="form-label">User</label>
-                                    <select class="form-select" name="idnik" data-choices id="choices-status-input">
-                                        <option value="">Select User</option>
-                                        @foreach ($users as $user)
-                                            <option value="{{ $user->idnik }}">
-                                                {{ $user->nama }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="choices-status-input" class="form-label">ID ATK</label>
+                                    <input type="text" id="id" class="form-control" name="id" required />
+
                                 </div>
                             </div>
                             <div class="col-lg-6">
-                                <label for="choices-status-input" class="form-label">Access Type</label>
-                                <select class="form-select" data-choices id="choices-status-input" name="access_type">
-                                    <option value="">Select Access Type</option>
-                                    <option value="IT">IT</option>
-                                    <option value="GA Building">GA Building</option>
-                                    <option value="GA Other Facilities">GA Other Facilities</option>
-                                    <option value="GA Stationary">GA Stationary</option>
-                                    <option value="Admin">Admin</option>
-                                </select>
+                                <label for="choices-status-input" class="form-label">Description</label>
+                                <input type="text" id="desc" class="form-control" name="desc" required />
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">Assign</button>
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">Add</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Modals for Editing Existing Administrators -->
-    @foreach ($admins as $admin)
-        <div class="modal fade zoomIn" id="editModal{{ $admin->id_access }}" tabindex="-1"
-            aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modals for Editing Existing atkistrators -->
+    @foreach ($atkList as $atk)
+        <div class="modal fade zoomIn" id="editModal{{ $atk->id_atk }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content border-0">
                     <div class="modal-header p-3 bg-soft-info">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Admin</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Edit ATK</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                             id="close-edit-modal"></button>
                     </div>
-                    <form action="{{ route('admin.update', ['id' => $admin->id_access]) }}" method="POST">
+                    <form action="{{ route('atk.update', ['id' => $atk->id_atk]) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
                             <div class="row g-3">
                                 <div class="col-lg-6">
                                     <div id="modal-id">
-                                        <label for="choices-status-input" class="form-label">User</label>
-                                        <input type="text" class="form-control" name="id_access"
-                                            value="{{ $admin->nama }}" disabled>
+                                        <label for="choices-status-input" class="form-label">ID ATK</label>
+                                        <input type="text" class="form-control" name="id"
+                                            value="{{ $atk->id_atk }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
-                                    <label for="choices-status-input" class="form-label">Access Type</label>
-                                    <select class="form-select" data-choices id="choices-status-input"
-                                        name="access_type">
-                                        <option value="">Select Access Type</option>
-                                        <option value="IT" {{ $admin->access_type === 'IT' ? 'selected' : '' }}>IT
-                                        </option>
-                                        <option value="GA Building"
-                                            {{ $admin->access_type === 'GA Building' ? 'selected' : '' }}>GA Building
-                                        </option>
-                                        <option value="GA Other Facilities"
-                                            {{ $admin->access_type === 'GA Other Facilities' ? 'selected' : '' }}>GA Other
-                                            Facilities
-                                        </option>
-                                        <option value="GA Stationary"
-                                            {{ $admin->access_type === 'GA Stationary' ? 'selected' : '' }}>GA
-                                            Stationary
-                                        </option>
-                                        <option value="Admin" {{ $admin->access_type === 'Admin' ? 'selected' : '' }}>
-                                            Admin</option>
-                                    </select>
+                                    <label for="choices-status-input" class="form-label">Description</label>
+                                    <input type="text" class="form-control" name="desc"
+                                        value="{{ $atk->description }}">
                                 </div>
                             </div>
                         </div>
@@ -221,10 +182,10 @@
     <script src="assets/js/app.min.js"></script>
     <script src="{{ URL::asset('/assets/js/app.min.js') }}"></script>
     <script>
-        function showConfirmation(idAccess, adminName) {
+        function showConfirmation(idAccess, atkName) {
             Swal.fire({
                 title: 'Are you sure?',
-                text: `You are about to delete ${adminName}!`,
+                text: `You are about to delete ${atkName}!`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -232,8 +193,8 @@
                 confirmButtonText: 'Yes, delete it!',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.querySelector(`form[action="{{ route('admin.destroy', ['id' => ':id_access']) }}"]`
-                        .replace(':id_access', idAccess)).submit();
+                    document.querySelector(`form[action="{{ route('atk.destroy', ['id' => ':id_atk']) }}"]`
+                        .replace(':id_atk', idAccess)).submit();
                 }
             });
         }
@@ -252,7 +213,7 @@
                 var nama = $(this).data('nama');
                 var accessType = $(this).data('access-type');
 
-                $('#modal-id select[name="id_access"]').val(nama);
+                $('#modal-id select[name="id_atk"]').val(nama);
                 $('#modal-id select[name="access_type"]').val(accessType);
             });
         });

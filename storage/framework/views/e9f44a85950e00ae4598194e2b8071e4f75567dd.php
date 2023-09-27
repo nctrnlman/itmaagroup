@@ -44,10 +44,28 @@
                             <i class="ri-pencil-ruler-2-line"></i> <span>IT Support</span>
                         </a>
                     </li>
+                    
                     <li class="nav-item">
-                        <a class="nav-link menu-link" href="<?php echo e(route('ga-facilities.index')); ?>">
+                        <a class="nav-link menu-link" href="#ga" data-bs-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="ga">
                             <i class="ri-file-list-3-line"></i> <span>GA Facilities</span>
                         </a>
+                        <div class="collapse menu-dropdown" id="ga">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="<?php echo e(route('stationary-facilities.index')); ?>" class="nav-link">ATK /
+                                        Stationary</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="<?php echo e(route('building-facilities.index')); ?>" class="nav-link">Building
+                                        Maintenance Support</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="<?php echo e(route('other-facilities.index')); ?>" class="nav-link">Other Facilities
+                                        Request</a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
 
                     
@@ -83,6 +101,18 @@
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="<?php echo e(route('admin.dashboard')); ?>">
                                 <i class="ri-honour-line"></i> <span>Administrator</span>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                <?php endif; ?>
+                <?php if(session('user')['access_type'] === 'Admin' || session('user')['access_type'] === 'GA Stationary'): ?>
+                    <ul class="navbar-nav" id="navbar-nav">
+
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="<?php echo e(route('atk.index')); ?>">
+                                <i class="ri-scissors-line"></i> <span>ATK List</span>
                             </a>
                         </li>
                     </ul>

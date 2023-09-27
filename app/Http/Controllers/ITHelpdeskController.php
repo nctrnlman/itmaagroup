@@ -40,9 +40,12 @@ class ITHelpdeskController extends Controller
         if ($isAdmin) {
             $tickets = Ticketing::join('user', 'ticketing.id_nik_request', '=', 'user.idnik')
                 ->select('ticketing.*', 'user.*')
-                ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
-                ->orderBy('start_date', 'desc')
+                ->orderByDesc('start_date') // Mengurutkan berdasarkan tanggal terbaru lebih dulu
                 ->get();
+            // ->orderByRaw("FIELD(status_tiket, 'Pending', 'Process', 'Closed', 'Rejected')")
+            // ->orderBy('start_date', 'desc')
+            // ->get();
+            // dd($tickets);
 
             $totalTickets = $tickets->count();
             $pendingTickets = $tickets->where('status_tiket', 'Pending')->count();
